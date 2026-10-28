@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - lianzheng-data:/app/data
+    environment:
+      LZ_LLM_BASE_URL: ${LZ_LLM_BASE_URL:-}
+      LZ_LLM_API_KEY: ${LZ_LLM_API_KEY:-}
+      LZ_LLM_MODEL: ${LZ_LLM_MODEL:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LZ_EMBEDDING_BASE_URL: ${LZ_EMBEDDING_BASE_URL:-}
+      LZ_EMBEDDING_API_KEY: ${LZ_EMBEDDING_API_KEY:-}
+      LZ_EMBEDDING_MODEL: ${LZ_EMBEDDING_MODEL:-}
+    restart: unless-stopped
+volumes:
+  lianzheng-data:
