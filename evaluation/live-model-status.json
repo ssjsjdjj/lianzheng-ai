@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-10-28T04:14:56.208495+00:00",
+  "provider": "deepseek",
+  "connection_configured": false,
+  "connection_verified": false,
+  "qa_verified": false,
+  "accepted_answers": 0,
+  "total_answers": 0,
+  "state": "awaiting-local-credentials",
+  "reason": "本机尚未完成 DeepSeek API 密钥配置和连接验证。",
+  "simulated_tests_are_not_live_acceptance": true
+}
