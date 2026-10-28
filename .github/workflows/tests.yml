@@ -1,0 +1,46 @@
+name: Python checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LZ_DATABASE: data/ci.sqlite3
+      LZ_LLM_BASE_URL: ""
+      LZ_LLM_API_KEY: ""
+      LZ_LLM_MODEL: ""
+      DEEPSEEK_API_KEY: ""
+      LZ_EMBEDDING_BASE_URL: ""
+      LZ_EMBEDDING_API_KEY: ""
+      LZ_EMBEDDING_MODEL: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run Python tests
+        run: python -m pytest -q
+      - name: Run local functional checks
+        run: python scripts/evaluate.py evaluation/ci-smoke-results.json
+      - name: Upload functional check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-functional-checks
+          path: evaluation/ci-smoke-results.json
+          if-no-files-found: ignore
+          retention-days: 7
