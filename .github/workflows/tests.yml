@@ -14,9 +14,11 @@ jobs:
     timeout-minutes: 10
     env:
       LZ_DATABASE: data/ci.sqlite3
+      LZ_LLM_PROVIDER: ""
       LZ_LLM_BASE_URL: ""
       LZ_LLM_API_KEY: ""
       LZ_LLM_MODEL: ""
+      OPENAI_API_KEY: ""
       DEEPSEEK_API_KEY: ""
       LZ_EMBEDDING_BASE_URL: ""
       LZ_EMBEDDING_API_KEY: ""
