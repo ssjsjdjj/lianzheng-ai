@@ -16,5 +16,6 @@ credentials*.json
 *.log
 test-results
 evaluation/live-model-results.json
+evaluation/live-model-history
 evaluation/ci-smoke-results.json
 *.zip

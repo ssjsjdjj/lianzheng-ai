@@ -20,6 +20,7 @@
 - 本机模型设置，最小真实 API 请求验证，保留返回模型、请求 ID、耗时与 token 用量；API 密钥不会回传页面。
 - OpenAI 官方模式默认候选 `gpt-6-luna`，使用严格 JSON Schema、`store:false` 和有界输出；实际模型权限以 API 账户与连接验证为准。
 - 模型解释逐项引用证据并提供原文摘录；不存在的编号、无法核对的摘录和范围外版本会触发本地回退。
+- GPT 从系统生成的原文片段目录中选择引用 ID，由服务器回填原句与来源，减少模型改写引文的错误；语义支持仍需人工复核。
 - 模型输入的序列化消息总量最多 48,000 个 UTF-8 字节，不等同于 token 数；缩短或省略证据时保留完整本地原文和预算记录。
 - 多轮追问显式引用上一条回答，仅在同一快照及检索模式内继承目标版本，每轮重新检索证据。
 - 问答显示处理流程与实际等待时长；“停止等待”只停止浏览器等待，服务端仍可能继续处理和计费。
@@ -100,7 +101,7 @@ Windows 下记住的密钥使用当前账户 DPAPI 加密；Linux/Docker 下保�
 
 未连接模型时默认本地证据解释；通过连接验证后默认启用模型辅助解释，也可以手动取消。问题范围仍由当前选中公告与版本约束限定，多漏洞问题需要拆分。模型解释不能覆盖结构化影响判断，未知的兼容性和实际可利用性仍保留未知。
 
-GPT 官方模式使用 `POST /v1/responses`，设置 `store:false`、严格 JSON Schema 和默认 `max_output_tokens=2400`。`gpt-6-luna` 默认使用 `reasoning.effort=none`；已识别的 GPT-6 Astra / GPT-6.1 Sol 使用 `low`，不发送不适用的 `temperature`。`store:false` 是本次 Responses 请求的存储设置，不改变服务商适用的数据政策。严格结构化输出之后，应用仍会检查引用编号、逐字摘录和版本范围。
+GPT 官方模式使用 `POST /v1/responses`，设置 `store:false`、严格 JSON Schema 和默认 `max_output_tokens=2400`。`gpt-6-luna` 默认使用 `reasoning.effort=none`；已识别的 GPT-6 Astra / GPT-6.1 Sol 使用 `low`，不发送不适用的 `temperature`。`store:false` 是本次 Responses 请求的存储设置，不改变服务商适用的数据政策。GPT 返回正文和 `quote_ids`，Schema 将可选 ID 限制在本轮原文目录内；服务器回填来源与原句后，仍检查引用、摘录和版本范围。目录每份证据最多取 4 个连续原文片段、每段最多 200 字符，也计入输入预算；目录不保证覆盖全文。
 
 环境变量也可用于配置。PowerShell 示例：
 
@@ -126,7 +127,7 @@ Embedding 必须返回 `data: [{index, embedding}]`。应用的模型解释要�
 
 界面和报告展示实际返回的 token 用量，仅在模型、服务档位和计费用量字段都已知时给出费用估算；缺失信息显示“未提供”，不当成零费用。估算以服务商实际账单为准，可能不含税费或地区附加项。“停止等待”只停止浏览器等待，服务端可能继续完成请求并产生费用；稍后可刷新问答记录。历史回放展示当时的回答与用量，不重新调用模型。
 
-连接成功之后运行 `.\.venv\Scripts\python.exe scripts/verify_live_model.py`，完成三轮真实问答验收；结果保存到 `evaluation/live-model-results.json`。该脚本只接受已验证的 OpenAI 或 DeepSeek 官方端点，拒绝把本地或兼容模拟服务当成官方验收。实际完成情况见运行结果，不以单元测试或浏览器模拟服务记录替代。
+连接成功之后运行 `.\.venv\Scripts\python.exe scripts/verify_live_model.py`，完成三轮真实问答验收；结果保存到 `evaluation/live-model-results.json`，旧报告归档在本机 `evaluation/live-model-history/`，失败请求的可用用量也保留。该脚本只接受已验证的 OpenAI 或 DeepSeek 官方端点，拒绝把本地或兼容模拟服务当成官方验收。2026-10-30 本机 GPT 三轮验收通过，详情见 [VALIDATION.md](VALIDATION.md)；源码不附带密钥，其他机器需要自行配置。
 
 v0.2 修复了纯语义召回被零关键词得分过滤的问题，缓存会去重并校验向量索引、维度和有限数值。候选超过 80 个片段时，向量精排覆盖 BM25 前 80 个，其余仍参与关键词排序；界面回答会提示此限制。文本 RAG 对照的模型上下文不包含图路径和图统计，但仍共享版本身份过滤。
 

@@ -27,6 +27,7 @@ credentials*.json
 *.zip
 test-results/
 evaluation/live-model-results.json
+evaluation/live-model-history/
 evaluation/ci-smoke-results.json
 
 # Desktop metadata
