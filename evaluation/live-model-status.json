@@ -1,13 +1,11 @@
 {
-  "generated_at": "2026-10-30T02:51:17.033125+00:00",
+  "generated_at": "2026-10-30T04:00:02.831139+00:00",
   "provider": "openai",
-  "connection_configured": false,
-  "connection_verified": false,
-  "qa_verified": false,
-  "accepted_answers": 0,
-  "total_answers": 0,
-  "credit_claim_verified": false,
-  "state": "awaiting-account-login-and-local-credentials",
-  "reason": "尚未核实 Pro API 额度到账；本机 GPT 官方真实问答验收尚未运行。",
-  "simulated_tests_are_not_live_acceptance": true
+  "connection_configured": true,
+  "connection_verified": true,
+  "qa_verified": true,
+  "accepted_answers": 3,
+  "total_answers": 3,
+  "report": "live-model-results.json",
+  "note": "真实接口及引用验收；不代表独立准确率评测。"
 }
