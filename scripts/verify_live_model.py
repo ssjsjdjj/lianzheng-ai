@@ -20,6 +20,18 @@ def official_metadata(metadata,provider):
             not any(term in name.lower() for name in names for term in ('stub','mock')))
 
 
+def answer_receipt(answer,provider):
+    explanation=answer.get('model_explanation') or {}
+    metadata=explanation.get('metadata') or answer.get('model_attempt')
+    claims=explanation.get('claims',[])
+    accepted=(answer['generation']=='model-assisted' and official_metadata(metadata,provider) and
+              bool(claims) and all(isinstance(claim,dict) and claim.get('evidence_ids') and claim.get('quotes') for claim in claims))
+    return {'question':answer['question'],'passed':bool(accepted),'answer_id':answer['id'],
+            'generation':answer['generation'],'parent_id':answer['parent_id'],
+            'target_version':answer['facts']['target_version'],'model_metadata':metadata,'claims':claims,
+            'elapsed_ms':answer['elapsed_ms'],'limits':answer['limits']}
+
+
 def run(base):
     with httpx.Client(base_url=base,timeout=90) as client:
         response=client.get('/api/health');response.raise_for_status();health=response.json()
@@ -39,20 +51,18 @@ def run(base):
             response=client.post(f"/api/snapshots/{demo['initial']}/ask",json={
                 'question':question,'focus':demo['focus'],'mode':'graph','use_model':True,'parent_id':parent})
             response.raise_for_status();answer=response.json();parent=answer['id']
-            explanation=answer.get('model_explanation') or {};metadata=explanation.get('metadata');claims=explanation.get('claims',[])
-            accepted=(answer['generation']=='model-assisted' and official_metadata(metadata,provider) and
-                      bool(claims) and all(isinstance(claim,dict) and claim.get('evidence_ids') and claim.get('quotes') for claim in claims))
-            results.append({'question':question,'passed':bool(accepted),
-                            'generation':answer['generation'],'parent_id':answer['parent_id'],
-                            'target_version':answer['facts']['target_version'],
-                            'model_metadata':metadata,'claims':claims,
-                            'elapsed_ms':answer['elapsed_ms'],'limits':answer['limits']})
+            results.append(answer_receipt(answer,provider))
             print('Real model answer accepted:',results[-1]['passed'])
         report={'kind':'real-provider-acceptance','generated_at':datetime.now(timezone.utc).isoformat(),'provider':provider,
                 'verification':health['model']['verification'],'passed':sum(r['passed'] for r in results),
                 'total':len(results),'disclaimer':'真实接口及引用格式验收，不代表独立测试集准确率。','results':results}
         output=ROOT/'evaluation/live-model-results.json'
         output.parent.mkdir(parents=True,exist_ok=True)
+        if output.exists():
+            history=output.parent/'live-model-history'
+            history.mkdir(exist_ok=True)
+            archived=history/(datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json')
+            archived.write_bytes(output.read_bytes())
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
         (ROOT/'evaluation/live-model-status.json').write_text(json.dumps({
             'generated_at':report['generated_at'],'provider':report['provider'],'connection_configured':True,'connection_verified':True,
