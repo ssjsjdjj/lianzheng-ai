@@ -1,12 +1,13 @@
 {
-  "generated_at": "2026-10-28T04:14:56.208495+00:00",
-  "provider": "deepseek",
+  "generated_at": "2026-10-30T02:51:17.033125+00:00",
+  "provider": "openai",
   "connection_configured": false,
   "connection_verified": false,
   "qa_verified": false,
   "accepted_answers": 0,
   "total_answers": 0,
-  "state": "awaiting-local-credentials",
-  "reason": "本机尚未完成 DeepSeek API 密钥配置和连接验证。",
+  "credit_claim_verified": false,
+  "state": "awaiting-account-login-and-local-credentials",
+  "reason": "尚未核实 Pro API 额度到账；本机 GPT 官方真实问答验收尚未运行。",
   "simulated_tests_are_not_live_acceptance": true
 }
