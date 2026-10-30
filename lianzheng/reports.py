@@ -37,7 +37,21 @@ def report_html(analysis,history,comparison=None,model=None):
             for claim in explanation.get('claims',[]):
                 parts.append('<p>'+esc(claim['text'])+'</p>')
                 for quote in claim['quotes']:parts.append('<blockquote>'+esc(quote['quote'])+'<br><small>证据 '+esc(quote['evidence_id'])+'</small></blockquote>')
-        else:parts.append('<small>本轮使用本地证据解释，未记录通过校验的真实模型回答。</small>')
+        else:
+            parts.append('<small>本轮使用本地证据解释，未记录通过校验的真实模型回答。</small>')
+            metadata=answer.get('model_attempt') or {}
+            if metadata.get('usage'):
+                parts.append('<p>模型尝试未通过核验或未完整返回；已有用量 '+esc(metadata['usage'].get('total_tokens','未提供'))+' tokens，仍可能计费。</p>')
+        if metadata:
+            parts.append('<p>服务类型：'+esc(metadata.get('provider','未提供'))+'；API：'+esc(metadata.get('api_family','未提供'))+'。</p>')
+            cost=metadata.get('cost_estimate')
+            if isinstance(cost,dict) and isinstance(cost.get('amount'),(int,float)):
+                parts.append('<p>本次公开单价估算：'+esc(cost.get('currency'))+' '+esc(cost['amount'])+'；单价核对日期 '+esc(cost.get('pricing_as_of'))+'，以服务商最终账单为准。</p>')
+            elif metadata.get('transport')=='http-request':
+                parts.append('<p>本次费用估算未提供；没有费用数值不代表免费。</p>')
+        budget=answer.get('model_budget') or metadata.get('input_budget') or {}
+        if budget:
+            parts.append('<p>模型输入：'+esc(budget.get('input_bytes'))+' / '+esc(budget.get('limit_bytes'))+' UTF-8 字节（不是 token 数）；发送证据 '+esc(budget.get('evidence_count'))+' 条，其中前段摘取 '+esc(budget.get('truncated_evidence'))+' 条、未发送 '+esc(budget.get('omitted_evidence'))+' 条。完整原文仍保留在本地引用中。</p>')
         parts.append('<p>'+esc('\n'.join(answer['limits']))+'</p><table><tr><th>证据</th><th>版本</th><th>原文位置</th><th>来源</th></tr>')
         for cite in answer['citations']:
             parts.append('<tr>'+''.join('<td>'+esc(value)+'</td>' for value in (cite['id'],cite['version'],cite['locator'],cite['url'] or '本地导入'))+'</tr>')

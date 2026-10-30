@@ -8,7 +8,7 @@ from threading import RLock
 from urllib.parse import urlsplit
 
 from .domain import InputError
-from .providers import ChatClient,validate_endpoint
+from .providers import ChatClient,validate_provider_endpoint,openai_reasoning_effort
 from .store import now
 
 
@@ -48,7 +48,7 @@ def env_file(path):
         text=line.strip()
         if not text or text.startswith('#') or '=' not in text:continue
         key,value=text.split('=',1);key=key.strip();value=value.strip()
-        if key.startswith('LZ_') or key=='DEEPSEEK_API_KEY':
+        if key.startswith('LZ_') or key in ('DEEPSEEK_API_KEY','OPENAI_API_KEY'):
             if len(value)>=2 and value[0]==value[-1] and value[0] in ('"',"'"):value=value[1:-1]
             values[key]=value
     return values
@@ -69,17 +69,26 @@ class ModelSettings:
             if self.saved is not None:return dict(self.saved)
         env=env_file(self.dotenv)
         def get(key,default=''):return os.getenv(key,env.get(key,default))
-        key=get('LZ_LLM_API_KEY') or get('DEEPSEEK_API_KEY')
-        base=get('LZ_LLM_BASE_URL') or ('https://api.deepseek.com' if key else '')
-        provider='deepseek' if urlsplit(base).hostname=='api.deepseek.com' else 'compatible'
-        return {'base_url':base,'model':get('LZ_LLM_MODEL') or ('deepseek-flash' if provider=='deepseek' else ''),
+        base=get('LZ_LLM_BASE_URL')
+        requested_provider=get('LZ_LLM_PROVIDER')
+        openai_key=get('OPENAI_API_KEY');deepseek_key=get('DEEPSEEK_API_KEY');generic_key=get('LZ_LLM_API_KEY')
+        if not base:
+            if requested_provider=='openai' or (openai_key and not deepseek_key and not generic_key):base='https://api.openai.com/v1'
+            elif requested_provider=='deepseek' or generic_key or deepseek_key:base='https://api.deepseek.com'
+            elif not requested_provider:base='https://api.openai.com/v1'
+        try:host=urlsplit(base).hostname
+        except ValueError:host=None
+        provider=requested_provider or ('openai' if host=='api.openai.com' else 'deepseek' if host=='api.deepseek.com' else 'compatible')
+        key=generic_key or (openai_key if provider=='openai' else deepseek_key if provider=='deepseek' else '')
+        default_model={'openai':'gpt-6-luna','deepseek':'deepseek-flash'}.get(provider,'')
+        return {'base_url':base,'model':get('LZ_LLM_MODEL') or default_model,
                 'provider':provider,'api_key':key,'json_mode':True,'remember_key':False,'verification':None,
                 'strict_citations':True}
 
     def public(self):
         current=self.current()
         try:
-            safe_base,local=validate_endpoint(current.get('base_url',''));valid_endpoint=True
+            safe_base,local=validate_provider_endpoint(current.get('base_url',''),current.get('provider'));valid_endpoint=True
         except InputError:safe_base='';local=False;valid_endpoint=False
         configured=bool(valid_endpoint and current.get('model') and (current.get('api_key') or local))
         return {'provider':current.get('provider','deepseek'),'base_url':safe_base,
@@ -87,14 +96,14 @@ class ModelSettings:
                 'json_mode':current.get('json_mode',True),'verified':bool(current.get('verification')),
                 'verification':current.get('verification'),'remember_key':current.get('remember_key',False),
                 'storage':'windows-dpapi' if os.name=='nt' else 'local-file-permissions',
-                'load_error':self.load_error}
+                'load_error':self.load_error,
+                'api_family':'responses' if current.get('provider')=='openai' else 'chat-completions',
+                'reasoning_effort':openai_reasoning_effort(current.get('model','')) if current.get('provider')=='openai' else None}
 
     def candidate(self,payload):
-        base,local=validate_endpoint(payload['base_url'].strip())
         provider=payload.get('provider','deepseek')
-        if provider not in ('deepseek','qwen','compatible','local'):raise InputError('不支持的模型服务类型。')
-        if provider=='deepseek' and base not in ('https://api.deepseek.com','https://api.deepseek.com/v1'):
-            raise InputError('DeepSeek 官方模式只接受官方 API 地址；其他服务请选择兼容接口。')
+        if provider not in ('openai','deepseek','qwen','compatible','local'):raise InputError('不支持的模型服务类型。')
+        base,local=validate_provider_endpoint(payload['base_url'].strip(),provider)
         current=self.current();key=payload.get('api_key','').strip()
         if not key and base==current.get('base_url') and provider==current.get('provider'):key=current.get('api_key','')
         if not key and not local:raise InputError('尚未配置 API 密钥，请在本机设置窗口填写。')
@@ -102,7 +111,8 @@ class ModelSettings:
         if not model:raise InputError('请填写模型名称。')
         if any(c in key for c in ('\r','\n','\x00')):raise InputError('密钥包含无效字符。')
         return {'provider':provider,'base_url':base,'model':model,'api_key':key,
-                'json_mode':payload.get('json_mode',True),'remember_key':payload.get('remember_key',True),
+                'json_mode':True if provider=='openai' else payload.get('json_mode',True),
+                'remember_key':payload.get('remember_key',True),
                 'verification':None,'strict_citations':True}
 
     def test_and_save(self,payload):

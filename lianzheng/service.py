@@ -298,10 +298,19 @@ class Service:
                 generated,model_warning=model_explanation(question,context)
                 if not generated and not model_warning:model_warning='尚未连接真实模型，本次显示本地证据解释。'
             answer['model_explanation']=generated
-            if generated:answer['generation']='model-assisted'
+            if generated:
+                answer['generation']='model-assisted'
+                if generated.get('metadata',{}).get('input_budget'):
+                    answer['model_budget']=generated['metadata']['input_budget']
             if model_warning:
                 answer['limits'].append(str(model_warning))
-                if getattr(model_warning,'metadata',None):answer['model_attempt']=model_warning.metadata
+                if getattr(model_warning,'metadata',None):
+                    answer['model_attempt']=model_warning.metadata
+                    if model_warning.metadata.get('input_budget'):
+                        answer['model_budget']=model_warning.metadata['input_budget']
+            budget=answer.get('model_budget',{})
+            if budget.get('truncated_evidence') or budget.get('omitted_evidence'):
+                answer['limits'].append('为控制模型输入，部分证据仅发送原文前段或未发送；完整原文仍保留在引用面板。')
         answer['elapsed_ms']=round((time.perf_counter()-started)*1000)
         self.store.add_history(identifier,question,answer)
         return answer

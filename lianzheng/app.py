@@ -26,7 +26,7 @@ class Question(BaseModel):
 
 
 class ModelConnection(BaseModel):
-    provider:str='deepseek'
+    provider:str='openai'
     base_url:str=Field(min_length=1,max_length=2000)
     model:str=Field(min_length=1,max_length=160)
     api_key:str=Field(default='',max_length=8192,json_schema_extra={'writeOnly':True})
@@ -51,7 +51,7 @@ class DocumentRequest(BaseModel):
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.3.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.4.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
 
     @app.middleware('http')
@@ -86,7 +86,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.3.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.4.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}

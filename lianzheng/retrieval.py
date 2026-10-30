@@ -7,6 +7,7 @@ from threading import RLock
 
 import httpx
 from .providers import ChatClient,ModelError,ModelWarning,parse_json_content
+from .budget import bounded_context
 
 
 def tokens(text):
@@ -131,6 +132,7 @@ def model_explanation(question, context, config=None):
               '只解释已给出的 facts 和 evidence，不新增漏洞结论、不保证升级兼容。'
               '资料不足时说明未知，不声称实际可利用，不给出上下文外版本。'
               'conversation 仅帮助理解追问，不可把历史回答当新证据。'
+              '标记 excerpted 的证据仅提供原文前段，不代表全文；缺失的要求与结论保持未知。'
               '只返回 JSON，不要输出思考过程。')
     if strict:
         system+=('JSON 格式为 {"claims":[{"text":"一项简洁解释或建议",'
@@ -144,11 +146,16 @@ def model_explanation(question, context, config=None):
                  '若 facts.insufficient 为 true，应解释缺少什么，不能把未知改成已证实。')
     else:system+='JSON 格式为 {"explanation":"中文解释", "evidence_ids":["真实证据ID"]}。'
     meta=None
+    budget=None
     try:
         import json
+        context,budget=bounded_context(system,question,context)
+        if budget['blocked']:
+            raise ModelError('当前结构化事实超过本次模型输入预算，已保留本地证据；请缩小问题或选择更小的清单。')
         content,meta=ChatClient(config).complete([
             {'role':'system','content':system},
             {'role':'user','content':json.dumps({'question':question,**context},ensure_ascii=False)}])
+        meta={**(meta or {}),'input_budget':budget}
         output=parse_json_content(content)
         allowed={d['id']:d for d in context['evidence']}
         claims=[]
@@ -195,6 +202,9 @@ def model_explanation(question, context, config=None):
         return {'text':explanation,'evidence_ids':cited,'claims':claims,'metadata':meta,
                 'follow_up_questions':suggestions,
                 'validation':'引用编号与原文摘录已核对；语义支持和业务决策仍需人工复核。' if strict else '引用存在性已校验，语义支持仍需人工核对。'},None
-    except ModelError as error:return None,ModelWarning(str(error),meta)
+    except ModelError as error:
+        attempt=meta or getattr(error,'metadata',None) or {}
+        if budget:attempt={**attempt,'input_budget':budget}
+        return None,ModelWarning(str(error),attempt or None)
     except (httpx.HTTPError,ValueError,KeyError,TypeError,IndexError):
         return None,'模型服务失败或引用校验未通过，保留规则引擎的证据解释。'
