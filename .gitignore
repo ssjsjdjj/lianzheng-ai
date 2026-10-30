@@ -12,7 +12,7 @@ node_modules/
 data/
 secrets/
 .secrets/
-model-settings*
+/model-settings*
 credentials*.json
 *.key
 *.pem
