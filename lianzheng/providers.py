@@ -51,7 +51,7 @@ def openai_reasoning_effort(model):
     return None
 
 
-def openai_format(probe=False,strict=True):
+def openai_format(probe=False,strict=True,quote_ids=None):
     if probe:
         name='connection_probe'
         schema={'type':'object','properties':{'ok':{'type':'boolean','enum':[True]}},
@@ -64,6 +64,10 @@ def openai_format(probe=False,strict=True):
                'evidence_ids':{'type':'array','items':{'type':'string'}},
                'quotes':{'type':'array','items':quote}},
                'required':['text','evidence_ids','quotes'],'additionalProperties':False}
+        if quote_ids:
+            claim={'type':'object','properties':{'text':{'type':'string'},
+                   'quote_ids':{'type':'array','items':{'type':'string','enum':quote_ids},'minItems':1,'maxItems':4}},
+                   'required':['text','quote_ids'],'additionalProperties':False}
         schema={'type':'object','properties':{'claims':{'type':'array','items':claim},
                 'follow_up_questions':{'type':'array','items':{'type':'string'}}},
                 'required':['claims','follow_up_questions'],'additionalProperties':False}
@@ -168,7 +172,7 @@ class ChatClient:
     def __init__(self,config):
         self.config=config
 
-    def complete(self,messages,max_tokens=None,probe=False):
+    def complete(self,messages,max_tokens=None,probe=False,quote_ids=None):
         c=self.config
         provider=c.get('provider','compatible')
         base,_=validate_provider_endpoint(c['base_url'],provider)
@@ -187,7 +191,7 @@ class ChatClient:
         effort=openai_reasoning_effort(c['model']) if is_openai else None
         if is_openai:
             payload={'model':c['model'],'input':messages,'stream':False,'store':False,'service_tier':'default',
-                     'max_output_tokens':limit,'text':{'format':openai_format(probe,c.get('strict_citations',True))}}
+                     'max_output_tokens':limit,'text':{'format':openai_format(probe,c.get('strict_citations',True),quote_ids)}}
             if effort:payload['reasoning']={'effort':effort}
             endpoint=base+'/responses'
         else:
