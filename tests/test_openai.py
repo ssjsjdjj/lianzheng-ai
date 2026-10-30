@@ -208,17 +208,28 @@ def supported_answer():
 
 
 def test_openai_explanation_retains_existing_citation_validation(monkeypatch):
-    mock_client(monkeypatch, lambda request: httpx.Response(200, json=response_body(supported_answer())))
+    def handler(request):
+        body=json.loads(request.content)
+        context=json.loads(body['input'][-1]['content'])
+        catalog=context['quote_catalog']
+        schema=body['text']['format']['schema']['properties']['claims']['items']
+        assert set(schema['required'])=={'text','quote_ids'}
+        assert schema['properties']['quote_ids']['items']['enum']==[q['id'] for q in catalog]
+        return httpx.Response(200,json=response_body({'claims':[{'text':'需要执行两类入口回归测试。','quote_ids':[catalog[0]['id']]}],
+                                                    'follow_up_questions':[]}))
+    mock_client(monkeypatch,handler)
     result, warning = model_explanation('迁移要求？', evidence_context(), config=configuration())
     assert warning is None and result['claims'][0]['evidence_ids'] == ['source-1']
     assert result['metadata']['api_family'] == 'responses'
+    assert result['claims'][0]['quotes'][0]['quote']==evidence_context()['evidence'][0]['text']
+    assert result['metadata']['citation_mode']=='source-span-selection'
 
 
-@pytest.mark.parametrize('mutation', ['invented-id', 'invented-quote', 'unscoped-version', 'malformed-json'])
+@pytest.mark.parametrize('mutation', ['invented-id', 'legacy-quote', 'unscoped-version', 'malformed-json'])
 def test_schema_output_cannot_bypass_application_evidence_checks(monkeypatch, mutation):
-    answer = supported_answer()
-    if mutation == 'invented-id': answer['claims'][0]['evidence_ids'] = ['invented']
-    elif mutation == 'invented-quote': answer['claims'][0]['quotes'][0]['quote'] = '这段文字没有出现在证据当中。'
+    answer = {'claims':[{'text':'需要回归测试。','quote_ids':['q1']}],'follow_up_questions':[]}
+    if mutation == 'invented-id': answer['claims'][0]['quote_ids'] = ['invented']
+    elif mutation == 'legacy-quote': answer=supported_answer()
     elif mutation == 'unscoped-version': answer['claims'][0]['text'] = '升级到 99.99.99 保证兼容。'
     body = response_body(answer)
     if mutation == 'malformed-json': body['output'] = [message('{"claims":')]
@@ -373,7 +384,7 @@ def test_acceptance_script_handles_official_openai_metadata_offline(tmp_path, mo
         assert request.url.path == '/api/snapshots/demo-before/ask'
         payload = json.loads(request.content)
         questions.append(payload)
-        return httpx.Response(200, json={'id': len(questions), 'generation': 'model-assisted',
+        return httpx.Response(200, json={'id': len(questions), 'question': payload['question'], 'generation': 'model-assisted',
                                         'parent_id': payload['parent_id'], 'facts': {'target_version': '4.18.1'},
                                         'model_explanation': {'metadata': metadata, 'claims': supported_answer()['claims']},
                                         'elapsed_ms': 1, 'limits': []})

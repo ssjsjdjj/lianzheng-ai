@@ -105,3 +105,22 @@ def test_fallback_report_keeps_the_failed_attempt_usage(tmp_path,monkeypatch):
     html=report_html(service.analyze('demo-before'),service.store.history('demo-before'))
     assert '已有用量 27 tokens' in html and '仍可能计费' in html
     assert '不是 token 数' in html and 'test-only-placeholder' not in html
+
+
+def test_quote_catalog_stays_within_budget_and_sent_sources(monkeypatch):
+    original=context(('较长的证据要求应当核对项目测试结果。'*100+'\n')*20)
+    original['evidence']=[{**original['evidence'][0],'id':f'source-{i}'} for i in range(8)]
+    before=copy.deepcopy(original)
+    def complete(_self,messages,**kwargs):
+        sent=json.loads(messages[-1]['content'])
+        sources={item['id']:item['text'] for item in sent['evidence']}
+        catalog=sent['quote_catalog']
+        assert len(catalog)<=32
+        assert kwargs['quote_ids']==[q['id'] for q in catalog]
+        assert all(8<=len(q['quote'])<=200 and q['quote'] in sources[q['evidence_id']] for q in catalog)
+        assert len(json.dumps(messages,ensure_ascii=False).encode('utf-8'))<=MAX_INPUT_BYTES
+        return json.dumps({'claims':[{'text':'应核对项目测试结果。','quote_ids':[catalog[0]['id']]}]}),{'usage':{'total_tokens':30}}
+    monkeypatch.setattr('lianzheng.retrieval.ChatClient.complete',complete)
+    result,warning=model_explanation('需要什么？',original,{**config(),'provider':'openai','base_url':'https://api.openai.com/v1'})
+    assert warning is None and result['claims'][0]['quotes']
+    assert original==before

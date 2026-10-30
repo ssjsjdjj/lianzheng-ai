@@ -146,6 +146,29 @@ def test_unverified_model_claims_are_not_displayed(monkeypatch,context,mutation)
     assert warning.metadata['usage']['total_tokens']==30
 
 
+@pytest.mark.parametrize('invalid_quote',['只做回归','不存在于原文的迁移测试要求。'])
+def test_rejected_quotes_keep_usage_and_safe_diagnostic(monkeypatch,context,invalid_quote):
+    output=claim();output['claims'][0]['quotes'][0]['quote']=invalid_quote
+    fake_client(monkeypatch,lambda request:response(output))
+    result,warning=model_explanation('缺少哪些证据？',context,config=configuration())
+    assert result is None
+    assert warning.metadata['usage']['total_tokens']==30
+    assert warning.metadata['citation_validation']['status']=='rejected'
+    assert invalid_quote not in json.dumps(warning.metadata,ensure_ascii=False)
+
+
+def test_live_receipt_retains_failed_billable_attempt():
+    from scripts.verify_live_model import answer_receipt
+    metadata={'provider':'openai','transport':'http-request','api_family':'responses',
+              'requested_model':'gpt-6-luna','returned_model':'gpt-6-luna','usage':{'total_tokens':321}}
+    answer={'question':'缺项？','id':3,'parent_id':2,'facts':{'target_version':'4.18.1'},
+            'generation':'evidence-template','model_explanation':None,'model_attempt':metadata,
+            'elapsed_ms':42,'limits':['引用未通过']}
+    receipt=answer_receipt(answer,'openai')
+    assert receipt['passed'] is False and receipt['claims']==[]
+    assert receipt['model_metadata']['usage']['total_tokens']==321
+
+
 def test_followup_retains_target_but_retrieves_again(service):
     service.import_document('demo-before',{'title':'迁移要求','package':'lodash','version':'4.17.20','target_version':'4.18.1','kind':'migration','text':'# 检查\n迁移后执行报表与导出入口的回归测试。','url':''})
     first=service.ask('demo-before','升级到 4.18.1 有哪些迁移检查？',TARGET)
