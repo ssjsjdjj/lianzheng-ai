@@ -3,7 +3,7 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL = value => {try {const u = new URL(value); return u.protocol === 'https:' ? u.href : '#';} catch {return '#';}};
-const state = {snapshots:[], id:'demo-before', analysis:null, mode:'graph', view:'overview', zoom:1, request:0,documents:[],history:[],parentId:null,turns:[]};
+const state = {snapshots:[], id:'demo-before', analysis:null, mode:'graph', view:'overview', zoom:1, request:0,documents:[],history:[],parentId:null,turns:[],pendingQuestion:null,model:null,lastAnswerReplay:false};
 let toastTimer;
 function toast(message) {$('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),4500);}
 async function api(path, options={}) {
@@ -112,21 +112,71 @@ function renderIssues() {
 }
 async function askQuestion(event) {
   event?.preventDefault();const text=$('#question').value.trim();if(!text)return;
-  const snapshot=state.id,focus=state.analysis.focus,serial=state.request;
-  await busy($('#ask-button'),'检索证据…',async()=>{
-    const began=Date.now();
-    const timer=setInterval(()=>{$('#ask-button').textContent=`分析中 ${Math.floor((Date.now()-began)/1000)}s`;},1000);
-    try{
-      const answer=await api(`/api/snapshots/${encodeURIComponent(snapshot)}/ask`,{method:'POST',body:JSON.stringify({question:text,focus,mode:state.mode,use_model:$('#use-model').checked,parent_id:state.parentId})});
-      if(snapshot!==state.id||serial!==state.request){toast('问答已保存到原快照记录。');return;}
-      state.parentId=answer.id;state.turns.push({question:text,conclusion:answer.conclusion,id:answer.id});
-      renderAnswer(answer);renderEvidence(answer.citations);renderConversation();
-      await refreshHistory(snapshot,serial);
-    }finally{clearInterval(timer);}
-  });
+  if(!state.analysis)return;
+  if(state.pendingQuestion){toast('当前问题仍在等待结果；可先点击“停止等待”。');return;}
+  const snapshot=state.id,focus=state.analysis.focus,serial=state.request,useModel=$('#use-model').checked;
+  const controller=new AbortController(),run={controller,cancelled:false};
+  state.pendingQuestion=run;state.lastAnswer=null;state.lastAnswerReplay=false;
+  const button=$('#ask-button'),progress=$('#question-progress'),cancel=$('#cancel-question');
+  const original=button.textContent;button.disabled=true;button.textContent='分析中…';cancel.classList.remove('hidden');progress.classList.remove('hidden');
+  const began=Date.now();
+  const update=()=>{
+    const seconds=Math.floor((Date.now()-began)/1000);
+    button.textContent=`分析中 ${seconds}s`;
+    progress.textContent=(useModel?'处理流程：检索适用证据 → 模型生成 → 核对引用。':'处理流程：检索适用证据 → 计算依赖事实 → 关联原文。')+` 正在等待完成结果，已等待 ${seconds} 秒。`;
+  };
+  update();const timer=setInterval(update,1000);
+  window.dispatchEvent(new CustomEvent('lianzheng-question-state',{detail:{pending:true,useModel}}));
+  try{
+    const answer=await api(`/api/snapshots/${encodeURIComponent(snapshot)}/ask`,{method:'POST',signal:controller.signal,body:JSON.stringify({question:text,focus,mode:state.mode,use_model:useModel,parent_id:state.parentId})});
+    if(run.cancelled)return;
+    if(snapshot!==state.id||serial!==state.request){progress.textContent='这轮问答已保存到原快照记录；当前选择已改变，未覆盖当前页面。';toast('问答已保存到原快照记录。');return;}
+    state.parentId=answer.id;state.turns.push({question:text,conclusion:answer.conclusion,id:answer.id});
+    renderAnswer(answer);renderEvidence(answer.citations);renderConversation();
+    progress.textContent=answer.generation==='model-assisted'?'分析完成：模型回答已通过引用编号与原文摘录核验；仍需人工判断语义和业务适用性。':useModel?'分析完成：本轮展示本地证据解释，模型调用状态见回答。':'分析完成：已关联当前清单事实与原文证据。';
+    await refreshHistory(snapshot,serial).catch(()=>toast('回答已完成，问答记录列表暂未刷新。'));
+    return answer;
+  }catch(error){
+    if(error.name==='AbortError'||run.cancelled){
+      progress.textContent='已停止等待。服务端可能继续处理并产生 API 费用；稍后可刷新问答记录查看结果。';
+      return null;
+    }
+    progress.textContent='本次分析未完成：'+error.message;toast(error.message);return null;
+  }finally{
+    clearInterval(timer);
+    if(state.pendingQuestion===run){state.pendingQuestion=null;button.disabled=false;button.textContent=original;cancel.classList.add('hidden');}
+    window.dispatchEvent(new CustomEvent('lianzheng-question-state',{detail:{pending:false}}));
+  }
 }
-function renderAnswer(a) {
+function stopWaiting(){
+  if(!state.pendingQuestion)return;
+  state.pendingQuestion.cancelled=true;state.pendingQuestion.controller.abort();
+}
+function modelMetadataHTML(meta){
+  if(!meta)return '';
+  const usage=meta.usage||{},parts=[meta.api_family==='responses'?'OpenAI Responses':'模型 API',meta.provider||'服务商未声明'];
+  if(Number.isFinite(meta.elapsed_ms))parts.push(`${meta.elapsed_ms} ms`);
+  parts.push(Number.isFinite(usage.total_tokens)?`${usage.total_tokens} tokens`:'token 用量未提供');
+  if(Number.isFinite(usage.prompt_tokens))parts.push(`输入 ${usage.prompt_tokens}`);
+  if(Number.isFinite(usage.completion_tokens))parts.push(`输出 ${usage.completion_tokens}`);
+  const cost=meta.cost_estimate;
+  const amount=cost?.currency==='USD'&&Number.isFinite(cost.amount)?cost.amount:Number.isFinite(meta.estimated_cost_usd)?meta.estimated_cost_usd:null;
+  const displayAmount=amount>0&&amount<0.000001?'<0.000001':amount?.toFixed(6);
+  parts.push(amount===null?'费用估算未提供':`估算费用 $${displayAmount} USD（账单为准）`);
+  if(meta.request_id)parts.push('请求 '+meta.request_id);
+  return '<div class="model-metadata">'+parts.map(escapeHTML).join(' · ')+'</div>';
+}
+function modelBudgetHTML(budget){
+  if(!budget)return '';
+  if(budget.blocked)return '<p class="model-budget">本轮输入超出预算，未发起模型调用；当前展示本地证据结果。</p>';
+  const counts=[Number.isInteger(budget.truncated_evidence)&&budget.truncated_evidence>0?`缩短 ${budget.truncated_evidence} 条证据片段`:'',Number.isInteger(budget.omitted_evidence)&&budget.omitted_evidence>0?`省略 ${budget.omitted_evidence} 条候选证据`:'',Number.isInteger(budget.omitted_history_turns)&&budget.omitted_history_turns>0?`省略 ${budget.omitted_history_turns} 轮上文`:''].filter(Boolean);
+  const size=Number.isInteger(budget.input_bytes)&&Number.isInteger(budget.limit_bytes)?`${budget.input_bytes.toLocaleString()} / ${budget.limit_bytes.toLocaleString()} UTF-8 字节（不是 token 数）` : '';
+  if(!counts.length&&!size)return '';
+  return '<p class="model-budget">本轮输入预算：'+[size,...counts].filter(Boolean).map(escapeHTML).join('；')+'。完整引用原文仍保留在本地证据区。</p>';
+}
+function renderAnswer(a,{replayed=false}={}) {
   state.lastAnswer=a;
+  state.lastAnswerReplay=replayed;
   const mode=a.mode==='text'?'文本 RAG 对照':'图与文本联合检索';
   const model=a.model_explanation;
   const factsHTML=`<ul>${a.statements.map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ul>`;
@@ -135,10 +185,11 @@ function renderAnswer(a) {
   if(model){
     const meta=model.metadata;
     const clauses=model.claims?.length?model.claims.map(c=>`<div class="model-claim"><p>${escapeHTML(c.text)}</p><details><summary>核对原文摘录与引用 ↓</summary>${c.quotes.map(q=>`<div class="model-quote">“${escapeHTML(q.quote)}” <a class="citation-link" href="#evidence-${escapeHTML(q.evidence_id)}">查看原文 ↗</a></div>`).join('')}</details></div>`).join(''):`<p>${escapeHTML(model.text)}</p>`;
-    modelHTML=`<h3>模型解释 · ${escapeHTML(meta?.returned_model||meta?.requested_model||'历史模型记录')}</h3>${meta?`<div class="model-metadata">真实服务响应 · ${escapeHTML(meta.provider)} · ${meta.elapsed_ms} ms · ${meta.usage.total_tokens??'服务未提供'} tokens${meta.request_id?' · 请求 '+escapeHTML(meta.request_id):''}</div>`:''}${clauses}<p>${escapeHTML(model.validation)}</p>`;
+    modelHTML=`<h3>模型解释 · ${escapeHTML(meta?.returned_model||meta?.requested_model||'历史模型记录')}</h3>${modelMetadataHTML(meta)}${clauses}<p>${escapeHTML(model.validation)}</p>`;
   }
-  $('#answer').innerHTML=`<div class="answer-status"><span class="pill ${a.insufficient?'orange':'teal'}">${a.insufficient?'保留未知':'证据已关联'}</span><span>${escapeHTML(mode)} · ${escapeHTML(a.retrieval.toUpperCase())}${a.parent_id?' · 追问':''} · ${a.generation==='model-assisted'?'模型回答':'本地证据解释'}</span></div><h3>${escapeHTML(a.conclusion)}</h3>${modelHTML}${detailHTML}${a.model_attempt?`<p class="model-metadata">本轮模型返回未通过校验，已回退本地结果。调用耗时 ${a.model_attempt.elapsed_ms} ms，用量 ${a.model_attempt.usage.total_tokens??'未提供'} tokens。</p>`:''}<div>${a.citations.map((c,i)=>`<a class="citation-link" href="#evidence-${escapeHTML(c.id)}">证据 E${String(i+1).padStart(2,'0')} ↗</a>`).join('')}</div><p class="limit">${a.limits.map(escapeHTML).join('<br>')}</p>${model?.follow_up_questions?.length?`<div class="follow-up-suggestions">${model.follow_up_questions.map(q=>`<button data-follow-up="${escapeHTML(q)}">${escapeHTML(q)} ↗</button>`).join('')}</div>`:''}`;
+  $('#answer').innerHTML=`<div class="answer-status"><span class="pill ${a.insufficient?'orange':'teal'}">${a.insufficient?'保留未知':'证据已关联'}</span><span>${escapeHTML(mode)} · ${escapeHTML(a.retrieval.toUpperCase())}${a.parent_id?' · 追问':''} · ${a.generation==='model-assisted'?'模型回答':'本地证据解释'}</span></div>${replayed?'<p class="history-replay-note">历史回放：展示当时的回答与用量，本次未重新调用模型。</p>':''}<h3>${escapeHTML(a.conclusion)}</h3>${modelBudgetHTML(a.model_budget)}${modelHTML}${detailHTML}${a.model_attempt?`<p class="model-metadata">本轮模型返回未通过校验，已回退本地结果；已发生的调用仍可能计费。</p>${modelMetadataHTML(a.model_attempt)}`:''}<div>${a.citations.map((c,i)=>`<a class="citation-link" href="#evidence-${escapeHTML(c.id)}">证据 E${String(i+1).padStart(2,'0')} ↗</a>`).join('')}</div><p class="limit">${a.limits.map(escapeHTML).join('<br>')}</p>${model?.follow_up_questions?.length?`<div class="follow-up-suggestions">${model.follow_up_questions.map(q=>`<button data-follow-up="${escapeHTML(q)}">${escapeHTML(q)} ↗</button>`).join('')}</div>`:''}`;
   $$('#answer [data-follow-up]').forEach(button=>button.addEventListener('click',()=>{$('#question').value=button.dataset.followUp;askQuestion();}));
+  window.dispatchEvent(new CustomEvent('lianzheng-answer-rendered',{detail:{answer:a,replayed}}));
 }
 function renderConversation(){
   if(!$('#conversation-summary'))return;
@@ -171,11 +222,12 @@ function updateCompareOptions() {
 }
 async function runCompare(event) {
   event?.preventDefault();const button=$('#compare-form button');
-  await busy(button,'比较中…',async()=>{
+  return await busy(button,'比较中…',async()=>{
     const result=await api(`/api/compare?before=${encodeURIComponent($('#compare-before').value)}&after=${encodeURIComponent($('#compare-after').value)}`);
     const count=result.resolved.length;
     const makeColumn=(title,ids,kind)=>`<section class="panel compare-result ${kind}"><h3>${title} <span class="count">${ids.length}</span></h3>${ids.length?ids.map(id=>`<div class="result-id">${escapeHTML(id)}</div>`).join(''):'<p>当前比较无此类变化</p>'}</section>`;
     $('#comparison').innerHTML=`<div class="comparison-summary"><div class="metrics">${metric('修复前匹配公告',result.before_stats.vulnerabilities,'包括已知的全部组件位置','◷')}${metric('修复后匹配公告',result.after_stats.vulnerabilities,'仍需逐项核对影响范围','◷')}${metric('已消除目标公告',count,result.comparison_complete?'新快照中已无可达命中位置':'覆盖不足，消失项保留为未知','✓','teal')}${metric('仍保留公告',result.remaining.length,'仍有至少一个可达匹配位置','⌘','risk')}</div></div><div class="compare-columns">${makeColumn('已消除',result.resolved,'resolved')}${makeColumn('仍保留',result.remaining,'remaining')}${makeColumn('新增',result.introduced,'introduced')}</div>${result.not_observed.length?makeColumn('仅未观察到，尚不能确认消除',result.not_observed,'remaining'):''}<section class="panel"><div class="panel-heading"><div><h2>相同位置的版本变化</h2><p>bom-ref 不稳定时不会猜测位置对应关系</p></div></div><table class="change-table"><thead><tr><th>组件位置</th><th>组件</th><th>修复前</th><th>修复后</th></tr></thead><tbody>${result.component_changes.length?result.component_changes.map(c=>`<tr><td>${escapeHTML(c.ref)}</td><td>${escapeHTML(c.name)}</td><td>${escapeHTML(c.from)}</td><td>${escapeHTML(c.to)}</td></tr>`).join(''):'<tr><td colspan="4">无可确认的同位置版本变化</td></tr>'}</tbody></table></section><p class="comparison-note">${escapeHTML(result.note)}</p>`;
+    return result;
   });
 }
 async function importFile(event) {
@@ -216,7 +268,7 @@ async function refreshHistory(snapshot=state.id,serial=state.request) {
     ++state.request;
     $('#question').value=item.question;state.mode=item.answer.mode;
     $$('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));
-    renderAnswer(item.answer);renderEvidence(item.answer.citations);changeView('questions');
+    renderAnswer(item.answer,{replayed:true});renderEvidence(item.answer.citations);changeView('questions');
     state.parentId=!focus||state.analysis.focus===focus?item.id:null;
     state.turns=[{question:item.question,conclusion:item.answer.conclusion,id:item.id}];renderConversation();
     toast('已恢复当时的回答与证据快照，未重新调用模型。');
@@ -266,6 +318,7 @@ $('#zoom-in').addEventListener('click',()=>{state.zoom=Math.min(2.2,state.zoom+.
 $('#zoom-out').addEventListener('click',()=>{state.zoom=Math.max(.7,state.zoom-.15);updateZoom();});
 $('#zoom-reset').addEventListener('click',()=>{state.zoom=1;updateZoom();});
 $('#question-form').addEventListener('submit',askQuestion);
+$('#cancel-question').addEventListener('click',stopWaiting);
 $$('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{$('#question').value=b.dataset.prompt;askQuestion();}));
 $$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{state.mode=b.dataset.mode;newConversation();$$('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));}));
 $('#question').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();askQuestion();}});
@@ -302,7 +355,7 @@ $('#question-form').before(conversationControls);
 const conversationSummary=document.createElement('div');conversationSummary.id='conversation-summary';conversationSummary.className='conversation-summary';conversationControls.before(conversationSummary);
 $('#new-conversation').addEventListener('click',newConversation);
 window.addEventListener('lianzheng-model-updated',event=>{
-  const model=event.detail;$('#use-model').disabled=!model.configured;
+  const model=event.detail;state.model=model;$('#use-model').disabled=!model.configured;
   $('#use-model').checked=Boolean(model.verified);
   $('#generation-mode').textContent=model.verified?'真实模型已验证':model.configured?'模型待验证':'本地证据模式';
   $('#use-model').parentElement.title='模型解释会发送当前问题所需的证据，API 密钥保留在服务器端。';
