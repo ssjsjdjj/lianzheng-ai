@@ -1,0 +1,3 @@
+# Frozen evidence hashes bind to the original file bytes on every platform.
+fixtures/real-case/** -text
+fixtures/public-projects/** -text
