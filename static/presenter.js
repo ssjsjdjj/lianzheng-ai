@@ -13,10 +13,10 @@
     <footer class="presenter-footer"><div><span class="presenter-progress" aria-live="polite"></span><p class="presenter-status" role="status"></p></div><div class="presenter-navigation"><button type="button" data-presenter-action="previous">← 上一步</button><button type="button" data-presenter-action="next">下一步 →</button></div></footer>`;
   document.body.append(dialog);
   const find=s=>dialog.querySelector(s);
-  const labels=['项目来源','路径与原文','交互推演','真实复核','报告与边界'];
+  const labels=['项目来源','路径与原文','任务对照','交互推演','方案比较','修复时间线','报告与边界'];
   find('.presenter-steps').innerHTML=labels.map((label,index)=>`<button type="button" data-presenter-step="${index}" aria-label="第 ${index+1} 步：${label}"><span>${String(index+1).padStart(2,'0')}</span>${label}</button>`).join('');
   let step=0,selectedPath=0,caseInfo=null,caseError='',caseLoading=false,caseBusy=false,session=0;
-  let priorFocus=null,priorOverflow='',simulation=null;
+  let priorFocus=null,priorOverflow='',simulation=null,comparisonMount=null,decisionsMount=null;
   const html=value=>escapeHTML(value);
   const array=value=>Array.isArray(value)?value:[];
   const integer=value=>Number.isInteger(value)&&value>=0?String(value):'待核验';
@@ -25,7 +25,11 @@
     const answer=state.lastAnswer,a=analysis();
     return answer&&a&&answer.facts?.snapshot_id===state.id&&answer.facts?.focus===a.focus?answer:null;
   }
-  function releaseSimulation(){if(simulation){simulation.destroy?.();simulation=null;}}
+  function releaseSimulation(){
+    if(simulation){simulation.destroy?.();simulation=null;}
+    if(comparisonMount){comparisonMount.destroy?.();comparisonMount=null;}
+    if(decisionsMount){decisionsMount.destroy?.();decisionsMount=null;}
+  }
   function sourceType(a){return !a?'等待当前项目快照':a.snapshot.demo?'构造业务拓扑 · 真实冻结公告':'当前导入清单 · 来源以文件为准';}
   function sourceLink(url,label){const safe=safeURL(url);return safe==='#'?'':`<a href="${html(safe)}" target="_blank" rel="noopener noreferrer">${html(label)} ↗</a>`;}
   function fileLink(file){
@@ -73,9 +77,24 @@
     return `<div class="presenter-columns presenter-path-columns"><article class="presenter-card"><h3>选择一条路径</h3><div class="presenter-path-list">${list}</div><p class="presenter-boundary">${a.paths_truncated||array(a.paths).length>5?'仅展示前 5 条代表路径，不能据此宣称已枚举全部路径。':'这里展示代表性路径；未扫描或缺失信息仍会限制结论。'}</p>${locators}</article><article class="presenter-card"><h3>当前公告原文</h3>${evidence.length?evidence.map(d=>`<section class="presenter-evidence"><span>${html(sourceLabel(d.source))} · ${html(d.version||'版本未提供')}</span><h4>${html(d.title||d.vulnerability||'引用证据')}</h4><p class="presenter-excerpt">${html(String(d.text||'').slice(0,440))}${String(d.text||'').length>440?'…':''}</p><details class="presenter-details"><summary>查看完整原文与定位</summary><p>${html(d.locator||'未提供定位')}</p><pre>${html(d.text||'尚无原文')}</pre>${sourceLink(d.url,'查看原始来源')}</details></section>`).join(''):empty('当前尚无适用的公告原文','不能用缺失证据证明不存在风险。')}<p class="presenter-boundary">原句存在不自动证明语义支持、运行时可利用性或业务兼容性。</p></article></div>`;
   }
   function simulationStage(){
-    setHeading('03 / 由评委选择一个处理位置','选择位置，观察剩余目标命中如何变化',
+    setHeading('04 / 由评委选择一个处理位置','选择位置，观察剩余目标命中如何变化',
       '这是临时假设，不会改写依赖清单、保存修复结果或发起模型调用。');
     return `<div class="presenter-simulation-host"></div>`;
+  }
+  function comparisonStage(){
+    setHeading('03 / 同一任务，两种证据组织方式','让检索差异和依据同时可见',
+      '固定真实案例材料与相同输入上限。先核对证据；语义支持仍需人工复核。');
+    return '<div class="presenter-comparison-host"></div>';
+  }
+  function decisionsStage(){
+    setHeading('05 / 对比实际生成的处理方案','选方案，也看残留、改动和测试代价',
+      '这里比较真实实验的清单与测试记录，和上一页的假设推演分开。');
+    return '<div class="presenter-decisions-host"></div>';
+  }
+  function timelineStage(){
+    setHeading('06 / 保留失败和迁移过程','从依赖更新，到测试失败，再到兼容迁移',
+      '每一步连接当时的命令、文件与日志。播放保存的记录不会重跑测试。');
+    return '<div class="presenter-timeline-host"></div>';
   }
   function testRecord(record,title){
     const exists=record&&typeof record==='object';
@@ -103,29 +122,41 @@
   }
   function reportStage(a){
     const answer=lastAnswer(),kind=answer?(state.lastAnswerReplay?'历史回放':answer.generation==='model-assisted'?'本次模型返回':'本地证据解释'):'尚未展示问答';
-    setHeading('05 / 留下能复核的交付物','把依据、处理记录和待确认事项一起交付',
+    setHeading('07 / 留下能复核的交付物','把依据、处理记录和待确认事项一起交付',
       '报告用于继续核对与协作；每种结论都保留它的来源和范围。');
     return `<div class="presenter-columns"><article class="presenter-card"><h3>当前问答状态</h3><span class="presenter-tag">${html(kind)}</span>${answer?`<h4>${html(answer.question)}</h4><p>${html(answer.conclusion)}</p><p class="presenter-boundary">${state.lastAnswerReplay?'展示当时保存的回答和引用，本次没有重新调用模型。':answer.generation==='model-assisted'?'该回答来自模型接口；引用核对与人工语义复核仍是不同步骤。':'该回答由本地图事实和证据模板形成，没有生成模型解释。'}</p>`:'<p>可以先展示图谱与清单复核。此讲解模式不会为了补齐步骤而自动请求模型。</p>'}<button type="button" data-presenter-action="review-answer">退出并核对问答 ↗</button></article>
       <article class="presenter-card"><h3>报告中需要区分的三件事</h3><ol class="presenter-checklist"><li><strong>图事实与原文</strong><span>哪些位置命中、从哪里引入、引用指向哪里。</span></li><li><strong>人工判断与任务记录</strong><span>支持范围、处理责任和检查项由操作者记录。</span></li><li><strong>实际清单与测试凭据</strong><span>与假设推演分开记录，保留未完成验证事项。</span></li></ol>${a?`<a class="presenter-primary-link" href="/api/snapshots/${encodeURIComponent(state.id)}/report?format=html">导出当前快照报告 ↓</a>`:''}</article></div>
+      <div class="presenter-evidence-export"><a class="presenter-primary-link" href="/api/real-case/evidence.zip">下载真实案例证据包 ↓</a><span>原始清单、修改差异、成功与失败日志、方案对照和 SHA-256 索引；不含模型密钥或私人问答记录。</span></div>
       <div class="presenter-callout"><strong>评委可核对：每个结论用了什么依据，还有哪些地方不能确认。</strong><span>清单命中不等于运行时可利用；单个公告无命中不等于项目全部安全。</span></div>`;
   }
   function render({focus=false}={}){
     if(!dialog.open)return;
     releaseSimulation();
-    dialog.classList.toggle('presenter-step-simulation',step===2);
-    dialog.classList.toggle('presenter-step-case',step===3);
+    dialog.classList.toggle('presenter-step-simulation',step===3);
+    dialog.classList.toggle('presenter-step-case',step===4||step===5);
+    dialog.classList.toggle('presenter-step-comparison',step===2);
     const a=analysis();
-    find('.presenter-context').innerHTML=`<span class="presenter-tag">${html(sourceType(a))}</span><span>${html(a?.snapshot.project||'工作空间未就绪')} · ${html(a?.snapshot.label||'等待快照')}</span>`;
-    const content=[overview,pathStage,simulationStage,caseStage,reportStage][step](a);
+    find('.presenter-context').innerHTML=[2,4,5].includes(step)?'<span class="presenter-tag">固定公开案例实验</span><span>与当前工作空间扫描及临时推演分别记录；来源以本页文件校验值为准。</span>':`<span class="presenter-tag">${html(sourceType(a))}</span><span>${html(a?.snapshot.project||'工作空间未就绪')} · ${html(a?.snapshot.label||'等待快照')}</span>`;
+    const content=[overview,pathStage,comparisonStage,simulationStage,decisionsStage,timelineStage,reportStage][step](a);
     find('.presenter-content').innerHTML=content;
     dialog.querySelectorAll('[data-presenter-step]').forEach(button=>{const active=Number(button.dataset.presenterStep)===step;button.classList.toggle('active',active);if(active)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');});
     find('.presenter-progress').textContent=`${step+1} / ${labels.length} · ${labels[step]}`;
     find('[data-presenter-action="previous"]').disabled=step===0;
     find('[data-presenter-action="next"]').textContent=step===labels.length-1?'结束讲解 ✓':'下一步 →';
-    if(step===2){
+    if(step===3){
       const host=find('.presenter-simulation-host');
       if(window.lianzhengSimulation?.mount)simulation=window.lianzhengSimulation.mount(host,{compact:true});
       else host.innerHTML=empty('推演组件尚未加载','请退出讲解并刷新应用；这里不会显示虚构的推演结果。');
+    }
+    if(step===2){
+      const host=find('.presenter-comparison-host');
+      if(window.lianzhengTaskCompare?.mount)comparisonMount=window.lianzhengTaskCompare.mount(host,{compact:true});
+      else host.innerHTML=empty('任务对照组件尚未加载','请退出讲解并刷新页面。');
+    }
+    if(step===4||step===5){
+      const host=find(step===4?'.presenter-decisions-host':'.presenter-timeline-host');
+      if(window.lianzhengCaseDecisions?.mount)decisionsMount=window.lianzhengCaseDecisions.mount(host,{compact:true,tab:step===4?'plans':'timeline'});
+      else host.innerHTML=empty('案例决策组件尚未加载','请退出讲解并刷新页面。');
     }
     if(focus){find('.presenter-body').scrollTop=0;find('#presenter-title').focus({preventScroll:true});}
   }
@@ -133,7 +164,7 @@
     const serial=session;caseLoading=true;caseError='';
     try{const result=await api('/api/real-case');if(serial!==session)return;caseInfo=result;}
     catch(error){if(serial!==session)return;caseError=error.message;caseInfo=null;}
-    finally{if(serial===session){caseLoading=false;if(dialog.open&&step===3)render();}}
+    finally{if(serial===session){caseLoading=false;}}
   }
   function open(){
     if(dialog.open)return;
@@ -188,7 +219,7 @@
   window.addEventListener('lianzheng-snapshot-changed',()=>{
     selectedPath=0;if(dialog.open){find('.presenter-status').textContent='当前快照已切换，讲解内容已同步；推演和实际复核保持分开。';render();}
   });
-  window.addEventListener('lianzheng-answer-rendered',()=>{if(dialog.open&&step===4)render();});
-  window.addEventListener('lianzheng-case-loaded',event=>{caseInfo=event.detail;caseError='';if(dialog.open&&step===3)render();});
+  window.addEventListener('lianzheng-answer-rendered',()=>{if(dialog.open&&step===6)render();});
+  window.addEventListener('lianzheng-case-loaded',event=>{caseInfo=event.detail;caseError='';});
   window.lianzhengPresenter={open,close};
 })();
