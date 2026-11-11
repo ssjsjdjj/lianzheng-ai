@@ -116,9 +116,85 @@ def select_evidence(ids, documents):
 
 def selected_paths(question, selected, graph):
     """The same postprocessor for both sides; only visible selected edges count."""
-    edges = {(edge['source'], edge['target']) for d in selected for edge in d.get('relations', [])}
+    actual = {(edge['source'], edge['target']) for edge in graph['edges']}
+    edges = {(edge['source'], edge['target']) for d in selected for edge in d.get('relations', [])
+             if (edge['source'], edge['target']) in actual}
     reduced = {**graph, 'edges': [{'source': a, 'target': b} for a, b in edges]}
     return shortest_paths(reduced, entities(question, graph))[:3]
+
+
+def linked_evidence(selected, paths, graph, case, case_hash, phase, model=None):
+    """Bind display links to selected documents and verified graph edges only.
+
+    A link says where a claim cites material; it is not a semantic support verdict.
+    Neither model prose nor a source filename can introduce a graph relationship.
+    """
+    nodes = {node['id']: node for node in graph['nodes']}
+    actual = {(edge['source'], edge['target']) for edge in graph['edges']}
+    lockfile = case[phase + '_lockfile']
+    lock_hash = next(row['sha256'] for row in case['files'] if row['name'] == lockfile)
+    documents = {document['id']: document for document in selected}
+    bindings = {}
+    for document in selected:
+        if document['filename'] != lockfile or document['source_sha256'] != lock_hash:
+            continue
+        for relation in document.get('relations', []):
+            edge = (relation['source'], relation['target'])
+            if edge in actual and all(ref in nodes for ref in edge):
+                bindings.setdefault(edge, []).append(document['id'])
+
+    def locator(ref):
+        return pointer('' if ref == graph['root'] else ref.removeprefix('npm:'))
+
+    linked_paths = []
+    for path in paths:
+        edges = list(zip(path, path[1:]))
+        if (len(path) < 2 or path[0] != graph['root'] or len(set(path)) != len(path) or
+                not all(ref in nodes for ref in path) or not all(edge in bindings for edge in edges)):
+            continue
+        linked_paths.append({
+            'id': 'path-' + digest([phase, path])[:20],
+            'label': ' → '.join(nodes[ref]['name'] + '@' + nodes[ref]['version'] for ref in path),
+            'nodes': [{'ref': ref, 'name': nodes[ref]['name'], 'version': nodes[ref]['version'],
+                       'locator': locator(ref), 'filename': lockfile, 'source_sha256': lock_hash}
+                      for ref in path],
+            'edges': [{'source': source, 'target': target,
+                       'evidence_ids': sorted(set(bindings[(source, target)])),
+                       'source_locator': locator(source), 'target_locator': locator(target),
+                       'filename': lockfile, 'source_sha256': lock_hash}
+                      for source, target in edges]})
+
+    def path_ids(evidence_ids):
+        identifiers = set(evidence_ids)
+        return [path['id'] for path in linked_paths
+                if any(identifiers.intersection(edge['evidence_ids']) for edge in path['edges'])]
+
+    facts = []
+    for document in selected:
+        text = document['text'].splitlines()[0]
+        identifiers = [document['id']]
+        facts.append({'id': 'fact-' + digest([phase, document['id'], text])[:20], 'text': text,
+                      'evidence_ids': identifiers, 'path_ids': path_ids(identifiers),
+                      'kind': 'retrieved-fact'})
+    for index, claim in enumerate((model or {}).get('claims', [])):
+        if not isinstance(claim, dict) or not isinstance(claim.get('text'), str) or not claim['text'].strip():
+            continue
+        quotes = claim.get('quotes')
+        if not isinstance(quotes, list) or not quotes:
+            continue
+        if not all(isinstance(quote, dict) and isinstance(quote.get('evidence_id'), str) and
+                   quote['evidence_id'] in documents and isinstance(quote.get('quote'), str) and
+                   quote['quote'].strip() and quote['quote'] in documents[quote['evidence_id']]['text']
+                   for quote in quotes):
+            continue
+        identifiers = list(dict.fromkeys(quote['evidence_id'] for quote in quotes))
+        facts.append({'id': 'claim-' + str(index), 'text': claim['text'],
+                      'evidence_ids': identifiers, 'path_ids': path_ids(identifiers), 'kind': 'model-claim'})
+    return {'paths': linked_paths, 'facts': facts,
+            'source': {'case_bundle_sha256': case_hash, 'phase': phase,
+                       'lockfile': lockfile, 'lockfile_sha256': lock_hash},
+            'semantic_support': 'pending-human-review',
+            'note': '联动仅表示本侧检索材料中的引用与依赖关系。模型摘录针对规范化事实，不是上游文件逐字引用；是否支持结论仍需人工复核。'}
 
 
 class TaskComparison:
@@ -181,6 +257,14 @@ class TaskComparison:
         documents = []
 
         def add(identifier, title, text, filename, locator, **extra):
+            if extra.get('kind') == 'test':
+                lines = files.contents[filename].decode('utf-8').splitlines(keepends=True)
+                position = next((i for i, line in enumerate(lines) if re.match(r'^\s*\d+ passing\b', line)), 0)
+                start = max(position - 1, 0)
+                excerpt = ''.join(lines[start:start + 14])
+                extra.update(source_excerpt=excerpt[:2400], source_excerpt_kind='raw-log',
+                             source_excerpt_truncated=start > 0 or start + 14 < len(lines) or len(excerpt) > 2400,
+                             source_line_start=start + 1, source_line_end=min(start + 14, len(lines)))
             documents.append({'id': identifier, 'title': title, 'text': text,
                               'source': 'frozen-case-normalized-fact', 'filename': filename, 'locator': locator,
                               'url': '/api/real-case/files/' + filename, 'source_sha256': hashes.get(filename),
@@ -247,10 +331,27 @@ class TaskComparison:
         task = next((t for t in fixture['tasks'] if t['id'] == task_id), None)
         if task is None:
             raise KeyError('真实任务不存在。')
+        return self._run(task, case, files, case_hash, fixture_hash, use_model)
+
+    def ask(self, question, phase='before', use_model=False):
+        if not isinstance(question, str) or not 1 <= len(question.strip()) <= 1000 or len(question) > 2000:
+            raise InputError('请输入 1 至 1000 字的问题。')
+        if not isinstance(phase, str) or phase not in ('before', 'partial', 'after'):
+            raise InputError('案例阶段必须为 before、partial 或 after。')
+        if type(use_model) is not bool:
+            raise InputError('模型选项必须为布尔值。')
+        question = question.strip()
+        case, files, case_hash, _ = self.real_case._bundle()
+        task = {'id': 'free-' + hashlib.sha256((phase + '\n' + question).encode()).hexdigest()[:20],
+                'question': question, 'phase': phase, 'category': '现场自由提问'}
+        return self._run(task, case, files, case_hash, None, use_model)
+
+    def _run(self, task, case, files, case_hash, fixture_hash, use_model):
+        scored = 'expected_evidence_ids' in task
         plans = self.real_case._plans(case, files, case_hash)
         plan = next(p for p in plans if p['phase'] == task['phase'])
         documents = self._corpus(case, files, plan)
-        corpus_hash = digest(documents); expected = set(task['expected_evidence_ids'])
+        corpus_hash = digest(documents); expected = set(task.get('expected_evidence_ids', []))
         if not expected.issubset({d['id'] for d in documents}):
             raise InputError('任务参考证据与来源不一致。')
         config = None
@@ -275,7 +376,8 @@ class TaskComparison:
                             '未检索到适用片段，当前方法不能回答；不等于来源中不存在证据。')
             column = {'id': method, 'method': method, 'generation': 'offline-evidence', 'answer': local_answer,
                       'evidence': selected, 'paths': readable, 'warning': None, 'model': None,
-                      'metrics': {'retrieved': len(selected), 'reference_found': len(hits), 'reference_total': len(expected),
+                      'metrics': {'retrieved': len(selected), 'reference_found': len(hits) if scored else None,
+                                  'reference_total': len(expected) if scored else None,
                                   'reference_coverage': round(len(hits) / len(expected), 4) if expected else None,
                                   'expected_evidence_ids': sorted(expected), 'missing_evidence_ids': sorted(expected - hits),
                                   'retrieval_ms': round((time.perf_counter() - started) * 1000, 3),
@@ -310,25 +412,33 @@ class TaskComparison:
                     column['generation'] = 'model-assisted'; column['answer'] = result['text']
                 else:
                     column['generation'] = 'model-fallback'
+            column['evidence_links'] = linked_evidence(selected, paths, plan['graph'], case, case_hash,
+                                                       task['phase'], column['model'])
             columns.append(column)
-        delta = columns[1]['metrics']['reference_found'] - columns[0]['metrics']['reference_found']
+        delta = columns[1]['metrics']['reference_found'] - columns[0]['metrics']['reference_found'] if scored else None
         model_names = [((c.get('model') or {}).get('metadata') or {}).get('returned_model') for c in columns]
         comparable = (not use_model) or (all(c['generation'] == 'model-assisted' for c in columns) and
                                         all(model_names) and model_names[0] == model_names[1])
-        return {'release': '0.8.0', 'generated_at': now(), 'task': {k: task[k] for k in ('id', 'question', 'phase', 'category')},
+        return {'release': '0.9.0', 'generated_at': now(),
+                'task': {**{k: task[k] for k in ('id', 'question', 'phase', 'category')},
+                         'kind': 'curated-task' if scored else 'free-question'},
                 'source': {'case_id': case['id'], 'commit': case['source']['commit'], 'url': case['source']['url'],
                            'case_bundle_sha256': case_hash, 'task_fixture_sha256': fixture_hash,
                            'lockfile': case[task['phase'] + '_lockfile'], 'basis': 'frozen-case; not current workspace scans'},
                 'fairness': {**self.protocol(), 'corpus_sha256': corpus_hash, 'candidate_documents': len(documents),
+                             'reference_scored': scored,
+                             'task_authorship': '开发者依据冻结真实项目整理，非真实用户提问记录' if scored else '本次操作者现场输入；没有预设参考答案',
                              'same_raw_materials': True, 'same_candidate_corpus': True, 'same_requested_model': True,
                              'requested_model': config.get('model') if config else None, 'returned_models': model_names,
                              'model_pair_comparable': comparable if use_model else None},
-                'columns': columns, 'comparison': {'metric': 'reference-evidence-found', 'graph_minus_text': delta,
-                                                  'result': 'tie' if delta == 0 else 'graph-more' if delta > 0 else 'text-more',
+                'columns': columns, 'comparison': {'metric': 'reference-evidence-found' if scored else None, 'graph_minus_text': delta,
+                                                  'result': ('tie' if delta == 0 else 'graph-more' if delta > 0 else 'text-more') if scored else 'unscored',
                                                   'semantic_winner': None,
-                                                  'note': '仅比较参考结构证据覆盖；不能据此宣布回答更准确。'},
+                                                  'note': '仅比较参考结构证据覆盖；不能据此宣布回答更准确。' if scored else
+                                                          '现场自由提问没有预设参考答案，不计算覆盖得分或方法胜负。'},
                 'model_calls_attempted': attempts, 'embedding_calls': 0, 'workspace_modified': False,
-                'limitations': ['16 个任务来自同一个固定真实项目，由开发者整理；非用户试用、独立专家标注或留出测试集。',
+                'limitations': ['16 个任务来自同一个固定真实项目，由开发者整理；非用户试用、独立专家标注或留出测试集。' if scored else
+                                '问题仅检索所选阶段的冻结项目材料；无预设答案，不能据此报告准确率、方法胜负或跨项目效果。',
                                 '检索用时是单次本机观察；字节不是 token，实际模型输入预算以各侧返回元数据为准。',
                                 '原始锁文件关系仅作可解析范围内的图事实；optional / peer 缺口不会自动消失。',
                                 '两侧生成失败、回退或返回模型不同均不能作为语义优劣判断。']}

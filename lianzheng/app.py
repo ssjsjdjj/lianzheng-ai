@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 from urllib.parse import quote
+from typing import Literal
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, Response
@@ -21,6 +22,7 @@ from .real_case import RealCase
 from .task_compare import TaskComparison
 from .case_decisions import CaseDecisions
 from .case_export import evidence_archive
+from .demo_readiness import DemoReadiness
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -99,15 +101,25 @@ class TaskComparisonRequest(BaseModel):
     use_model:bool=Field(default=False,strict=True)
 
 
+class FreeComparisonRequest(BaseModel):
+    question:str=Field(min_length=1,max_length=1000,strict=True)
+    phase:Literal['before','partial','after']='before'
+    use_model:bool=Field(default=False,strict=True)
+
+
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.8.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.9.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
     tasks=RemediationTasks(service);reviews=ClaimReviews(service)
     simulation=RepairSimulation(service);real_case=RealCase(service,ROOT/'fixtures/real-case')
     task_comparison=TaskComparison(service,real_case,ROOT/'fixtures/task-comparison.json')
     case_decisions=CaseDecisions(real_case)
+    demo_readiness=DemoReadiness(service,real_case,task_comparison,case_decisions)
+
+    @app.get('/api/demo/preflight')
+    def demo_preflight():return demo_readiness.report()
 
     @app.get('/api/task-comparison/tasks')
     def comparison_tasks():return task_comparison.tasks()
@@ -115,6 +127,10 @@ def create_app(database=None,seed=True):
     @app.post('/api/task-comparison/run')
     def run_task_comparison(body:TaskComparisonRequest):
         return task_comparison.run(body.task_id,use_model=body.use_model)
+
+    @app.post('/api/task-comparison/ask')
+    def ask_task_comparison(body:FreeComparisonRequest):
+        return task_comparison.ask(body.question,phase=body.phase,use_model=body.use_model)
 
     @app.get('/api/real-case/decisions')
     def decisions(from_phase:str='before',to_phase:str='after'):
@@ -220,7 +236,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.8.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.9.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}
