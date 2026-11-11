@@ -1,0 +1,15 @@
+.answer-paths{margin:0 0 18px;padding:14px;border:1px solid #cde1d9;border-radius:8px;background:#f4faf7}
+.answer-paths>strong{display:block;font-size:12px;color:#315e4f;margin-bottom:10px}
+.answer-paths button{display:block;width:100%;padding:10px;margin:7px 0;text-align:left;border:1px solid #d6e5df;border-radius:5px;background:white;color:#436b60;font-size:11px;line-height:1.8;overflow-wrap:anywhere}
+.answer-paths button span{font-weight:650;white-space:nowrap}
+.answer-paths button:hover,.answer-paths button:focus-visible{border-color:#288672;outline:2px solid #b7d8ca}
+.graph-answer-selection{padding:15px 20px;background:#edf8f2;border-top:1px solid #d3e8dd;color:#346453;font-size:12px}
+.graph-answer-selection p{overflow-wrap:anywhere;line-height:1.8}
+.graph-answer-selection button{background:white;border:1px solid #c5ddcf;color:#346453;border-radius:5px;padding:7px 10px;margin:3px 8px 3px 0;font-size:11px}
+.graph-node.answer-linked rect{stroke:#16845f;stroke-width:3;fill:#e5f5eb}
+.graph-edge.answer-linked{stroke:#16845f;stroke-width:3.5;opacity:1}
+.graph-node.muted,.graph-edge.muted{opacity:.24}
+.evidence-card.evidence-selected{outline:2px solid #278368;background:#f7fcf9}
+.evidence-card mark{background:#fff0a6;color:#263f36;padding:2px 0;box-decoration-break:clone}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.benchmark-entry{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0 20px;color:#607875;font-size:13px}.benchmark-entry a{color:#087f72;font-weight:600}

@@ -36,6 +36,7 @@ async function selectSnapshot(id,focus=null) {
 }
 function metric(label,value,foot,icon,color='') {return `<article class="metric"><div class="metric-label">${label}</div><span class="metric-icon">${icon}</span><div class="metric-value ${color}">${escapeHTML(value)}</div><div class="metric-foot">${escapeHTML(foot)}</div></article>`;}
 function renderAnalysis() {
+  state.activePath=null;
   state.lastAnswer=null;
   state.parentId=null;state.turns=[];renderConversation();
   const a=state.analysis,s=a.stats;
@@ -71,8 +72,9 @@ function renderRisks() {
 }
 function renderGraph() {
   const a=state.analysis;
+  const active=state.activePath,activeNodes=new Set(active?.nodes||[]);
   const pathNodes=new Set(a.paths.flat());
-  const priority=n=>n.root?0:pathNodes.has(n.id)?1:n.findings.includes(a.focus)?2:3;
+  const priority=n=>activeNodes.has(n.id)?-1:n.root?0:pathNodes.has(n.id)?1:n.findings.includes(a.focus)?2:3;
   const all=[...a.nodes].sort((x,y)=>priority(x)-priority(y)).slice(0,40),shown=new Set(all.map(n=>n.id)),level=new Map([[a.root,0]]);
   const adjacent=new Map();
   for(const edge of a.edges){if(!adjacent.has(edge.source))adjacent.set(edge.source,[]);adjacent.get(edge.source).push(edge.target);}
@@ -83,13 +85,22 @@ function renderGraph() {
   const max=Math.max(...level.values(),1),height=Math.max(410,...Object.values(layers).map(l=>l.length*100+40));
   const width=Math.max(860,(max+1)*230),positions=new Map();
   Object.entries(layers).forEach(([l,nodes])=>nodes.forEach((n,i)=>positions.set(n.id,{x:25+Number(l)*(width-230)/max,y:(i+1)*height/(nodes.length+1)-28})));
-  const highlighted=new Set();a.paths.forEach(path=>path.slice(1).forEach((r,i)=>highlighted.add(path[i]+'\u0000'+r)));
+  const highlighted=new Set();(active?[active.nodes]:a.paths).forEach(path=>path.slice(1).forEach((r,i)=>highlighted.add(path[i]+'\u0000'+r)));
   const edges=a.edges.filter(e=>shown.has(e.source)&&shown.has(e.target)).map(e=>{
     const from=positions.get(e.source),to=positions.get(e.target),sx=from.x+180,sy=from.y+29,tx=to.x,ty=to.y+29;
-    return `<path class="graph-edge ${highlighted.has(e.source+'\u0000'+e.target)?'highlight':''}" d="M${sx},${sy} C${sx+58},${sy} ${tx-58},${ty} ${tx},${ty}" marker-end="url(#arrow)"><title>${escapeHTML(e.locator)}</title></path>`;
+    return `<path class="graph-edge ${highlighted.has(e.source+'\u0000'+e.target)?'highlight':''} ${active?(highlighted.has(e.source+'\u0000'+e.target)?'answer-linked':'muted'):''}" data-source="${escapeHTML(e.source)}" data-target="${escapeHTML(e.target)}" d="M${sx},${sy} C${sx+58},${sy} ${tx-58},${ty} ${tx},${ty}" marker-end="url(#arrow)"><title>${escapeHTML(e.locator)}</title></path>`;
   }).join('');
   const nodes=all.map(n=>{const pos=positions.get(n.id),risk=n.findings.includes(a.focus);const label=n.name.length>23?n.name.slice(0,21)+'…':n.name;return `<g class="graph-node ${n.root?'root':''} ${risk?'risk':''}" data-node="${escapeHTML(n.id)}" tabindex="0" role="button" aria-label="${escapeHTML(n.name+' '+n.version)}" transform="translate(${pos.x},${pos.y})"><title>${escapeHTML(n.name+'@'+n.version+' · '+n.locator)}</title><rect width="180" height="59" rx="7"/><circle class="node-marker" cx="16" cy="20" r="3"/><text class="node-name" x="27" y="24">${escapeHTML(label)}</text><text class="node-version" x="15" y="44">${escapeHTML(n.root?'PROJECT ROOT':n.version+'  ·  '+(risk?'匹配公告':statusLabel(n.scan_status)))}</text></g>`;}).join('');
   $('#dependency-graph').innerHTML=`<defs><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="none" stroke="#93acaa" stroke-width="1"/></marker></defs>${edges}${nodes}`;
+  $$('#dependency-graph [data-node]').forEach(node=>{
+    node.classList.toggle('answer-linked',activeNodes.has(node.dataset.node));
+    node.classList.toggle('muted',Boolean(active)&&!activeNodes.has(node.dataset.node));
+  });
+  let selection=$('#graph-answer-selection');
+  if(!selection){selection=document.createElement('div');selection.id='graph-answer-selection';selection.className='graph-answer-selection';selection.setAttribute('aria-live','polite');$('#path-summary').before(selection);}
+  selection.classList.toggle('hidden',!active);
+  selection.innerHTML=active?`<strong>正在核对回答中的路径</strong><p>${escapeHTML(active.label)}</p><div><button type="button" id="return-to-answer">返回问答 ↓</button><button type="button" id="clear-answer-path">显示全部代表路径</button></div>`:'';
+  if(active){$('#return-to-answer').addEventListener('click',()=>changeView('questions'));$('#clear-answer-path').addEventListener('click',()=>{state.activePath=null;renderGraph();});}
   state.graphSize={width,height};state.zoom=1;updateZoom();
   $('#graph-limit').textContent=a.nodes.length>40?`显示 40 / ${a.nodes.length}，优先选中路径`:'';
   $$('#dependency-graph [data-node]').forEach(element=>{
@@ -175,10 +186,13 @@ function modelBudgetHTML(budget){
   return '<p class="model-budget">本轮输入预算：'+[size,...counts].filter(Boolean).map(escapeHTML).join('；')+'。完整引用原文仍保留在本地证据区。</p>';
 }
 function renderAnswer(a,{replayed=false}={}) {
+  if(state.activePath){state.activePath=null;renderGraph();}
   state.lastAnswer=a;
   state.lastAnswerReplay=replayed;
   const mode=a.mode==='text'?'文本 RAG 对照':'图与文本联合检索';
   const model=a.model_explanation;
+  const answerPaths=answerPathDetails(a);
+  const pathHTML=answerPaths.length?`<section class="answer-paths" aria-label="回答关联的依赖路径"><strong>沿图谱核对这次回答</strong>${answerPaths.map((p,i)=>`<button type="button" data-answer-path="${escapeHTML(p.id)}"><span>路径 ${i+1} ↗</span> ${escapeHTML(p.label)}</button>`).join('')}</section>`:'';
   const factsHTML=`<ul>${a.statements.map(s=>`<li>${escapeHTML(s)}</li>`).join('')}</ul>`;
   const detailHTML=model?`<details class="engine-facts"><summary>查看图计算事实与检索片段（${a.statements.length} 项）</summary>${factsHTML}</details>`:factsHTML;
   let modelHTML='';
@@ -189,6 +203,17 @@ function renderAnswer(a,{replayed=false}={}) {
   }
   $('#answer').innerHTML=`<div class="answer-status"><span class="pill ${a.insufficient?'orange':'teal'}">${a.insufficient?'保留未知':'证据已关联'}</span><span>${escapeHTML(mode)} · ${escapeHTML(a.retrieval.toUpperCase())}${a.parent_id?' · 追问':''} · ${a.generation==='model-assisted'?'模型回答':'本地证据解释'}</span></div>${replayed?'<p class="history-replay-note">历史回放：展示当时的回答与用量，本次未重新调用模型。</p>':''}<h3>${escapeHTML(a.conclusion)}</h3>${modelBudgetHTML(a.model_budget)}${modelHTML}${detailHTML}${a.model_attempt?`<p class="model-metadata">本轮模型返回未通过校验，已回退本地结果；已发生的调用仍可能计费。</p>${modelMetadataHTML(a.model_attempt)}`:''}<div>${a.citations.map((c,i)=>`<a class="citation-link" href="#evidence-${escapeHTML(c.id)}">证据 E${String(i+1).padStart(2,'0')} ↗</a>`).join('')}</div><p class="limit">${a.limits.map(escapeHTML).join('<br>')}</p>${model?.follow_up_questions?.length?`<div class="follow-up-suggestions">${model.follow_up_questions.map(q=>`<button data-follow-up="${escapeHTML(q)}">${escapeHTML(q)} ↗</button>`).join('')}</div>`:''}`;
   $$('#answer [data-follow-up]').forEach(button=>button.addEventListener('click',()=>{$('#question').value=button.dataset.followUp;askQuestion();}));
+  $('#answer').insertAdjacentHTML('afterbegin',pathHTML);
+  $$('#answer [data-answer-path]').forEach(button=>button.addEventListener('click',()=>showAnswerPath(a,button.dataset.answerPath)));
+  $$('#answer .model-quote').forEach((element,index)=>{
+    const quote=model?.claims?.flatMap(claim=>claim.quotes||[])[index];
+    const path=answerPaths.find(p=>p.id===quote?.evidence_id);
+    if(path){const button=document.createElement('button');button.className='citation-link';button.textContent='查看依赖路径 ↗';button.addEventListener('click',()=>showAnswerPath(a,path.id));element.append(button);}
+    element.querySelector('a.citation-link')?.addEventListener('click',event=>{event.preventDefault();openAnswerEvidence(quote?.evidence_id,quote);});
+  });
+  $$('#answer a.citation-link').filter(link=>!link.closest('.model-quote')).forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();openAnswerEvidence(link.getAttribute('href').slice('#evidence-'.length));
+  }));
   window.dispatchEvent(new CustomEvent('lianzheng-answer-rendered',{detail:{answer:a,replayed}}));
 }
 function renderConversation(){
@@ -198,6 +223,7 @@ function renderConversation(){
   $('#conversation-context').textContent=state.parentId?`可继续追问 · 当前对话 ${state.turns.length} 轮`:'新对话 · 每轮重新检索适用证据';
 }
 function newConversation(){
+  state.activePath=null;if(state.analysis)renderGraph();
   ++state.request;state.parentId=null;state.turns=[];state.lastAnswer=null;renderConversation();
   $('#answer').innerHTML='<div class="answer-placeholder"><strong>已开启新对话</strong><p>后续问题不会继承上一段对话的目标版本。</p></div>';
 }
