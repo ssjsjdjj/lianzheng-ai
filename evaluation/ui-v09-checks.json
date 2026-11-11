@@ -1,0 +1,168 @@
+{
+  "release": "0.9.0",
+  "generated_at": "2026-11-11T07:23:09.225537+00:00",
+  "method": "Manual browser acceptance through CUA, plus read-only local HTTP and verification of the actual browser downloads. This is not an automated end-to-end browser suite.",
+  "total": 30,
+  "passed": 30,
+  "model_calls_this_release": 0,
+  "scope": "Isolated SQLite and explicitly injected local delay/503 responses with outbound provider HTTP disabled; then main workspace offline upgrade acceptance. No current live-model quality test, mobile-layout acceptance or new upstream test run is claimed.",
+  "automated_ui_state_protocol": {
+    "passed": 18,
+    "total": 18,
+    "command": "node tests/browser-v09-query.cjs",
+    "real_browser": false,
+    "network_calls": 0
+  },
+  "checks": [
+    {
+      "name": "Unified competition entry",
+      "result": "pass",
+      "observed": "A single top-bar competition entry provides quick, full, live-question, preflight and recovery controls; legacy constructed demos are secondary."
+    },
+    {
+      "name": "Read-only preflight",
+      "result": "pass",
+      "observed": "Checks identify local case files, workspace basis, task binding, decisions, model configuration and local usage; zero model calls and no remote balance claim."
+    },
+    {
+      "name": "No-key offline path",
+      "result": "pass",
+      "observed": "The isolated server has no model configuration and blocks outbound provider HTTP; the offline demo still starts with model pairing disabled."
+    },
+    {
+      "name": "One real case at start",
+      "result": "pass",
+      "observed": "Starting a full presentation selects the verified http-server before snapshot and GHSA-xvch-5gv4-984h, independent of the prior synthetic workspace."
+    },
+    {
+      "name": "Seven-stage full presentation",
+      "result": "pass",
+      "observed": "All seven steps were individually opened: source, paths, questions, simulation, plans, timeline and report."
+    },
+    {
+      "name": "Source and representative paths",
+      "result": "pass",
+      "observed": "The source screen discloses fixed commit, MIT and incomplete coverage; the path screen shows direct and indirect minimist paths and truncation."
+    },
+    {
+      "name": "Free-question controls",
+      "result": "pass",
+      "observed": "A question can be typed or chosen from a chip, with explicit before/partial/after material selection and an offline run button."
+    },
+    {
+      "name": "Free questions are unscored",
+      "result": "pass",
+      "observed": "A real offline free question displays unscored on both sides and no invented winner or reference accuracy."
+    },
+    {
+      "name": "Per-column evidence linkage",
+      "result": "pass",
+      "observed": "Clicking the graph column nested minimist fact selects its five-edge path, before lockfile pointer, SHA-256 and original parsed JSON; the other column stays separate."
+    },
+    {
+      "name": "Material phase isolation",
+      "result": "pass",
+      "observed": "Changing the question material to after retrieves after-phase evidence and labels the result as final stage."
+    },
+    {
+      "name": "Failure log linkage",
+      "result": "pass",
+      "observed": "A free failure question shows the saved 393-pass/1-pending/2-failing raw log excerpt, filename and hash; no dependency path is invented for the log."
+    },
+    {
+      "name": "Stop local waiting",
+      "result": "pass",
+      "observed": "With a 35-second injected local delay, stopping restores controls, preserves the draft and says server processing and billing may continue."
+    },
+    {
+      "name": "Explicit service error",
+      "result": "pass",
+      "observed": "An injected HTTP 503 displays a labeled isolated-review error while preserving the question and showing an offline retry control."
+    },
+    {
+      "name": "Explicit offline recovery",
+      "result": "pass",
+      "observed": "After the injected error is removed, clicking the offline retry returns the requested evidence and no model-assisted generation."
+    },
+    {
+      "name": "Bounded offline wait",
+      "result": "pass",
+      "observed": "A 35-second injected delay triggers the actual 30-second UI timeout, preserves the draft and offers recovery; no automatic retry occurs."
+    },
+    {
+      "name": "Interactive simulation",
+      "result": "pass",
+      "observed": "Selecting the direct minimist location changes the hypothetical remaining target count from two to one while retaining the real-case before context."
+    },
+    {
+      "name": "Actual plans remain distinct",
+      "result": "pass",
+      "observed": "Plan A shows two-to-one target matches and one changed location; plan B shows two-to-zero and 381 changes with historical-test and coverage limitations."
+    },
+    {
+      "name": "Failure-to-repair timeline",
+      "result": "pass",
+      "observed": "All five saved events are visible, including the two failures, two assertion API migrations and final 395-pass record; no tests were rerun."
+    },
+    {
+      "name": "Current-session report",
+      "result": "pass",
+      "observed": "The final step displays the current live question and material phase, links back to it and offers the baseline report and public case bundle."
+    },
+    {
+      "name": "Refresh restores navigation only",
+      "result": "pass",
+      "observed": "After reload, explicit resume returns to step seven while the previous question and answer are absent; no model request is automatically triggered."
+    },
+    {
+      "name": "Quick presentation",
+      "result": "pass",
+      "observed": "Starting the quick mode shows exactly four stages: source, questions, plans and report."
+    },
+    {
+      "name": "Preflight outage handling",
+      "result": "pass",
+      "observed": "Injected preflight HTTP 503 replaces readiness with an unavailable message and offers a retry plus previously loaded material continuation."
+    },
+    {
+      "name": "Previously loaded material continuation",
+      "result": "pass",
+      "observed": "The explicit continuation opens the verified in-memory case with a clear statement that current server availability was not rechecked."
+    },
+    {
+      "name": "Free-question JSON export",
+      "result": "pass",
+      "observed": "Browser-downloaded JSON is release 0.9.0, free/unscored, has null reference coverage and zero attempted model calls."
+    },
+    {
+      "name": "Original source download",
+      "result": "pass",
+      "observed": "Browser-downloaded before.package-lock.json bytes exactly match the frozen source file."
+    },
+    {
+      "name": "Evidence package export",
+      "result": "pass",
+      "observed": "Browser-downloaded evidence ZIP has 23 entries, release 0.9.0, correct index hashes and unchanged original case files."
+    },
+    {
+      "name": "Legacy demo still accessible",
+      "result": "pass",
+      "observed": "Explicitly expanding the secondary legacy section and loading its materials succeeds and retains its constructed-data label."
+    },
+    {
+      "name": "Main workspace upgrade",
+      "result": "pass",
+      "observed": "Main server reports 0.9.0, retains verified GPT configuration, passes local preflight and completes the new free-question flow with the model toggle off."
+    },
+    {
+      "name": "Desktop presentation rendering",
+      "result": "pass",
+      "observed": "At the default desktop viewport, live-question controls and side-by-side results are usable; selected fact styling and navigation are visible. No uncaught browser errors were recorded."
+    },
+    {
+      "name": "User records and usage preserved",
+      "result": "pass",
+      "observed": "SQLite table counts match the pre-upgrade backup; before/after local usage has unchanged call count and zero in-flight requests. No paid model calls were added."
+    }
+  ]
+}
