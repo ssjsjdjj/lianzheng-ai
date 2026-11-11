@@ -29,6 +29,7 @@ test-results/
 evaluation/live-model-results.json
 evaluation/live-model-history/
 evaluation/ci-smoke-results.json
+evaluation/ci-benchmark.*
 
 # Desktop metadata
 .DS_Store
