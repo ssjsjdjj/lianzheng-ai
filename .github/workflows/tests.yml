@@ -44,6 +44,8 @@ jobs:
         run: python scripts/verify_public_projects.py --require-supported
       - name: Verify frozen real-case evidence
         run: python scripts/verify_real_case.py --require-passed --output evaluation/ci-real-case-results.json
+      - name: Verify shared-corpus real task comparison
+        run: python scripts/verify_task_comparison.py --require-passed --output evaluation/ci-task-comparison-results.json
       - name: Upload functional check report
         if: always()
         uses: actions/upload-artifact@v4
@@ -63,5 +65,15 @@ jobs:
           path: |
             evaluation/ci-real-case-results.json
             fixtures/real-case/http-server-minimist/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload real task comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-task-comparison
+          path: |
+            evaluation/ci-task-comparison-results.json
+            fixtures/task-comparison.json
           if-no-files-found: error
           retention-days: 7
