@@ -51,8 +51,14 @@ class DocumentRequest(BaseModel):
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.4.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.5.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
+
+    @app.get('/benchmark',include_in_schema=False)
+    def benchmark_report():
+        report=ROOT/'evaluation/benchmark-results.html'
+        if not report.is_file():return JSONResponse({'detail':'尚未生成离线评测报告。'},status_code=404)
+        return FileResponse(report,media_type='text/html')
 
     @app.middleware('http')
     async def headers(request,call_next):
@@ -86,7 +92,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.4.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.5.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}

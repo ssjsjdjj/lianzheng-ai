@@ -8,6 +8,7 @@ from threading import RLock
 import httpx
 from .providers import ChatClient,ModelError,ModelWarning,parse_json_content
 from .budget import bounded_context,input_size,MAX_INPUT_BYTES
+from .excerpts import ranked_spans,select_excerpt,source_position
 
 
 def tokens(text):
@@ -121,19 +122,19 @@ class Retriever:
         return vectors
 
 
-def quote_catalog(evidence):
+def quote_catalog(evidence,question=''):
     """Small, literal source spans; the model selects IDs instead of retyping quotes."""
     catalog=[]
     for item in evidence:
-        spans=[]
-        for line in item['text'].splitlines():
-            if line.lstrip().startswith('#'):continue
-            for offset in range(0,len(line),200):
-                span=line[offset:offset+200].strip()
-                if len(span)>=8 and span not in spans:spans.append(span)
-        if not spans and len(item['text'].strip())>=8:spans=[item['text'].strip()[:200]]
-        for span in spans[:4]:
-            catalog.append({'id':f'q{len(catalog)+1}','evidence_id':item['id'],'quote':span})
+        selected=[];seen=set()
+        for span in ranked_spans(item['text'],question):
+            position=source_position(item,span['start'],span['end'])
+            if position is None or span['quote'] in seen:continue
+            if any(span['start']<s['end'] and span['end']>s['start'] for s in selected):continue
+            selected.append(span);seen.add(span['quote'])
+            catalog.append({'id':f'q{len(catalog)+1}','evidence_id':item['id'],'quote':span['quote'],
+                            'source_start':position[0],'source_end':position[1]})
+            if len(selected)==4:break
     return catalog
 
 
@@ -148,7 +149,7 @@ def model_explanation(question, context, config=None):
               '只解释已给出的 facts 和 evidence，不新增漏洞结论、不保证升级兼容。'
               '资料不足时说明未知，不声称实际可利用，不给出上下文外版本。'
               'conversation 仅帮助理解追问，不可把历史回答当新证据。'
-              '标记 excerpted 的证据仅提供原文前段，不代表全文；缺失的要求与结论保持未知。'
+              '标记 excerpted 的证据是原文节选，不代表全文；[…] 表示省略，不得跨省略处拼接引文。缺失的要求与结论保持未知。'
               '只返回 JSON，不要输出思考过程。')
     if strict:
         system+=('JSON 格式为 {"claims":[{"text":"一项简洁解释或建议",'
@@ -177,10 +178,11 @@ def model_explanation(question, context, config=None):
     try:
         import json
         original=context
-        context,budget=bounded_context(system,question,context)
+        selector=select_excerpt if select_quotes else None
+        context,budget=bounded_context(system,question,context,excerpt_selector=selector)
         catalog={}
         if select_quotes and not budget['blocked']:
-            context,budget=bounded_context(system,question,{**original,'quote_catalog':quote_catalog(context['evidence'])})
+            context,budget=bounded_context(system,question,{**original,'quote_catalog':quote_catalog(context['evidence'],question)},excerpt_selector=selector)
             sources={item['id']:item['text'] for item in context['evidence']}
             context['quote_catalog']=[q for q in context['quote_catalog'] if q['quote'] in sources.get(q['evidence_id'],'')]
             catalog={q['id']:q for q in context['quote_catalog']}
@@ -197,6 +199,7 @@ def model_explanation(question, context, config=None):
         if select_quotes:meta['citation_mode']='source-span-selection'
         output=parse_json_content(content)
         allowed={d['id']:d for d in context['evidence']}
+        source_texts={d['id']:d.get('text','') for d in original['evidence']}
         claims=[]
         if strict:
             raw_claims=output.get('claims')
@@ -216,7 +219,7 @@ def model_explanation(question, context, config=None):
                     if not isinstance(selected,list) or not 1<=len(selected)<=4 or any(not isinstance(i,str) or i not in catalog for i in selected):
                         raise ModelError('模型选择了当前证据包以外的原文片段，已保留本地证据。')
                     claim={**claim,'evidence_ids':list(dict.fromkeys(catalog[i]['evidence_id'] for i in selected)),
-                           'quotes':[{'evidence_id':catalog[i]['evidence_id'],'quote':catalog[i]['quote']} for i in dict.fromkeys(selected)]}
+                           'quotes':[{key:catalog[i][key] for key in ('evidence_id','quote','source_start','source_end')} for i in dict.fromkeys(selected)]}
                 ids=claim.get('evidence_ids',[]);quotes=claim.get('quotes',[])
                 if not isinstance(ids,list) or not ids or any(not isinstance(i,str) or i not in allowed for i in ids):
                     raise ModelError('模型引用了当前证据包以外的资料。')
@@ -229,7 +232,13 @@ def model_explanation(question, context, config=None):
                         meta['citation_validation']={'status':'rejected','reason':
                             'invalid-quote-length' if not isinstance(text,str) or not 8<=len(text)<=240 else 'quote-not-in-source'}
                         raise ModelError('模型摘录无法在对应原文中核对，已保留本地证据结果。')
-                    checked.append({'evidence_id':quote['evidence_id'],'quote':text})
+                    checked_quote={'evidence_id':quote['evidence_id'],'quote':text}
+                    if select_quotes:
+                        start,end=quote['source_start'],quote['source_end']
+                        if source_texts[quote['evidence_id']][start:end]!=text:
+                            raise ModelError('原文片段位置核对失败，已保留本地证据。')
+                        checked_quote.update(source_start=start,source_end=end)
+                    checked.append(checked_quote)
                 if not set(ids).issubset({q['evidence_id'] for q in checked}):raise ModelError('部分引用没有可核对摘录。')
                 mentioned=set(re.findall(r'\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?',claim['text']))
                 if not mentioned.issubset(versions):raise ModelError('模型使用了当前适用范围外的版本，已保留本地证据。')

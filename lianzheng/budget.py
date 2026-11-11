@@ -16,20 +16,26 @@ def input_size(system, question, context):
     return len(json.dumps(messages, ensure_ascii=False).encode('utf-8'))
 
 
-def bounded_context(system, question, context, limit_bytes=MAX_INPUT_BYTES):
+def bounded_context(system, question, context, limit_bytes=MAX_INPUT_BYTES,excerpt_selector=None):
     """Return a bounded copy and an explicit receipt; bytes are not token counts.
 
     Facts, versions and complete path strings are never silently rewritten. If
     those immutable facts alone are too large, the caller must skip the API.
-    Evidence excerpts stay literal prefixes so quote validation remains valid.
+    Optional excerpt selection retains explicit source ranges; the default uses prefixes.
     """
     result = copy.deepcopy(context)
     evidence = result.setdefault('evidence', [])
     original = {item['id']: item.get('text', '') for item in evidence}
     omitted_ids = [item['id'] for item in evidence[8:]]
     result['evidence'] = evidence = evidence[:8]
-    for item in evidence:
-        item['text'] = item.get('text', '')[:MAX_EVIDENCE_CHARS]
+    def resize(item,limit):
+        source=original[item['id']]
+        if excerpt_selector:
+            item['text'],ranges=excerpt_selector(source,question,limit)
+            if ranges:item['excerpt_ranges']=ranges
+            else:item.pop('excerpt_ranges',None)
+        else:item['text']=source[:limit]
+    for item in evidence:resize(item,MAX_EVIDENCE_CHARS)
     original_turns = len(result.get('conversation', []))
     result['conversation'] = result.get('conversation', [])[-3:]
     for turn in result['conversation']:
@@ -42,7 +48,7 @@ def bounded_context(system, question, context, limit_bytes=MAX_INPUT_BYTES):
     while size() > limit_bytes:
         longest = max(evidence, key=lambda item: len(item['text']), default=None)
         if longest and len(longest['text']) > MIN_EVIDENCE_CHARS:
-            longest['text'] = longest['text'][:max(MIN_EVIDENCE_CHARS, len(longest['text']) // 2)]
+            resize(longest,max(MIN_EVIDENCE_CHARS, len(longest['text']) // 2))
         elif result['conversation']:
             result['conversation'].pop(0)
         elif len(evidence) > 1:
@@ -70,5 +76,6 @@ def bounded_context(system, question, context, limit_bytes=MAX_INPUT_BYTES):
         'history_turns': len(result['conversation']),
         'omitted_history_turns': original_turns - len(result['conversation']),
         'blocked': used > limit_bytes,
+        'excerpt_selection':'question-ranked' if excerpt_selector else 'prefix',
     }
     return result, report

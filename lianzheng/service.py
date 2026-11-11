@@ -267,8 +267,13 @@ class Service:
                     'fetched_at':d['fetched_at'],'target_version':d.get('target_version'),
                     'kind':d.get('kind','advisory'),'document_id':d.get('document_id'),
                     'snapshot_id':identifier,'trust':d.get('trust')} for d in docs]
+        edge_locations={(e['source'],e['target']):e['locator'] for e in graph['edges']}
+        path_details=[{'id':'path-'+hashlib.sha256((identifier+json.dumps(path)).encode()).hexdigest()[:20],
+                       'snapshot_id':identifier,'nodes':path,'label':readable[index],
+                       'edges':[{'source':left,'target':right,'locator':edge_locations[(left,right)]}
+                                for left,right in zip(path,path[1:])]}
+                      for index,path in enumerate(paths[:5]) if mode!='text']
         if use_model and mode!='text' and self.models.public()['configured']:
-            edge_locations={(e['source'],e['target']):e['locator'] for e in graph['edges']}
             for index,path in enumerate(paths[:3]):
                 text=' → '.join(f"{node_map[ref]['name']}@{node_map[ref]['version']}" for ref in path)
                 locations=[edge_locations[(left,right)] for left,right in zip(path,path[1:])]
@@ -281,7 +286,7 @@ class Service:
                                   'kind':'dependency-path','document_id':None,'snapshot_id':identifier,
                                   'trust':'由当前清单中已声明的依赖边计算；代表路径不保证枚举全部路径。'})
         answer={'question':question,'conclusion':conclusion,'statements':statements,'limits':limits,
-                'paths':paths[:5] if mode!='text' else [],'citations':citations,'insufficient':insufficient,
+                'paths':paths[:5] if mode!='text' else [],'path_details':path_details,'citations':citations,'insufficient':insufficient,
                 'retrieval':method,'mode':mode,'generation':'evidence-template','model_explanation':None,
                 'parent_id':parent_id,'conversation_depth':len(conversation),
                 'facts':{'focus':focus,'fixed_versions':fixed,'target_version':target,'insufficient':insufficient,
@@ -310,7 +315,7 @@ class Service:
                         answer['model_budget']=model_warning.metadata['input_budget']
             budget=answer.get('model_budget',{})
             if budget.get('truncated_evidence') or budget.get('omitted_evidence'):
-                answer['limits'].append('为控制模型输入，部分证据仅发送原文前段或未发送；完整原文仍保留在引用面板。')
+                answer['limits'].append('为控制模型输入，部分证据仅发送原文节选或未发送；完整原文仍保留在引用面板。')
         answer['elapsed_ms']=round((time.perf_counter()-started)*1000)
         self.store.add_history(identifier,question,answer)
         return answer
