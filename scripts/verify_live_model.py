@@ -53,7 +53,7 @@ def run(base):
             response.raise_for_status();answer=response.json();parent=answer['id']
             results.append(answer_receipt(answer,provider))
             print('Real model answer accepted:',results[-1]['passed'])
-        report={'kind':'real-provider-acceptance','generated_at':datetime.now(timezone.utc).isoformat(),'provider':provider,
+        report={'kind':'real-provider-acceptance','release':health.get('version'),'generated_at':datetime.now(timezone.utc).isoformat(),'provider':provider,
                 'verification':health['model']['verification'],'passed':sum(r['passed'] for r in results),
                 'total':len(results),'disclaimer':'真实接口及引用格式验收，不代表独立测试集准确率。','results':results}
         output=ROOT/'evaluation/live-model-results.json'
@@ -65,7 +65,7 @@ def run(base):
             archived.write_bytes(output.read_bytes())
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
         (ROOT/'evaluation/live-model-status.json').write_text(json.dumps({
-            'generated_at':report['generated_at'],'provider':report['provider'],'connection_configured':True,'connection_verified':True,
+            'release':report['release'],'generated_at':report['generated_at'],'provider':report['provider'],'connection_configured':True,'connection_verified':True,
             'qa_verified':report['passed']==report['total'],'accepted_answers':report['passed'],
             'total_answers':report['total'],'report':'live-model-results.json',
             'note':'真实接口及引用验收；不代表独立准确率评测。'},ensure_ascii=False,indent=2),encoding='utf-8')
