@@ -1,6 +1,6 @@
 {
-  "release": "0.7.0",
-  "generated_at": "2026-11-11T03:01:27.238502+00:00",
+  "release": "0.8.0",
+  "generated_at": "2026-11-11T03:37:02.821467+00:00",
   "provider": "openai",
   "connection_configured": true,
   "connection_verified": true,
@@ -16,5 +16,5 @@
     "total_answers": 3,
     "report": "live-model-results.json"
   },
-  "note": "v0.7 新增确定性推演、冻结真实案例与讲解界面；本轮未调用模型。v0.6 的真实接口及引用验收保留为历史，不计为本版验收，也不代表独立准确率。"
+  "note": "v0.8 本轮验证真实任务离线对照、实际方案比较和证据时间线；未调用真实模型。双栏真实模型路径仅以显式模拟协议测试验证，真实语义效果尚未评估。v0.6 三轮真实验收单独保留为历史。"
 }

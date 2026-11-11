@@ -1,0 +1,152 @@
+{
+  "release": "0.8.0",
+  "date": "2026-11-11",
+  "method": "Manual browser acceptance with separately verified downloaded artifacts and read-only local HTTP. This is not an automated browser test suite.",
+  "total": 27,
+  "passed": 27,
+  "model_calls_this_release": 0,
+  "scope": "New workflows exercised on isolated SQLite with outbound HTTP disabled, followed by a main-workspace upgrade and offline task comparison. Frozen upstream experiment records were replayed, not rerun.",
+  "checks": [
+    {
+      "name": "Default offline state",
+      "result": "pass",
+      "observed": "16 fixed-case tasks load with no answer generated. The unconfigured isolated environment disables model pairing."
+    },
+    {
+      "name": "Fair first-task comparison",
+      "result": "pass",
+      "observed": "Both columns cover 2/2 reference items; BM25 has 1 connected minimist position and graph-enhanced retrieval has 2. The UI explicitly calls reference coverage a tie."
+    },
+    {
+      "name": "Evidence budget disclosure",
+      "result": "pass",
+      "observed": "Both columns use k=8; first task shows 11350 and 17099 UTF-8 bytes and distinguishes input size from tokens."
+    },
+    {
+      "name": "Task change clears result",
+      "result": "pass",
+      "observed": "Selecting the recorded failure task removes the old comparison and export button until the new explicit run."
+    },
+    {
+      "name": "Recorded failure task",
+      "result": "pass",
+      "observed": "Both columns display 393 passing assertions, 1 existing platform skip and 2 failures before assertion migration, with the later 395-pass record separate."
+    },
+    {
+      "name": "Task JSON download",
+      "result": "pass",
+      "observed": "Browser download succeeded; the exported report confirms zero model/embedding calls and no workspace modification."
+    },
+    {
+      "name": "Original evidence navigation",
+      "result": "pass",
+      "observed": "Expanded normalized minimist evidence shows exact pointer, source lockfile link, hash and original JSON disclosure."
+    },
+    {
+      "name": "Original lockfile download",
+      "result": "pass",
+      "observed": "Browser-downloaded before.package-lock.json bytes match the frozen file."
+    },
+    {
+      "name": "Seven presentation stages",
+      "result": "pass",
+      "observed": "Source, paths, task comparison, simulation, actual plans, repair timeline and report stages are individually navigable."
+    },
+    {
+      "name": "Shared task result",
+      "result": "pass",
+      "observed": "Entering presentation stage 3 preserves the selected failure task, counts and recorded timing rather than rerunning it."
+    },
+    {
+      "name": "Actual plan B",
+      "result": "pass",
+      "observed": "Baseline-to-final comparison displays 381 changed installation locations: 129 added, 115 removed and 137 changed, including 123 version changes; target observations change from 2 to 0."
+    },
+    {
+      "name": "Actual plan A",
+      "result": "pass",
+      "observed": "Selecting A changes the comparison to the direct-only result: one changed location and target observations 2 to 1."
+    },
+    {
+      "name": "Selection pending state",
+      "result": "pass",
+      "observed": "While a newly selected comparison loads, the old comparison and export link are replaced with loading text."
+    },
+    {
+      "name": "Desktop plan cards",
+      "result": "pass",
+      "observed": "At the default 1280x720 viewport both plan cards, target and change metrics, test summaries and selection buttons fit in the presentation stage. The task comparison stage also shows both retrieval metric rows without scrolling after compact control layout refinement."
+    },
+    {
+      "name": "Five-event timeline",
+      "result": "pass",
+      "observed": "Desktop presentation displays baseline, direct update, failed tap update, two-assertion API migration and final successful test in chronological cards."
+    },
+    {
+      "name": "Honest missing edit timestamp",
+      "result": "pass",
+      "observed": "The assertion-edit step explicitly says its exact edit time was not recorded and only ordering is shown."
+    },
+    {
+      "name": "Failure-stage provenance",
+      "result": "pass",
+      "observed": "Expanded failed-test event shows the actual command, start/end timestamps, exit code 1 and 31-file scope."
+    },
+    {
+      "name": "Failure log download",
+      "result": "pass",
+      "observed": "Browser-downloaded after-before-migration-test.log.txt bytes match the frozen failure log."
+    },
+    {
+      "name": "Decision report download",
+      "result": "pass",
+      "observed": "Browser JSON export succeeds and records zero model/network calls and no persisted changes."
+    },
+    {
+      "name": "Evidence archive",
+      "result": "pass",
+      "observed": "Browser ZIP contains exactly 23 files; all 22 indexed SHA-256 values verify and the 21 frozen case files match local originals."
+    },
+    {
+      "name": "Keyboard navigation and focus",
+      "result": "pass",
+      "observed": "ArrowRight advances from stage 5 to stage 6; Escape closes presentation and returns focus to the full-screen presentation button."
+    },
+    {
+      "name": "Embedded fullscreen fallback",
+      "result": "pass",
+      "observed": "System fullscreen is unavailable in the embedded browser; the full-page presentation stays usable and states the fallback."
+    },
+    {
+      "name": "Narrow-screen layout",
+      "result": "pass",
+      "observed": "At 390x844 task comparison, plan and timeline presentation dialogs remain 390 pixels wide without horizontal overflow; cards stack and content scrolls. Viewport reset afterward."
+    },
+    {
+      "name": "Fixed-case isolation",
+      "result": "pass",
+      "observed": "Changing workspace snapshot leaves the existing http-server task result intact with the fixed-case scope label."
+    },
+    {
+      "name": "Main workspace upgrade",
+      "result": "pass",
+      "observed": "Main health reports 0.8.0, existing GPT connection is retained, and the new model-pair checkbox remains unchecked by default. Offline comparison succeeds."
+    },
+    {
+      "name": "No new model calls",
+      "result": "pass",
+      "observed": "Main usage before and after browser acceptance remains 3 calls today with zero in flight; isolated server blocks outbound HTTP."
+    },
+    {
+      "name": "Browser console",
+      "result": "pass",
+      "observed": "Fresh isolated tab and upgraded main tab have no captured console errors or warnings after the acceptance actions."
+    }
+  ],
+  "limitations": [
+    "No new live paired-model semantic acceptance run was performed. Protocol and failure handling are covered by mocked automated tests.",
+    "The 16 developer-curated tasks come from one fixed project; reference coverage is not semantic answer accuracy or independently validated generalization.",
+    "The actual case has incomplete dependency-graph coverage. Zero observed target matches does not prove full project safety or deployment readiness.",
+    "Browser system fullscreen was unavailable; the page-filling presentation fallback was verified."
+  ]
+}
