@@ -38,11 +38,16 @@ jobs:
         run: python -m pytest -q
       - name: Run local functional checks
         run: python scripts/evaluate.py evaluation/ci-smoke-results.json
+      - name: Run offline development comparison
+        run: python scripts/benchmark.py --split dev --output evaluation/ci-benchmark.json
       - name: Upload functional check report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: local-functional-checks
-          path: evaluation/ci-smoke-results.json
+          path: |
+            evaluation/ci-smoke-results.json
+            evaluation/ci-benchmark.json
+            evaluation/ci-benchmark.html
           if-no-files-found: ignore
           retention-days: 7
