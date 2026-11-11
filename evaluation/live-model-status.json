@@ -1,12 +1,20 @@
 {
-  "release": "0.6.0",
-  "generated_at": "2026-11-11T02:05:29.359501+00:00",
+  "release": "0.7.0",
+  "generated_at": "2026-11-11T03:01:27.238502+00:00",
   "provider": "openai",
   "connection_configured": true,
   "connection_verified": true,
-  "qa_verified": true,
-  "accepted_answers": 3,
-  "total_answers": 3,
-  "report": "live-model-results.json",
-  "note": "真实接口及引用验收；不代表独立准确率评测。"
+  "qa_verified": false,
+  "accepted_answers": 0,
+  "total_answers": 0,
+  "model_calls_this_release": 0,
+  "previous_acceptance": {
+    "release": "0.6.0",
+    "generated_at": "2026-11-11T02:05:29.359501+00:00",
+    "qa_verified": true,
+    "accepted_answers": 3,
+    "total_answers": 3,
+    "report": "live-model-results.json"
+  },
+  "note": "v0.7 新增确定性推演、冻结真实案例与讲解界面；本轮未调用模型。v0.6 的真实接口及引用验收保留为历史，不计为本版验收，也不代表独立准确率。"
 }

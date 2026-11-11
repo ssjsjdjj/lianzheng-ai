@@ -1,0 +1,38 @@
+{
+  "release": "0.7.0",
+  "date": "2026-11-11",
+  "method": "Manual interaction in the in-app browser; downloaded artifacts and persisted counts checked separately through local files and read-only HTTP",
+  "total": 20,
+  "passed": 20,
+  "model_calls_this_release": 0,
+  "scope": "Workflow exercised on an isolated SQLite database with all external HTTP blocked, then the final source was started on the main local workspace. The real-case import restores frozen evidence and does not rerun upstream tests. No new GPT request was made.",
+  "checks": [
+    {"name": "Select a simulation terminal", "result": "pass", "observed": "Selecting one demo occurrence changes the hypothetical remaining count from two to one."},
+    {"name": "Shared workbench and presenter state", "result": "pass", "observed": "The selected occurrence is retained when entering the presenter and reset changes are visible after exiting."},
+    {"name": "All and reset actions", "result": "pass", "observed": "Selecting all yields two assumed handled and zero remaining; reset restores zero handled and two remaining."},
+    {"name": "Snapshot isolation", "result": "pass", "observed": "Switching to demo-partial discards the previous selection and starts with one actual target occurrence."},
+    {"name": "Five-stage narrative", "result": "pass", "observed": "Source, original evidence and paths, simulation, real-case verification and report stages render separately."},
+    {"name": "Keyboard navigation and focus", "result": "pass", "observed": "ArrowRight changes stage, Escape closes the dialog and focus returns to the full-screen presentation button."},
+    {"name": "Unavailable evidence and answer", "result": "pass", "observed": "Before the real-case bundle existed the presenter showed unavailable material; a snapshot without an answer explicitly showed no answer, with no generated substitute."},
+    {"name": "Desktop stage layout", "result": "pass", "observed": "At 1280 by 720 the short demo simulation displays the assumption notice, metrics, controls and two paths within the presentation stage."},
+    {"name": "Narrow-screen layout", "result": "pass", "observed": "At 390 by 844 the document and dialog width remained 390 pixels; content was scrollable with no horizontal document overflow. Viewport override was reset."},
+    {"name": "System-fullscreen fallback", "result": "pass", "observed": "The in-app browser did not enable system fullscreen. The full-page dialog remained usable and explicitly stated that browser system fullscreen was not enabled."},
+    {"name": "Recorded real-case provenance", "result": "pass", "observed": "Fixed source commit, MIT license, target advisory, 2-to-1-to-0 recorded counts, three actual test commands and the two after-stage assertion API migrations are shown."},
+    {"name": "Restore real-case snapshots", "result": "pass", "observed": "The load action created three selectable case snapshots and selected the original before snapshot; the presenter continued to label the test results as saved experimental records."},
+    {"name": "Multiple paths share one exact occurrence", "result": "pass", "observed": "On the real case, choosing direct minimist changed three representative paths together while the bundled minimist remained. Counts were two original, one handled and one remaining."},
+    {"name": "Zero preview preserves unknown coverage", "result": "pass", "observed": "Selecting both real-case occurrences produced zero hypothetical remaining while keeping the incomplete-graph warning; read-only API verification confirmed actual counts remained 2, 1 and 0."},
+    {"name": "Actual partial snapshot", "result": "pass", "observed": "The actual partial lockfile showed one bundled minimist occurrence through tap, with no inherited hypothetical selection."},
+    {"name": "Actual before/after comparison", "result": "pass", "observed": "The comparison displayed remaining and new advisories; disappeared matches were not labelled fully eliminated because graph coverage is incomplete."},
+    {"name": "Snapshot HTML report download", "result": "pass", "observed": "The presenter report link downloaded the actual after-snapshot HTML report; the report includes fixed-source provenance, three-stage test records and coverage limitations."},
+    {"name": "Case manifest download", "result": "pass", "observed": "The expanded evidence link downloaded case.json; the downloaded bytes match SHA-256 a737ddf3a515dee53f77a1d5394ca1a7a47ebf07a7bea124470e6968a62e3975."},
+    {"name": "Main workspace upgrade", "result": "pass", "observed": "The main local application displayed v0.7, retained its existing GPT connection status, loaded the frozen case and presented both simulation and actual-case stages without a model call."},
+    {"name": "Browser console", "result": "pass", "observed": "The isolated and main application tabs had no captured console errors after the checks."}
+  ],
+  "limitations": [
+    "This is a manual acceptance record, not an automated end-to-end suite or a semantic answer-accuracy score.",
+    "System browser fullscreen was unavailable in the embedded browser; the full-page presentation fallback was verified.",
+    "The real-case graphs remain incomplete. Zero observed matches for the target advisory does not establish global safety or deployment readiness.",
+    "The upstream experiment was executed separately and its logs are preserved. Browser load and CI offline verification do not rerun those tests.",
+    "There was no new v0.7 paid-model acceptance run; the previous v0.6 three-answer acceptance is recorded separately."
+  ]
+}

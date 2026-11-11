@@ -1,0 +1,111 @@
+{
+  "release": "0.7.0",
+  "case_id": "http-server-minimist",
+  "verification": "offline artifact consistency and frozen target observations",
+  "artifact_checks_passed": true,
+  "case_manifest_sha256": "a737ddf3a515dee53f77a1d5394ca1a7a47ebf07a7bea124470e6968a62e3975",
+  "verified_file_count": 20,
+  "source_commit": "e16ed1d4a5d91a2bdf55de565819ec1733048bbc",
+  "target_advisory": "GHSA-xvch-5gv4-984h",
+  "stages": [
+    {
+      "stage": "before",
+      "component_occurrences": 683,
+      "dependency_edges": 1024,
+      "graph_complete": false,
+      "import_warnings": 1,
+      "target_occurrences": [
+        {
+          "ref": "npm:node_modules/minimist",
+          "package": "minimist",
+          "version": "1.2.5",
+          "dev": false
+        },
+        {
+          "ref": "npm:node_modules/tap/node_modules/minimist",
+          "package": "minimist",
+          "version": "1.2.5",
+          "dev": true
+        }
+      ],
+      "target_count": 2,
+      "unqueried_occurrences": 0,
+      "tests": {
+        "exit_code": 0,
+        "passing": 395,
+        "pending": 1,
+        "test_files": 31,
+        "modified_assertions": 0,
+        "command": "npm.cmd test -- --no-coverage --no-esm --jobs=1",
+        "log_file": "before-test.log.txt"
+      }
+    },
+    {
+      "stage": "partial",
+      "component_occurrences": 683,
+      "dependency_edges": 1024,
+      "graph_complete": false,
+      "import_warnings": 1,
+      "target_occurrences": [
+        {
+          "ref": "npm:node_modules/tap/node_modules/minimist",
+          "package": "minimist",
+          "version": "1.2.5",
+          "dev": true
+        }
+      ],
+      "target_count": 1,
+      "unqueried_occurrences": 0,
+      "tests": {
+        "exit_code": 0,
+        "passing": 395,
+        "pending": 1,
+        "test_files": 31,
+        "modified_assertions": 0,
+        "command": "npm.cmd test -- --no-coverage --no-esm --jobs=1",
+        "log_file": "partial-test.log.txt"
+      }
+    },
+    {
+      "stage": "after",
+      "component_occurrences": 697,
+      "dependency_edges": 1003,
+      "graph_complete": false,
+      "import_warnings": 3,
+      "target_occurrences": [],
+      "target_count": 0,
+      "unqueried_occurrences": 0,
+      "tests": {
+        "exit_code": 0,
+        "passing": 395,
+        "pending": 1,
+        "test_files": 31,
+        "modified_assertions": 2,
+        "command": "npm.cmd test -- --no-coverage --jobs=1",
+        "log_file": "after-test.log.txt"
+      }
+    }
+  ],
+  "frozen_query_count": 731,
+  "failed_query_count": 0,
+  "collection_window": {
+    "started_at": "2026-11-11T02:55:13.525374+00:00",
+    "finished_at": "2026-11-11T02:55:30.691983+00:00"
+  },
+  "model_calls": 0,
+  "network_calls": 0,
+  "upstream_tests_rerun": false,
+  "recorded_upstream_test_runs": 3,
+  "recorded_upstream_tests_passed": true,
+  "scope": "This verifier did not install dependencies, rerun upstream tests, or query current OSV. The recorded experiment did perform real npm installations, tests and OSV network requests. Import incompleteness and other vulnerabilities remain outside a target-only absence observation.",
+  "limitations": [
+    "这是对公开历史版本进行的本地修复实验，不是客户生产项目、上游已合并修复或运行时可利用性证明。",
+    "before/partial/after 依赖转换仍有可选或 peer 关系缺失，必须保留 incomplete；目标观察 2→1→0 不等于所有风险消除或完整依赖覆盖。",
+    "第二处 minimist 属于开发测试工具 tap 的 bundled 依赖，与直接运行时依赖用途不同；不把开发依赖命中直接等同于生产暴露。",
+    "三个成功测试运行均为 Windows、Node 24.22.0；395 项通过，1 个由上游代码既有的 Windows 路径限制跳过。未做覆盖率测量。",
+    "测试使用 TZ=UTC0 避免本地中文时区名称进入 HTTP 头，--jobs=1 避免上游 portfinder 并发端口竞争；tap 14 还需 --no-esm 关闭旧加载器。",
+    "升级 tap 后的两条断言 API 迁移已明确记录，不能称 after 与原测试源码完全相同；产品 lib/bin 代码未修改。",
+    "tap 16.3.10 已停止维护，只用于复现这一历史公告修复与迁移步骤，不是当前生产依赖升级推荐。其他公告及迁移风险仍需另行处理。",
+    "OSV 数据代表记录的采集窗口；固定样例加载与离线校验不会重新查询当前漏洞数据库。"
+  ]
+}
