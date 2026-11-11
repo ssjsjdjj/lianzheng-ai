@@ -31,6 +31,7 @@ async function selectSnapshot(id,focus=null) {
   state.id=id;state.analysis=analysis;
   $('#snapshot-select').value=id;
   renderAnalysis();
+  if(state.request===serial)window.dispatchEvent(new CustomEvent('lianzheng-snapshot-changed',{detail:{snapshot:state.id,analysis:state.analysis}}));
   const refreshed=await Promise.allSettled([refreshKnowledge(id,serial),refreshHistory(id,serial)]);
   if(refreshed.some(r=>r.status==='rejected')&&state.request===serial)toast('文档或历史暂时未加载，可点击刷新后重试。');
 }
@@ -117,8 +118,13 @@ function renderEvidence(citations=null) {
 }
 function renderIssues() {
   const a=state.analysis,issues=[...a.issues];
-  for(const node of a.nodes.filter(n=>!n.root&&!['checked','demo-component'].includes(n.scan_status)))issues.push({message:`${node.name}@${node.version}：${node.scan_error||statusLabel(node.scan_status)}`});
-  $('#issues-list').innerHTML=(issues.length?issues.map(x=>`<div class="quality-item"><span>△</span><span>${escapeHTML(x.message)}</span></div>`).join(''):'<div class="quality-item good"><span>✓</span><span>已声明组件的依赖关系与精确版本查询已完成；结论仅覆盖当前清单和公告快照。</span></div>')+
+  const unknown=a.nodes.filter(n=>!n.root&&!['checked','demo-component'].includes(n.scan_status));
+  for(const node of unknown)issues.push({message:`${node.name}@${node.version}：${node.scan_error||statusLabel(node.scan_status)}`});
+  const item=x=>`<div class="quality-item"><span aria-hidden="true">△</span><span>${escapeHTML(x.message)}</span></div>`;
+  const coverage=[!a.complete?'依赖清单结构存在缺失，无法确认完整覆盖。':'',unknown.length?`${unknown.length} 个组件尚未完成精确版本查询；未扫描或查询失败不代表安全。`:''].filter(Boolean).join(' ');
+  const overview=issues.length?`<p class="quality-summary">共 ${issues.length} 项数据质量提示。${escapeHTML(coverage)}${issues.length>8?' 默认展示前 8 项，可展开查看全部记录。':''}</p>`:'';
+  const remaining=issues.length>8?`<details class="quality-more"><summary><span class="quality-more-closed">展开其余 ${issues.length-8} 项</span><span class="quality-more-open">收起其余 ${issues.length-8} 项</span><small>共 ${issues.length} 项 · 完整记录均保留</small></summary>${issues.slice(8).map(item).join('')}</details>`:'';
+  $('#issues-list').innerHTML=(issues.length?overview+issues.slice(0,8).map(item).join('')+remaining:'<div class="quality-item good"><span>✓</span><span>已声明组件的依赖关系与精确版本查询已完成；结论仅覆盖当前清单和公告快照。</span></div>')+
     (a.snapshot.demo?'<div class="quality-item"><span>i</span><span>@demo/report-kit 与 @demo/export-kit 是演示业务组件，不执行真实包漏洞查询。</span></div>':'');
 }
 async function askQuestion(event) {

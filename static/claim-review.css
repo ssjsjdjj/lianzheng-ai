@@ -1,0 +1,21 @@
+.claim-review{margin:12px 0 8px;padding:12px;border:1px solid #dce8e2;border-radius:7px;background:#f8fbf9;color:#435d53}
+.claim-review-overview{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px}
+.claim-literal-status{color:#638274}.claim-literal-status.attention{color:#986328}
+.claim-review-badge{display:inline-block;padding:3px 7px;border-radius:4px;font-size:11px;font-weight:600;background:#e9eeeb;color:#5c6c63}
+.claim-review-badge[data-status="supported"]{background:#dff1e6;color:#256647}
+.claim-review-badge[data-status="partial"],.claim-review-badge[data-status="insufficient"]{background:#fff0d5;color:#896018}
+.claim-review-badge[data-status="conflict"]{background:#fce5e1;color:#9a473b}
+.claim-review .claim-review-boundary{font-size:11px;line-height:1.6;color:#718779;margin:8px 0}
+.claim-review-editor{margin-top:8px}.claim-review-editor summary,.claim-review-audit summary{cursor:pointer;color:#416f5b;font-size:12px}
+.claim-review-editor label{display:block;margin:10px 0 5px;font-size:11px;font-weight:600}
+.claim-review-editor select,.claim-review-editor textarea{box-sizing:border-box;width:100%;padding:8px;border:1px solid #cddfd4;border-radius:5px;background:white;color:#304c3e;font:inherit;font-size:12px}
+.claim-review-editor textarea{resize:vertical;min-height:72px}
+.claim-review-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:9px}
+.claim-review-actions .button{padding:8px 10px;font-size:11px}.claim-review-actions .text-button{font-size:11px}
+.claim-review .claim-review-save-status{font-size:11px;margin:8px 0;color:#355f4b;overflow-wrap:anywhere}
+.claim-review .claim-review-hints,.claim-review .claim-review-stale{font-size:11px;line-height:1.7;color:#89602b;margin:8px 0}
+.claim-review .claim-review-hints{padding-left:18px}
+.claim-review-audit{margin-top:9px}.claim-review-audit ol{padding-left:20px;max-height:210px;overflow:auto;font-size:11px;line-height:1.7}
+.claim-review-audit li{padding:5px 0}.claim-review-audit li p{font-size:11px;margin:2px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.claim-review-loading{font-size:11px;color:#718779}
+@media(max-width:700px){.claim-review{padding:10px}.claim-review-overview{align-items:flex-start}.claim-review-actions{align-items:stretch}.claim-review-actions button{flex:1}}
