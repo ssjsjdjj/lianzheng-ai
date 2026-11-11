@@ -1,0 +1,30 @@
+[
+  {
+    "repository": "ietf-tools/datatracker",
+    "commit": "dd2518248e4b32a9c814e9346d9451e9f76d1e75",
+    "url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/package-lock.json",
+    "path": "fixtures/public-projects/ietf-tools-datatracker/package-lock.json",
+    "sha256": "6bf62d33567df8cc5ebba29b2c817fce5e0082f5346b44e13088363adbf2bef1",
+    "license": "BSD-3-Clause",
+    "license_url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/LICENSE",
+    "lockfile_version": 3,
+    "package_entries": 572,
+    "kind": "public-real-project-input; not a customer trial or runtime security test",
+    "license_path": "fixtures/public-projects/ietf-tools-datatracker/LICENSE",
+    "license_sha256": "d72b9449d3f04b10f25490c28836b1e3f9f3fa6e3c044385df39f5e92d1d22d5"
+  },
+  {
+    "repository": "mermaid-js/mermaid-cli",
+    "commit": "1423a0d7967d275a9d360ba0617f569550827c8b",
+    "url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/package-lock.json",
+    "path": "fixtures/public-projects/mermaid-js-mermaid-cli/package-lock.json",
+    "sha256": "a01ecda4749535f1669dd0f1e95e9d71748b805c12bf780660818452b84ff889",
+    "license": "MIT",
+    "license_url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/LICENSE",
+    "lockfile_version": 3,
+    "package_entries": 710,
+    "kind": "public-real-project-input; not a customer trial or runtime security test",
+    "license_path": "fixtures/public-projects/mermaid-js-mermaid-cli/LICENSE",
+    "license_sha256": "97f7515292671682e698b9e35b8431b096ee4357c3ccdbf8694d979b73ba94e6"
+  }
+]
