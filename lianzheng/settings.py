@@ -117,7 +117,7 @@ class ModelSettings:
 
     def test_and_save(self,payload):
         candidate=self.candidate(payload)
-        meta=ChatClient(candidate).probe()
+        meta=ChatClient({**candidate,'usage_guard':getattr(self,'usage_guard',None)}).probe()
         candidate['verification']={**meta,'verified_at':now()}
         disk={k:v for k,v in candidate.items() if k!='api_key'}
         # Memory-only keys do not leave a persistent 'verified' claim after restart.

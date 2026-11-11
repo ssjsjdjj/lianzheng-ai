@@ -202,6 +202,18 @@ class ChatClient:
             endpoint=base+'/chat/completions'
         headers={'Content-Type':'application/json'}
         if c.get('api_key'):headers['Authorization']='Bearer '+c['api_key']
+        guard=c.get('usage_guard')
+        ticket=guard.reserve(c,payload) if guard else None
+        try:
+            result=self._request(payload,endpoint,headers,input_bytes,input_limit,limit,is_openai,effort,probe)
+        except Exception as error:
+            if guard:guard.finish(ticket,getattr(error,'metadata',None),'failed')
+            raise
+        if guard:guard.finish(ticket,result[1],'returned')
+        return result
+
+    def _request(self,payload,endpoint,headers,input_bytes,input_limit,limit,is_openai,effort,probe):
+        c=self.config;provider=c.get('provider','compatible')
         started=time.perf_counter()
         try:
             # Redirects must not send credentials to another endpoint.

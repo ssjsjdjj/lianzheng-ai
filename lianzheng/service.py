@@ -10,6 +10,7 @@ from .retrieval import Retriever, model_explanation
 from .knowledge import prepare_document, document_summary
 from .store import Store, now
 from .settings import ModelSettings
+from .call_control import CallControl
 
 
 class Service:
@@ -18,10 +19,15 @@ class Service:
         self.fixtures = Path(fixtures)
         self.osv = OSVClient(self.store,self.fixtures)
         self.retriever = Retriever()
+        self.call_control=CallControl(self.store)
         self.models=ModelSettings(Path(database).parent/'model-settings.json',self.fixtures.parent/'.env')
+        self.models.usage_guard=self.call_control
 
     def import_bom(self, raw, project=None, label=None, identifier=None, demo=False):
         graph=parse_bom(raw)
+        for prop in raw.get('metadata',{}).get('properties',[]):
+            if isinstance(prop,dict) and prop.get('name')=='lianzheng:import:warning' and isinstance(prop.get('value'),str):
+                graph['issues'].append({'code':'import_warning','message':prop['value'][:1500]})
         canonical=json.dumps(raw,sort_keys=True,ensure_ascii=False).encode()
         item={'id':identifier or uuid4().hex,'project':project or graph['nodes'][0]['name'],
               'label':label or '导入快照','created':now(),'hash':hashlib.sha256(canonical).hexdigest(),
@@ -29,6 +35,15 @@ class Service:
         self.store.add_snapshot(item)
         self.scan(item['id'],live=False)
         return self.analyze(item['id'])
+
+    def import_lockfile(self,raw,project=None,label=None):
+        from .lockfiles import convert_package_lock
+        result=self.import_bom(convert_package_lock(raw),project,label)
+        with self.store.connect() as db:
+            db.execute('CREATE TABLE IF NOT EXISTS lockfile_sources(snapshot_id TEXT PRIMARY KEY REFERENCES snapshots(id),source TEXT NOT NULL)')
+            db.execute('INSERT INTO lockfile_sources VALUES(?,?)',(result['snapshot']['id'],json.dumps(raw,ensure_ascii=False)))
+        result['import_format']='npm-package-lock'
+        return result
 
     def seed(self):
         for filename,identifier,label in [('before','demo-before','初始快照'),('partial','demo-partial','仅升级报表路径'),('resolved','demo-resolved','两条路径均已升级')]:
@@ -298,9 +313,9 @@ class Service:
             context={'facts':answer['facts'],'evidence':citations,'paths':readable if mode!='text' else [],
                      'conversation':conversation,'limitations':limits}
             if self.models.public()['configured']:
-                generated,model_warning=model_explanation(question,context,config=self.models.current())
+                generated,model_warning=model_explanation(question,context,config=self.models.current(),usage_guard=self.call_control)
             else:
-                generated,model_warning=model_explanation(question,context)
+                generated,model_warning=model_explanation(question,context,usage_guard=self.call_control)
                 if not generated and not model_warning:model_warning='尚未连接真实模型，本次显示本地证据解释。'
             answer['model_explanation']=generated
             if generated:

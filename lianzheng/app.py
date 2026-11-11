@@ -13,6 +13,8 @@ from .domain import InputError
 from .service import Service
 from .providers import ModelError
 from .reports import report_html
+from .remediation import RemediationTasks
+from .claim_review import ClaimReviews
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -48,11 +50,80 @@ class DocumentRequest(BaseModel):
     url:str=Field(default='',max_length=2000)
 
 
+class TaskCreate(BaseModel):
+    focus:str=Field(min_length=1,max_length=200)
+    title:str | None=Field(default=None,max_length=200)
+    owner:str=Field(default='',max_length=120)
+
+
+class TaskPatch(BaseModel):
+    revision:int=Field(ge=1,strict=True)
+    title:str | None=Field(default=None,max_length=200)
+    owner:str | None=Field(default=None,max_length=120)
+    status:str | None=None
+    note:str | None=Field(default=None,max_length=2000)
+    checks:dict | None=None
+
+
+class TaskVerify(BaseModel):
+    revision:int=Field(ge=1,strict=True)
+    after_snapshot_id:str=Field(min_length=1,max_length=200)
+
+
+class ReviewSave(BaseModel):
+    status:str
+    note:str=Field(default='',max_length=1000)
+    fingerprint:str=Field(min_length=64,max_length=64)
+    revision:int=Field(ge=0,strict=True)
+
+
+class CallPolicy(BaseModel):
+    daily_calls:int=Field(ge=1,le=1000,strict=True)
+    daily_budget_usd:float | None=Field(default=None,ge=.001,le=100,allow_inf_nan=False)
+    enabled:bool=Field(default=True,strict=True)
+
+
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.5.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.6.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
+    tasks=RemediationTasks(service);reviews=ClaimReviews(service)
+
+    @app.get('/api/model/usage')
+    def model_usage():return service.call_control.public()
+
+    @app.put('/api/model/usage/policy')
+    def model_policy(body:CallPolicy):return service.call_control.update(body.model_dump())
+
+    @app.get('/api/snapshots/{identifier}/tasks')
+    def list_tasks(identifier:str):return tasks.list(identifier)
+
+    @app.post('/api/snapshots/{identifier}/tasks',status_code=201)
+    def add_task(identifier:str,body:TaskCreate):return tasks.create(identifier,body.focus,body.title,body.owner)
+
+    @app.get('/api/tasks/{task_id}')
+    def task(task_id:str):return tasks.get(task_id)
+
+    @app.patch('/api/tasks/{task_id}')
+    def update_task(task_id:str,body:TaskPatch):
+        return tasks.update(task_id,body.model_dump(exclude_unset=True,exclude={'revision'}),expected_revision=body.revision)
+
+    @app.post('/api/tasks/{task_id}/verify')
+    def verify_task(task_id:str,body:TaskVerify):return tasks.verify(task_id,body.after_snapshot_id,expected_revision=body.revision)
+
+    @app.get('/api/tasks/{task_id}/report')
+    def task_report(task_id:str):
+        return Response(json.dumps(tasks.report(task_id),ensure_ascii=False,indent=2),media_type='application/json',
+                        headers={'Content-Disposition':'attachment; filename="remediation-task.json"'})
+
+    @app.get('/api/snapshots/{identifier}/history/{answer_id}/reviews')
+    def answer_reviews(identifier:str,answer_id:int):return reviews.get(identifier,answer_id)
+
+    @app.put('/api/snapshots/{identifier}/history/{answer_id}/reviews/{claim_index}')
+    def save_review(identifier:str,answer_id:int,claim_index:int,body:ReviewSave):
+        return reviews.save(identifier,answer_id,claim_index,body.status,body.note,
+                            expected_fingerprint=body.fingerprint,expected_revision=body.revision)
 
     @app.get('/benchmark',include_in_schema=False)
     def benchmark_report():
@@ -92,7 +163,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.5.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.6.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}
@@ -118,6 +189,8 @@ def create_app(database=None,seed=True):
     def demo_report():
         analysis=service.analyze('demo-before')
         history=service.store.history('demo-before')
+        analysis['remediation_tasks']=tasks.list('demo-before')
+        analysis['claim_reviews']=[reviews.get('demo-before',h['id']) for h in history if (h['answer'].get('model_explanation') or {}).get('claims')]
         comparisons=[('仅升级一条路径',service.compare('demo-before','demo-partial')),
                      ('两条路径均已升级',service.compare('demo-before','demo-resolved'))]
         return Response(report_html(analysis,history,comparisons,service.models.public()),media_type='text/html',
@@ -141,7 +214,8 @@ def create_app(database=None,seed=True):
             label=payload.get('label') if 'bom' in payload else None
             if any(x is not None and (not isinstance(x,str) or len(x)>120) for x in (project,label)):
                 raise InputError('项目与快照名称必须为不超过 120 字的文本。')
-            return await run_in_threadpool(service.import_bom,raw,project,label)
+            importer=service.import_lockfile if isinstance(raw,dict) and 'lockfileVersion' in raw else service.import_bom
+            return await run_in_threadpool(importer,raw,project,label)
         except (json.JSONDecodeError,UnicodeDecodeError,TypeError,AttributeError) as error:
             raise InputError('JSON 内容或 CycloneDX 字段结构无效。') from error
 
@@ -187,10 +261,21 @@ def create_app(database=None,seed=True):
         return Response(json.dumps(raw,ensure_ascii=False,indent=2),media_type='application/json',
                         headers={'Content-Disposition':'attachment; filename="snapshot.cdx.json"'})
 
+    @app.get('/api/snapshots/{identifier}/lockfile')
+    def original_lockfile(identifier:str):
+        service.store.get(identifier)
+        with service.store.connect() as db:
+            exists=db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='lockfile_sources'").fetchone()
+            row=db.execute('SELECT source FROM lockfile_sources WHERE snapshot_id=?',(identifier,)).fetchone() if exists else None
+        if not row:raise KeyError('当前快照不是锁文件导入。')
+        return Response(row['source'],media_type='application/json',headers={'Content-Disposition':'attachment; filename="package-lock.json"'})
+
     @app.get('/api/snapshots/{identifier}/report')
     def report(identifier:str,format:str='json'):
         result=service.analyze(identifier)
         result['history']=service.store.history(identifier)
+        result['remediation_tasks']=tasks.list(identifier)
+        result['claim_reviews']=[reviews.get(identifier,h['id']) for h in result['history'] if (h['answer'].get('model_explanation') or {}).get('claims')]
         if format=='html':
             return Response(report_html(result,result['history'],model=service.models.public()),media_type='text/html',
                             headers={'Content-Disposition':'attachment; filename="lianzheng-report.html"'})

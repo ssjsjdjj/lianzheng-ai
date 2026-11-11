@@ -138,7 +138,7 @@ def quote_catalog(evidence,question=''):
     return catalog
 
 
-def model_explanation(question, context, config=None):
+def model_explanation(question, context, config=None, usage_guard=None):
     if config is None:
         if not os.getenv('LZ_LLM_BASE_URL') or not os.getenv('LZ_LLM_MODEL'):
             return None,None
@@ -191,7 +191,7 @@ def model_explanation(question, context, config=None):
             if not catalog:raise ModelError('当前证据没有可选的原文摘录，已保留本地证据。')
         if budget['blocked']:
             raise ModelError('当前结构化事实超过本次模型输入预算，已保留本地证据；请缩小问题或选择更小的清单。')
-        content,meta=ChatClient(config).complete([
+        content,meta=ChatClient({**config,'usage_guard':usage_guard} if usage_guard else config).complete([
             {'role':'system','content':system},
             {'role':'user','content':json.dumps({'question':question,**context},ensure_ascii=False)}],
             **({'quote_ids':list(catalog)} if select_quotes else {}))
