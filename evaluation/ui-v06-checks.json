@@ -1,0 +1,30 @@
+{
+  "release": "0.6.0",
+  "date": "2026-11-11",
+  "method": "Manual browser interaction in the in-app browser",
+  "total": 15,
+  "passed": 15,
+  "scope": "Workflow checks used an isolated SQLite database and a server that rejected external HTTP requests. Claim-review input was explicitly labelled as a UI fixture. Real GPT checks below replayed previously saved answers in the main workspace; no model was called from the browser during these checks.",
+  "checks": [
+    {"name": "Create remediation task", "result": "pass", "observed": "Task includes both affected occurrences and the advisory fixed-version boundary."},
+    {"name": "Persist task edits", "result": "pass", "observed": "Owner, processing status and note saved with an audit entry."},
+    {"name": "Partial fix verification", "result": "pass", "observed": "demo-partial leaves one target occurrence and records needs_review."},
+    {"name": "Complete inventory verification", "result": "pass", "observed": "demo-resolved leaves zero target occurrences; UI explicitly excludes business-test and deployment approval."},
+    {"name": "Task download", "result": "pass", "observed": "The task JSON download completed through the browser."},
+    {"name": "Concurrent tab conflict", "result": "pass", "observed": "A stale second-tab save was rejected. Refresh preserved the first tab's saved owner."},
+    {"name": "Snapshot isolation", "result": "pass", "observed": "Switching to demo-partial replaced old task cards with the current snapshot loading state; public input had no demo task cards."},
+    {"name": "Separate literal and semantic review", "result": "pass", "observed": "Exact text match displayed separately from initially pending human review."},
+    {"name": "Human review persistence", "result": "pass", "observed": "A partial-support note on the labelled UI fixture persisted after snapshot switching and answer replay."},
+    {"name": "Usage policy", "result": "pass", "observed": "Isolated policy saved as five requests and USD 0.05 per UTC day; request count remained zero."},
+    {"name": "Public lockfile import", "result": "pass", "observed": "Original Datatracker lockfile imported through the file chooser: 571 component occurrences, 570 unqueried positions, explicit incomplete coverage."},
+    {"name": "Large quality list", "result": "pass", "observed": "591 entries showed eight initially; expanding exposed the final entry and collapsing hid the remainder while retaining coverage warnings."},
+    {"name": "Actual GPT answer replay", "result": "pass", "observed": "Saved 2026-11-11 GPT answer displayed its two paths, original token usage and pending human-review controls without regeneration."},
+    {"name": "Actual usage display", "result": "pass", "observed": "Main workspace showed three calls, USD 0.021287 estimated/reserved occupancy and three calls with incomplete pricing; no zero-cost assertion."},
+    {"name": "Responsive layout and console", "result": "pass", "observed": "390px viewport had no horizontal document overflow; main and isolated pages had no captured console errors. Viewport override was reset."}
+  ],
+  "limitations": [
+    "This is a manual UI acceptance record, not an automated browser test suite or a semantic accuracy score.",
+    "Public input import does not establish vulnerability coverage, runtime exploitability or successful business remediation.",
+    "Only existing paid responses were replayed; live-model-status.json records the separate three-request real-model acceptance run."
+  ]
+}

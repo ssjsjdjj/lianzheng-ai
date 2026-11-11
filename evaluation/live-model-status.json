@@ -1,23 +1,12 @@
 {
-  "release": "0.5.0",
-  "generated_at": "2026-11-11",
+  "release": "0.6.0",
+  "generated_at": "2026-11-11T02:05:29.359501+00:00",
   "provider": "openai",
   "connection_configured": true,
-  "connection_verified": false,
-  "qa_verified": false,
-  "accepted_answers": 0,
-  "total_answers": 0,
-  "previous_verification": {
-    "release": "0.4.0",
-    "generated_at": "2026-10-30T04:00:02.831139+00:00",
-    "provider": "openai",
-    "connection_configured": true,
-    "connection_verified": true,
-    "qa_verified": true,
-    "accepted_answers": 3,
-    "total_answers": 3,
-    "report": "live-model-results.json",
-    "note": "真实接口及引用验收；不代表独立准确率评测。"
-  },
-  "note": "v0.5 未重新调用真实 API；本机保留此前配置与历史验收。旧记录不代表本版端到端验收。"
+  "connection_verified": true,
+  "qa_verified": true,
+  "accepted_answers": 3,
+  "total_answers": 3,
+  "report": "live-model-results.json",
+  "note": "真实接口及引用验收；不代表独立准确率评测。"
 }

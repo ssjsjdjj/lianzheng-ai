@@ -1,0 +1,182 @@
+{
+  "kind": "frozen-public-project-import-compatibility",
+  "generated_at": "2026-11-11T02:26:06.685537+00:00",
+  "manifest_sha256": "f9652996ea614f3e396dc8e8e8e2ca58d5f5e874db28ec01b0640c7853c2844e",
+  "project_count": 2,
+  "supported": 2,
+  "unsupported": 0,
+  "invalid_sources": 0,
+  "model_calls": 0,
+  "network_calls": 0,
+  "dependency_scripts_executed": false,
+  "independent_expert_labels": false,
+  "limitations": [
+    "真实公开项目的冻结输入只验证导入结构与兼容性；不是客户试用或生产效果评测。",
+    "SHA-256 核对的是本地来源清单记录，脚本不联网重新核实上游。",
+    "未执行漏洞查询、实际安装、构建、运行时检查或语义问答；未扫描不能解释为安全。",
+    "不支持的输入保留原因，不修改原始文件来提高通过数量。",
+    "自动结构检查不替代独立专家标注，也不能证明 GraphRAG 优于其他检索方法。"
+  ],
+  "results": [
+    {
+      "repository": "ietf-tools/datatracker",
+      "commit": "dd2518248e4b32a9c814e9346d9451e9f76d1e75",
+      "url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/package-lock.json",
+      "path": "fixtures/public-projects/ietf-tools-datatracker/package-lock.json",
+      "sha256": "6bf62d33567df8cc5ebba29b2c817fce5e0082f5346b44e13088363adbf2bef1",
+      "license": "BSD-3-Clause",
+      "license_url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/LICENSE",
+      "license_path": "fixtures/public-projects/ietf-tools-datatracker/LICENSE",
+      "status": "supported-incomplete",
+      "supported": true,
+      "source_integrity_verified": true,
+      "advisory_scan_performed": false,
+      "model_calls": 0,
+      "dependency_scripts_executed": false,
+      "actual_sha256": "6bf62d33567df8cc5ebba29b2c817fce5e0082f5346b44e13088363adbf2bef1",
+      "license_sha256": "d72b9449d3f04b10f25490c28836b1e3f9f3fa6e3c044385df39f5e92d1d22d5",
+      "lockfile_version": 3,
+      "package_entries": 572,
+      "components": 571,
+      "edges": 1010,
+      "graph_complete": false,
+      "alias_occurrences": 3,
+      "structure_checks": {
+        "all_installation_positions_preserved": true,
+        "unique_node_ids": true,
+        "exact_npm_identities": true,
+        "all_emitted_edges_reference_known_positions": true
+      },
+      "structure_checks_passed": true,
+      "import_warning_count": 20,
+      "import_warnings": [
+        "node_modules/@parcel/rust 的 peerDependencies 声明 napi-wasm，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/html-validate 的 peerDependencies 声明 jest，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/html-validate 的 peerDependencies 声明 jest-diff，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/html-validate 的 peerDependencies 声明 jest-snapshot，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/html-validate 的 peerDependencies 声明 vitest，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/oxfmt 的 peerDependencies 声明 svelte，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/oxfmt 的 peerDependencies 声明 vite-plus，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/oxlint 的 peerDependencies 声明 oxlint-tsgolint，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/oxlint 的 peerDependencies 声明 vite-plus，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/pinia 的 peerDependencies 声明 @vue/composition-api，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/pinia 的 peerDependencies 声明 typescript，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/pinia-plugin-persist 的 peerDependencies 声明 @vue/composition-api，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/pinia-plugin-persist/node_modules/vue-demi 的 peerDependencies 声明 @vue/composition-api，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/pinia/node_modules/vue-demi 的 peerDependencies 声明 @vue/composition-api，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 @types/node，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 less，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 stylus，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 sugarss，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 terser，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vue 的 peerDependencies 声明 typescript，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。"
+      ],
+      "issue_counts": {
+        "composition": 1
+      },
+      "sample_paths": [
+        [
+          "npm:root",
+          "npm:node_modules/html-validate",
+          "npm:node_modules/@babel/code-frame"
+        ],
+        [
+          "npm:root",
+          "npm:node_modules/vue",
+          "npm:node_modules/@vue/compiler-sfc",
+          "npm:node_modules/@babel/parser",
+          "npm:node_modules/@babel/types",
+          "npm:node_modules/@babel/helper-string-parser"
+        ],
+        [
+          "npm:root",
+          "npm:node_modules/html-validate",
+          "npm:node_modules/@babel/code-frame",
+          "npm:node_modules/@babel/helper-validator-identifier"
+        ]
+      ]
+    },
+    {
+      "repository": "mermaid-js/mermaid-cli",
+      "commit": "1423a0d7967d275a9d360ba0617f569550827c8b",
+      "url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/package-lock.json",
+      "path": "fixtures/public-projects/mermaid-js-mermaid-cli/package-lock.json",
+      "sha256": "a01ecda4749535f1669dd0f1e95e9d71748b805c12bf780660818452b84ff889",
+      "license": "MIT",
+      "license_url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/LICENSE",
+      "license_path": "fixtures/public-projects/mermaid-js-mermaid-cli/LICENSE",
+      "status": "supported-incomplete",
+      "supported": true,
+      "source_integrity_verified": true,
+      "advisory_scan_performed": false,
+      "model_calls": 0,
+      "dependency_scripts_executed": false,
+      "actual_sha256": "a01ecda4749535f1669dd0f1e95e9d71748b805c12bf780660818452b84ff889",
+      "license_sha256": "97f7515292671682e698b9e35b8431b096ee4357c3ccdbf8694d979b73ba94e6",
+      "lockfile_version": 3,
+      "package_entries": 710,
+      "components": 709,
+      "edges": 1295,
+      "graph_complete": false,
+      "alias_occurrences": 5,
+      "structure_checks": {
+        "all_installation_positions_preserved": true,
+        "unique_node_ids": true,
+        "exact_npm_identities": true,
+        "all_emitted_edges_reference_known_positions": true
+      },
+      "structure_checks_passed": true,
+      "import_warning_count": 24,
+      "import_warnings": [
+        "node_modules/@jest/core 的 peerDependencies 声明 node-notifier，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/@jest/reporters 的 peerDependencies 声明 node-notifier，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/@puppeteer/browsers 的 peerDependencies 声明 proxy-agent，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/@puppeteer/browsers 的 peerDependencies 声明 yauzl，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/@zenuml/core 的 peerDependencies 声明 playwright-core，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/dedent 的 peerDependencies 声明 babel-plugin-macros，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/eslint 的 peerDependencies 声明 jiti，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/jest 的 peerDependencies 声明 node-notifier，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/jest-cli 的 peerDependencies 声明 node-notifier，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/jest-config 的 peerDependencies 声明 esbuild-register，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/jest-config 的 peerDependencies 声明 ts-node，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/jotai 的 peerDependencies 声明 @types/react，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 jiti，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 less，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 lightningcss，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 sass，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 sass-embedded，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 stylus，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 sugarss，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 terser，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 tsx，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/vite 的 peerDependencies 声明 yaml，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/ws 的 peerDependencies 声明 bufferutil，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。",
+        "node_modules/ws 的 peerDependencies 声明 utf-8-validate，但缺少可定位的安装记录；未创建依赖边。 可选项可能因安装选择而缺失，不能据此推断漏洞或安装失败。"
+      ],
+      "issue_counts": {
+        "composition": 1
+      },
+      "sample_paths": [
+        [
+          "npm:root",
+          "npm:node_modules/mermaid",
+          "npm:node_modules/@iconify/utils",
+          "npm:node_modules/@antfu/install-pkg"
+        ],
+        [
+          "npm:root",
+          "npm:node_modules/mermaid",
+          "npm:node_modules/@iconify/utils",
+          "npm:node_modules/@antfu/utils"
+        ],
+        [
+          "npm:root",
+          "npm:node_modules/jest",
+          "npm:node_modules/@jest/core",
+          "npm:node_modules/jest-message-util",
+          "npm:node_modules/@babel/code-frame"
+        ]
+      ]
+    }
+  ]
+}
