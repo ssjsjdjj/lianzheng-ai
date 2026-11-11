@@ -137,7 +137,7 @@ def test_multiple_distinct_vulnerabilities_request_split(service):
 def test_text_baseline_model_context_does_not_contain_graph_statistics(service,monkeypatch):
     import lianzheng.service as module
     seen={}
-    def model(question,context):
+    def model(question,context,usage_guard=None):
         seen.update(context)
         return None,None
     monkeypatch.setattr(module,'model_explanation',model)
