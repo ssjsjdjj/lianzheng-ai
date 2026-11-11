@@ -1,0 +1,1460 @@
+{
+  "version": 1,
+  "kind": "synthetic-independent-fixture",
+  "human_reviewed": false,
+  "note": "与演示清单分离；由程序按人工可读规则合成，尚未经独立专家标注。按项目划分 dev/test，模板仍有相似性。",
+  "scenarios": [
+    {
+      "id": "project-harbor",
+      "split": "dev",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "harbor-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "ledger-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "receipt-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "granite-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "granite-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-harbor-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-harbor-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-harbor-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-harbor-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-harbor-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "harbor-app @ 1.0.0 直接依赖 ledger-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-harbor-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "ledger-adapter @ 2.0.0 直接依赖 granite-core @ 1.2.0。"
+        },
+        {
+          "id": "project-harbor-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "harbor-app @ 1.0.0 直接依赖 receipt-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-harbor-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "receipt-adapter @ 3.0.0 直接依赖 granite-core @ 1.3.0。"
+        },
+        {
+          "id": "project-harbor-doc-a",
+          "package": "fixture",
+          "title": "ledger-adapter 审批记录",
+          "text": "ledger-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-harbor-doc-b",
+          "package": "fixture",
+          "title": "receipt-adapter 回归测试",
+          "text": "receipt-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-harbor-doc-x",
+          "package": "fixture",
+          "title": "granite-core 性能基线",
+          "text": "granite-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-harbor-doc-y",
+          "package": "fixture",
+          "title": "granite-core 权限审查",
+          "text": "granite-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-harbor-q1",
+          "category": "multi-hop",
+          "question": "harbor-app 引入 granite-core 的依赖路径？",
+          "relevant_ids": [
+            "project-harbor-edge-root-a",
+            "project-harbor-edge-a-x",
+            "project-harbor-edge-root-b",
+            "project-harbor-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-harbor-q2",
+          "category": "direct",
+          "question": "harbor-app 到 ledger-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-harbor-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-harbor-q3",
+          "category": "direct",
+          "question": "harbor-app 到 receipt-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-harbor-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-harbor-q4",
+          "category": "version-path",
+          "question": "harbor-app 引入 granite-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-harbor-edge-root-a",
+            "project-harbor-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-harbor-q5",
+          "category": "version-path",
+          "question": "harbor-app 引入 granite-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-harbor-edge-root-b",
+            "project-harbor-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-harbor-q6",
+          "category": "document",
+          "question": "ledger-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-harbor-doc-a"
+          ]
+        },
+        {
+          "id": "project-harbor-q7",
+          "category": "document",
+          "question": "receipt-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-harbor-doc-b"
+          ]
+        },
+        {
+          "id": "project-harbor-q8",
+          "category": "document",
+          "question": "granite-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-harbor-doc-x"
+          ]
+        },
+        {
+          "id": "project-harbor-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-harbor-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "harbor-app 升级前必须保存审批记录与变更单。\nharbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 发布前必须执行回归测试并记录结果。\nharbor-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 上线前需要演练回滚方案并核对旧版本配置。\nharbor-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 灰度发布期间需要观察错误率并保留监控截图。\nharbor-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 变更前必须完成数据备份并验证恢复流程。\nharbor-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 接口契约需要核对字段类型与空值处理。\nharbor-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 导出快照需要覆盖两条业务入口并比对结果。\nharbor-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 安全扫描记录需要注明扫描时间和规则版本。\nharbor-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 性能基线需要记录响应时间与并发条件。\nharbor-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 权限审查需要核对角色与资源授权范围。\nharbor-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\nharbor-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-harbor-span-1",
+          "question": "harbor-app 的审批记录要求是什么？",
+          "expected_quote": "harbor-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-harbor-span-2",
+          "question": "harbor-app 的回归测试要求是什么？",
+          "expected_quote": "harbor-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-harbor-span-3",
+          "question": "harbor-app 的回滚方案要求是什么？",
+          "expected_quote": "harbor-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-harbor-span-4",
+          "question": "harbor-app 的灰度发布要求是什么？",
+          "expected_quote": "harbor-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-harbor-span-5",
+          "question": "harbor-app 的数据备份要求是什么？",
+          "expected_quote": "harbor-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-harbor-span-6",
+          "question": "harbor-app 的接口契约要求是什么？",
+          "expected_quote": "harbor-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-harbor-span-7",
+          "question": "harbor-app 的导出快照要求是什么？",
+          "expected_quote": "harbor-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-harbor-span-8",
+          "question": "harbor-app 的安全扫描要求是什么？",
+          "expected_quote": "harbor-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-harbor-span-9",
+          "question": "harbor-app 的性能基线要求是什么？",
+          "expected_quote": "harbor-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-harbor-span-10",
+          "question": "harbor-app 的权限审查要求是什么？",
+          "expected_quote": "harbor-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    },
+    {
+      "id": "project-forest",
+      "split": "dev",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "forest-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "image-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "video-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "willow-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "willow-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-forest-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-forest-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-forest-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-forest-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-forest-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "forest-app @ 1.0.0 直接依赖 image-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-forest-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "image-adapter @ 2.0.0 直接依赖 willow-core @ 1.2.0。"
+        },
+        {
+          "id": "project-forest-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "forest-app @ 1.0.0 直接依赖 video-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-forest-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "video-adapter @ 3.0.0 直接依赖 willow-core @ 1.3.0。"
+        },
+        {
+          "id": "project-forest-doc-a",
+          "package": "fixture",
+          "title": "image-adapter 审批记录",
+          "text": "image-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-forest-doc-b",
+          "package": "fixture",
+          "title": "video-adapter 回归测试",
+          "text": "video-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-forest-doc-x",
+          "package": "fixture",
+          "title": "willow-core 性能基线",
+          "text": "willow-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-forest-doc-y",
+          "package": "fixture",
+          "title": "willow-core 权限审查",
+          "text": "willow-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-forest-q1",
+          "category": "multi-hop",
+          "question": "forest-app 引入 willow-core 的依赖路径？",
+          "relevant_ids": [
+            "project-forest-edge-root-a",
+            "project-forest-edge-a-x",
+            "project-forest-edge-root-b",
+            "project-forest-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-forest-q2",
+          "category": "direct",
+          "question": "forest-app 到 image-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-forest-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-forest-q3",
+          "category": "direct",
+          "question": "forest-app 到 video-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-forest-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-forest-q4",
+          "category": "version-path",
+          "question": "forest-app 引入 willow-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-forest-edge-root-a",
+            "project-forest-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-forest-q5",
+          "category": "version-path",
+          "question": "forest-app 引入 willow-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-forest-edge-root-b",
+            "project-forest-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-forest-q6",
+          "category": "document",
+          "question": "image-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-forest-doc-a"
+          ]
+        },
+        {
+          "id": "project-forest-q7",
+          "category": "document",
+          "question": "video-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-forest-doc-b"
+          ]
+        },
+        {
+          "id": "project-forest-q8",
+          "category": "document",
+          "question": "willow-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-forest-doc-x"
+          ]
+        },
+        {
+          "id": "project-forest-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-forest-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\nforest-app 权限审查需要核对角色与资源授权范围。\nforest-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\nforest-app 升级前必须保存审批记录与变更单。\nforest-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\nforest-app 发布前必须执行回归测试并记录结果。\nforest-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\nforest-app 上线前需要演练回滚方案并核对旧版本配置。\nforest-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\nforest-app 灰度发布期间需要观察错误率并保留监控截图。\nforest-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\nforest-app 变更前必须完成数据备份并验证恢复流程。\nforest-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\nforest-app 接口契约需要核对字段类型与空值处理。\nforest-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\nforest-app 导出快照需要覆盖两条业务入口并比对结果。\nforest-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\nforest-app 安全扫描记录需要注明扫描时间和规则版本。\nforest-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\nforest-app 性能基线需要记录响应时间与并发条件。\nforest-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\nforest-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-forest-span-1",
+          "question": "forest-app 的审批记录要求是什么？",
+          "expected_quote": "forest-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-forest-span-2",
+          "question": "forest-app 的回归测试要求是什么？",
+          "expected_quote": "forest-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-forest-span-3",
+          "question": "forest-app 的回滚方案要求是什么？",
+          "expected_quote": "forest-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-forest-span-4",
+          "question": "forest-app 的灰度发布要求是什么？",
+          "expected_quote": "forest-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-forest-span-5",
+          "question": "forest-app 的数据备份要求是什么？",
+          "expected_quote": "forest-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-forest-span-6",
+          "question": "forest-app 的接口契约要求是什么？",
+          "expected_quote": "forest-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-forest-span-7",
+          "question": "forest-app 的导出快照要求是什么？",
+          "expected_quote": "forest-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-forest-span-8",
+          "question": "forest-app 的安全扫描要求是什么？",
+          "expected_quote": "forest-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-forest-span-9",
+          "question": "forest-app 的性能基线要求是什么？",
+          "expected_quote": "forest-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-forest-span-10",
+          "question": "forest-app 的权限审查要求是什么？",
+          "expected_quote": "forest-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    },
+    {
+      "id": "project-orbit",
+      "split": "dev",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "orbit-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "queue-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "worker-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "quartz-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "quartz-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-orbit-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-orbit-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-orbit-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-orbit-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-orbit-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "orbit-app @ 1.0.0 直接依赖 queue-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-orbit-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "queue-adapter @ 2.0.0 直接依赖 quartz-core @ 1.2.0。"
+        },
+        {
+          "id": "project-orbit-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "orbit-app @ 1.0.0 直接依赖 worker-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-orbit-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "worker-adapter @ 3.0.0 直接依赖 quartz-core @ 1.3.0。"
+        },
+        {
+          "id": "project-orbit-doc-a",
+          "package": "fixture",
+          "title": "queue-adapter 审批记录",
+          "text": "queue-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-orbit-doc-b",
+          "package": "fixture",
+          "title": "worker-adapter 回归测试",
+          "text": "worker-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-orbit-doc-x",
+          "package": "fixture",
+          "title": "quartz-core 性能基线",
+          "text": "quartz-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-orbit-doc-y",
+          "package": "fixture",
+          "title": "quartz-core 权限审查",
+          "text": "quartz-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-orbit-q1",
+          "category": "multi-hop",
+          "question": "orbit-app 引入 quartz-core 的依赖路径？",
+          "relevant_ids": [
+            "project-orbit-edge-root-a",
+            "project-orbit-edge-a-x",
+            "project-orbit-edge-root-b",
+            "project-orbit-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-orbit-q2",
+          "category": "direct",
+          "question": "orbit-app 到 queue-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-orbit-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-orbit-q3",
+          "category": "direct",
+          "question": "orbit-app 到 worker-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-orbit-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-orbit-q4",
+          "category": "version-path",
+          "question": "orbit-app 引入 quartz-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-orbit-edge-root-a",
+            "project-orbit-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-orbit-q5",
+          "category": "version-path",
+          "question": "orbit-app 引入 quartz-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-orbit-edge-root-b",
+            "project-orbit-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-orbit-q6",
+          "category": "document",
+          "question": "queue-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-orbit-doc-a"
+          ]
+        },
+        {
+          "id": "project-orbit-q7",
+          "category": "document",
+          "question": "worker-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-orbit-doc-b"
+          ]
+        },
+        {
+          "id": "project-orbit-q8",
+          "category": "document",
+          "question": "quartz-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-orbit-doc-x"
+          ]
+        },
+        {
+          "id": "project-orbit-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-orbit-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "orbit-app 性能基线需要记录响应时间与并发条件。\norbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\norbit-app 权限审查需要核对角色与资源授权范围。\norbit-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\norbit-app 升级前必须保存审批记录与变更单。\norbit-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\norbit-app 发布前必须执行回归测试并记录结果。\norbit-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\norbit-app 上线前需要演练回滚方案并核对旧版本配置。\norbit-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\norbit-app 灰度发布期间需要观察错误率并保留监控截图。\norbit-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\norbit-app 变更前必须完成数据备份并验证恢复流程。\norbit-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\norbit-app 接口契约需要核对字段类型与空值处理。\norbit-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\norbit-app 导出快照需要覆盖两条业务入口并比对结果。\norbit-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\norbit-app 安全扫描记录需要注明扫描时间和规则版本。\norbit-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\norbit-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-orbit-span-1",
+          "question": "orbit-app 的审批记录要求是什么？",
+          "expected_quote": "orbit-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-orbit-span-2",
+          "question": "orbit-app 的回归测试要求是什么？",
+          "expected_quote": "orbit-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-orbit-span-3",
+          "question": "orbit-app 的回滚方案要求是什么？",
+          "expected_quote": "orbit-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-orbit-span-4",
+          "question": "orbit-app 的灰度发布要求是什么？",
+          "expected_quote": "orbit-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-orbit-span-5",
+          "question": "orbit-app 的数据备份要求是什么？",
+          "expected_quote": "orbit-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-orbit-span-6",
+          "question": "orbit-app 的接口契约要求是什么？",
+          "expected_quote": "orbit-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-orbit-span-7",
+          "question": "orbit-app 的导出快照要求是什么？",
+          "expected_quote": "orbit-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-orbit-span-8",
+          "question": "orbit-app 的安全扫描要求是什么？",
+          "expected_quote": "orbit-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-orbit-span-9",
+          "question": "orbit-app 的性能基线要求是什么？",
+          "expected_quote": "orbit-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-orbit-span-10",
+          "question": "orbit-app 的权限审查要求是什么？",
+          "expected_quote": "orbit-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    },
+    {
+      "id": "project-delta",
+      "split": "test",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "delta-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "search-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "index-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "cobalt-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "cobalt-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-delta-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-delta-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-delta-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-delta-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-delta-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "delta-app @ 1.0.0 直接依赖 search-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-delta-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "search-adapter @ 2.0.0 直接依赖 cobalt-core @ 1.2.0。"
+        },
+        {
+          "id": "project-delta-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "delta-app @ 1.0.0 直接依赖 index-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-delta-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "index-adapter @ 3.0.0 直接依赖 cobalt-core @ 1.3.0。"
+        },
+        {
+          "id": "project-delta-doc-a",
+          "package": "fixture",
+          "title": "search-adapter 审批记录",
+          "text": "search-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-delta-doc-b",
+          "package": "fixture",
+          "title": "index-adapter 回归测试",
+          "text": "index-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-delta-doc-x",
+          "package": "fixture",
+          "title": "cobalt-core 性能基线",
+          "text": "cobalt-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-delta-doc-y",
+          "package": "fixture",
+          "title": "cobalt-core 权限审查",
+          "text": "cobalt-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-delta-q1",
+          "category": "multi-hop",
+          "question": "delta-app 引入 cobalt-core 的依赖路径？",
+          "relevant_ids": [
+            "project-delta-edge-root-a",
+            "project-delta-edge-a-x",
+            "project-delta-edge-root-b",
+            "project-delta-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-delta-q2",
+          "category": "direct",
+          "question": "delta-app 到 search-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-delta-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-delta-q3",
+          "category": "direct",
+          "question": "delta-app 到 index-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-delta-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-delta-q4",
+          "category": "version-path",
+          "question": "delta-app 引入 cobalt-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-delta-edge-root-a",
+            "project-delta-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-delta-q5",
+          "category": "version-path",
+          "question": "delta-app 引入 cobalt-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-delta-edge-root-b",
+            "project-delta-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-delta-q6",
+          "category": "document",
+          "question": "search-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-delta-doc-a"
+          ]
+        },
+        {
+          "id": "project-delta-q7",
+          "category": "document",
+          "question": "index-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-delta-doc-b"
+          ]
+        },
+        {
+          "id": "project-delta-q8",
+          "category": "document",
+          "question": "cobalt-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-delta-doc-x"
+          ]
+        },
+        {
+          "id": "project-delta-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-delta-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 性能基线需要记录响应时间与并发条件。\ndelta-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 权限审查需要核对角色与资源授权范围。\ndelta-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 升级前必须保存审批记录与变更单。\ndelta-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 发布前必须执行回归测试并记录结果。\ndelta-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 上线前需要演练回滚方案并核对旧版本配置。\ndelta-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 灰度发布期间需要观察错误率并保留监控截图。\ndelta-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 变更前必须完成数据备份并验证恢复流程。\ndelta-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 接口契约需要核对字段类型与空值处理。\ndelta-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 导出快照需要覆盖两条业务入口并比对结果。\ndelta-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 安全扫描记录需要注明扫描时间和规则版本。\ndelta-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\ndelta-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-delta-span-1",
+          "question": "delta-app 的审批记录要求是什么？",
+          "expected_quote": "delta-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-delta-span-2",
+          "question": "delta-app 的回归测试要求是什么？",
+          "expected_quote": "delta-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-delta-span-3",
+          "question": "delta-app 的回滚方案要求是什么？",
+          "expected_quote": "delta-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-delta-span-4",
+          "question": "delta-app 的灰度发布要求是什么？",
+          "expected_quote": "delta-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-delta-span-5",
+          "question": "delta-app 的数据备份要求是什么？",
+          "expected_quote": "delta-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-delta-span-6",
+          "question": "delta-app 的接口契约要求是什么？",
+          "expected_quote": "delta-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-delta-span-7",
+          "question": "delta-app 的导出快照要求是什么？",
+          "expected_quote": "delta-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-delta-span-8",
+          "question": "delta-app 的安全扫描要求是什么？",
+          "expected_quote": "delta-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-delta-span-9",
+          "question": "delta-app 的性能基线要求是什么？",
+          "expected_quote": "delta-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-delta-span-10",
+          "question": "delta-app 的权限审查要求是什么？",
+          "expected_quote": "delta-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    },
+    {
+      "id": "project-prairie",
+      "split": "test",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "prairie-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "event-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "stream-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "maple-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "maple-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-prairie-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-prairie-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-prairie-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-prairie-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-prairie-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "prairie-app @ 1.0.0 直接依赖 event-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-prairie-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "event-adapter @ 2.0.0 直接依赖 maple-core @ 1.2.0。"
+        },
+        {
+          "id": "project-prairie-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "prairie-app @ 1.0.0 直接依赖 stream-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-prairie-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "stream-adapter @ 3.0.0 直接依赖 maple-core @ 1.3.0。"
+        },
+        {
+          "id": "project-prairie-doc-a",
+          "package": "fixture",
+          "title": "event-adapter 审批记录",
+          "text": "event-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-prairie-doc-b",
+          "package": "fixture",
+          "title": "stream-adapter 回归测试",
+          "text": "stream-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-prairie-doc-x",
+          "package": "fixture",
+          "title": "maple-core 性能基线",
+          "text": "maple-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-prairie-doc-y",
+          "package": "fixture",
+          "title": "maple-core 权限审查",
+          "text": "maple-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-prairie-q1",
+          "category": "multi-hop",
+          "question": "prairie-app 引入 maple-core 的依赖路径？",
+          "relevant_ids": [
+            "project-prairie-edge-root-a",
+            "project-prairie-edge-a-x",
+            "project-prairie-edge-root-b",
+            "project-prairie-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-prairie-q2",
+          "category": "direct",
+          "question": "prairie-app 到 event-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-prairie-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-prairie-q3",
+          "category": "direct",
+          "question": "prairie-app 到 stream-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-prairie-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-prairie-q4",
+          "category": "version-path",
+          "question": "prairie-app 引入 maple-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-prairie-edge-root-a",
+            "project-prairie-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-prairie-q5",
+          "category": "version-path",
+          "question": "prairie-app 引入 maple-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-prairie-edge-root-b",
+            "project-prairie-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-prairie-q6",
+          "category": "document",
+          "question": "event-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-prairie-doc-a"
+          ]
+        },
+        {
+          "id": "project-prairie-q7",
+          "category": "document",
+          "question": "stream-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-prairie-doc-b"
+          ]
+        },
+        {
+          "id": "project-prairie-q8",
+          "category": "document",
+          "question": "maple-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-prairie-doc-x"
+          ]
+        },
+        {
+          "id": "project-prairie-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-prairie-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 安全扫描记录需要注明扫描时间和规则版本。\nprairie-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 性能基线需要记录响应时间与并发条件。\nprairie-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 权限审查需要核对角色与资源授权范围。\nprairie-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 升级前必须保存审批记录与变更单。\nprairie-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 发布前必须执行回归测试并记录结果。\nprairie-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 上线前需要演练回滚方案并核对旧版本配置。\nprairie-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 灰度发布期间需要观察错误率并保留监控截图。\nprairie-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 变更前必须完成数据备份并验证恢复流程。\nprairie-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 接口契约需要核对字段类型与空值处理。\nprairie-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 导出快照需要覆盖两条业务入口并比对结果。\nprairie-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\nprairie-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-prairie-span-1",
+          "question": "prairie-app 的审批记录要求是什么？",
+          "expected_quote": "prairie-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-prairie-span-2",
+          "question": "prairie-app 的回归测试要求是什么？",
+          "expected_quote": "prairie-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-prairie-span-3",
+          "question": "prairie-app 的回滚方案要求是什么？",
+          "expected_quote": "prairie-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-prairie-span-4",
+          "question": "prairie-app 的灰度发布要求是什么？",
+          "expected_quote": "prairie-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-prairie-span-5",
+          "question": "prairie-app 的数据备份要求是什么？",
+          "expected_quote": "prairie-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-prairie-span-6",
+          "question": "prairie-app 的接口契约要求是什么？",
+          "expected_quote": "prairie-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-prairie-span-7",
+          "question": "prairie-app 的导出快照要求是什么？",
+          "expected_quote": "prairie-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-prairie-span-8",
+          "question": "prairie-app 的安全扫描要求是什么？",
+          "expected_quote": "prairie-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-prairie-span-9",
+          "question": "prairie-app 的性能基线要求是什么？",
+          "expected_quote": "prairie-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-prairie-span-10",
+          "question": "prairie-app 的权限审查要求是什么？",
+          "expected_quote": "prairie-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    },
+    {
+      "id": "project-summit",
+      "split": "test",
+      "graph": {
+        "root": "root",
+        "nodes": [
+          {
+            "id": "root",
+            "name": "summit-app",
+            "version": "1.0.0"
+          },
+          {
+            "id": "a",
+            "name": "cache-adapter",
+            "version": "2.0.0"
+          },
+          {
+            "id": "b",
+            "name": "storage-adapter",
+            "version": "3.0.0"
+          },
+          {
+            "id": "x",
+            "name": "silver-core",
+            "version": "1.2.0"
+          },
+          {
+            "id": "y",
+            "name": "silver-core",
+            "version": "1.3.0"
+          }
+        ],
+        "edges": [
+          {
+            "source": "root",
+            "target": "a",
+            "evidence_id": "project-summit-edge-root-a"
+          },
+          {
+            "source": "a",
+            "target": "x",
+            "evidence_id": "project-summit-edge-a-x"
+          },
+          {
+            "source": "root",
+            "target": "b",
+            "evidence_id": "project-summit-edge-root-b"
+          },
+          {
+            "source": "b",
+            "target": "y",
+            "evidence_id": "project-summit-edge-b-y"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "id": "project-summit-edge-root-a",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "summit-app @ 1.0.0 直接依赖 cache-adapter @ 2.0.0。"
+        },
+        {
+          "id": "project-summit-edge-a-x",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "cache-adapter @ 2.0.0 直接依赖 silver-core @ 1.2.0。"
+        },
+        {
+          "id": "project-summit-edge-root-b",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "summit-app @ 1.0.0 直接依赖 storage-adapter @ 3.0.0。"
+        },
+        {
+          "id": "project-summit-edge-b-y",
+          "package": "fixture",
+          "title": "依赖清单声明",
+          "text": "storage-adapter @ 3.0.0 直接依赖 silver-core @ 1.3.0。"
+        },
+        {
+          "id": "project-summit-doc-a",
+          "package": "fixture",
+          "title": "cache-adapter 审批记录",
+          "text": "cache-adapter @ 2.0.0 审批记录：升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-summit-doc-b",
+          "package": "fixture",
+          "title": "storage-adapter 回归测试",
+          "text": "storage-adapter @ 3.0.0 回归测试：发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-summit-doc-x",
+          "package": "fixture",
+          "title": "silver-core 性能基线",
+          "text": "silver-core @ 1.2.0 性能基线：需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-summit-doc-y",
+          "package": "fixture",
+          "title": "silver-core 权限审查",
+          "text": "silver-core @ 1.3.0 权限审查：需要核对角色与资源授权范围。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "project-summit-q1",
+          "category": "multi-hop",
+          "question": "summit-app 引入 silver-core 的依赖路径？",
+          "relevant_ids": [
+            "project-summit-edge-root-a",
+            "project-summit-edge-a-x",
+            "project-summit-edge-root-b",
+            "project-summit-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-summit-q2",
+          "category": "direct",
+          "question": "summit-app 到 cache-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-summit-edge-root-a"
+          ]
+        },
+        {
+          "id": "project-summit-q3",
+          "category": "direct",
+          "question": "summit-app 到 storage-adapter 的依赖路径？",
+          "relevant_ids": [
+            "project-summit-edge-root-b"
+          ]
+        },
+        {
+          "id": "project-summit-q4",
+          "category": "version-path",
+          "question": "summit-app 引入 silver-core 1.2.0 的路径？",
+          "relevant_ids": [
+            "project-summit-edge-root-a",
+            "project-summit-edge-a-x"
+          ]
+        },
+        {
+          "id": "project-summit-q5",
+          "category": "version-path",
+          "question": "summit-app 引入 silver-core 1.3.0 的路径？",
+          "relevant_ids": [
+            "project-summit-edge-root-b",
+            "project-summit-edge-b-y"
+          ]
+        },
+        {
+          "id": "project-summit-q6",
+          "category": "document",
+          "question": "cache-adapter 的审批记录要求？",
+          "relevant_ids": [
+            "project-summit-doc-a"
+          ]
+        },
+        {
+          "id": "project-summit-q7",
+          "category": "document",
+          "question": "storage-adapter 的回归测试要求？",
+          "relevant_ids": [
+            "project-summit-doc-b"
+          ]
+        },
+        {
+          "id": "project-summit-q8",
+          "category": "document",
+          "question": "silver-core 性能基线有哪些要求？",
+          "relevant_ids": [
+            "project-summit-doc-x"
+          ]
+        },
+        {
+          "id": "project-summit-q9",
+          "category": "unknown",
+          "question": "未收录的 zephyrwidget 是否兼容？",
+          "relevant_ids": []
+        },
+        {
+          "id": "project-summit-q10",
+          "category": "unknown",
+          "question": "zqxv-unlisted 安装许可？",
+          "relevant_ids": []
+        }
+      ],
+      "long_document": "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 导出快照需要覆盖两条业务入口并比对结果。\nsummit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 4：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 5：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 6：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 7：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 8：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 9：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 10：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 11：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 12：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 13：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 14：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 15：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 安全扫描记录需要注明扫描时间和规则版本。\nsummit-app 项目背景记录 16：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 17：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 18：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 19：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 20：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 21：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 22：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 23：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 24：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 25：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 26：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 27：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 28：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 29：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 30：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 性能基线需要记录响应时间与并发条件。\nsummit-app 项目背景记录 31：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 32：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 33：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 34：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 35：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 36：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 37：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 38：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 39：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 40：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 41：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 42：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 43：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 44：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 45：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 权限审查需要核对角色与资源授权范围。\nsummit-app 项目背景记录 46：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 47：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 48：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 49：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 50：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 51：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 52：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 53：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 54：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 升级前必须保存审批记录与变更单。\nsummit-app 项目背景记录 55：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 56：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 57：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 58：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 59：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 60：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 61：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 62：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 63：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 64：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 65：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 66：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 67：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 68：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 69：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 70：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 发布前必须执行回归测试并记录结果。\nsummit-app 项目背景记录 71：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 72：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 73：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 74：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 75：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 76：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 77：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 78：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 79：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 80：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 81：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 82：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 83：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 84：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 85：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 86：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 上线前需要演练回滚方案并核对旧版本配置。\nsummit-app 项目背景记录 87：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 88：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 89：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 90：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 91：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 92：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 93：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 94：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 95：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 96：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 97：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 98：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 99：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 100：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 101：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 102：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 灰度发布期间需要观察错误率并保留监控截图。\nsummit-app 项目背景记录 103：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 104：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 105：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 106：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 107：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 108：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 109：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 110：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 111：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 112：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 113：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 114：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 115：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 116：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 117：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 118：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 变更前必须完成数据备份并验证恢复流程。\nsummit-app 项目背景记录 119：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 120：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 121：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 122：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 123：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 124：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 125：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 126：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 127：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 128：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 129：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 130：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 131：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 132：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 133：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 134：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 接口契约需要核对字段类型与空值处理。\nsummit-app 项目背景记录 135：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 136：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 137：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 138：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 139：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 140：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 141：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 142：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 143：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 144：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 145：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 146：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 147：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 148：本段说明例行维护安排，与具体发布验收无关。\nsummit-app 项目背景记录 149：本段说明例行维护安排，与具体发布验收无关。",
+      "excerpt_questions": [
+        {
+          "id": "project-summit-span-1",
+          "question": "summit-app 的审批记录要求是什么？",
+          "expected_quote": "summit-app 升级前必须保存审批记录与变更单。"
+        },
+        {
+          "id": "project-summit-span-2",
+          "question": "summit-app 的回归测试要求是什么？",
+          "expected_quote": "summit-app 发布前必须执行回归测试并记录结果。"
+        },
+        {
+          "id": "project-summit-span-3",
+          "question": "summit-app 的回滚方案要求是什么？",
+          "expected_quote": "summit-app 上线前需要演练回滚方案并核对旧版本配置。"
+        },
+        {
+          "id": "project-summit-span-4",
+          "question": "summit-app 的灰度发布要求是什么？",
+          "expected_quote": "summit-app 灰度发布期间需要观察错误率并保留监控截图。"
+        },
+        {
+          "id": "project-summit-span-5",
+          "question": "summit-app 的数据备份要求是什么？",
+          "expected_quote": "summit-app 变更前必须完成数据备份并验证恢复流程。"
+        },
+        {
+          "id": "project-summit-span-6",
+          "question": "summit-app 的接口契约要求是什么？",
+          "expected_quote": "summit-app 接口契约需要核对字段类型与空值处理。"
+        },
+        {
+          "id": "project-summit-span-7",
+          "question": "summit-app 的导出快照要求是什么？",
+          "expected_quote": "summit-app 导出快照需要覆盖两条业务入口并比对结果。"
+        },
+        {
+          "id": "project-summit-span-8",
+          "question": "summit-app 的安全扫描要求是什么？",
+          "expected_quote": "summit-app 安全扫描记录需要注明扫描时间和规则版本。"
+        },
+        {
+          "id": "project-summit-span-9",
+          "question": "summit-app 的性能基线要求是什么？",
+          "expected_quote": "summit-app 性能基线需要记录响应时间与并发条件。"
+        },
+        {
+          "id": "project-summit-span-10",
+          "question": "summit-app 的权限审查要求是什么？",
+          "expected_quote": "summit-app 权限审查需要核对角色与资源授权范围。"
+        }
+      ]
+    }
+  ]
+}

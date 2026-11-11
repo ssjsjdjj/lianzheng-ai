@@ -1,0 +1,2968 @@
+{
+  "kind": "offline-retrieval-and-excerpt-comparison",
+  "fixture_sha256": "859fb972428c6a6eaa1967cdaae75de4b520d40d6b3fc491137da49420708d90",
+  "k": 5,
+  "model_calls": 0,
+  "embedding_api_calls": 0,
+  "human_reviewed": false,
+  "limitations": [
+    "合成数据按项目分组；模板相似，不能代表真实业务分布或独立专家评测。",
+    "三种检索使用相同清单边与文本。图增强复用项目路径遍历，但此实验不等于完整问答服务效果。",
+    "TF-IDF 是词项向量基线，不是语义 embedding；真实语义向量评测尚未运行。",
+    "只评证据检索和片段命中，不测答案正确率、语义支持率或幻觉率。",
+    "precision@k 分母固定为 k；空标注问题单独统计 abstained，不计入 recall/MRR。",
+    "延迟为本机单次测量，不代表线上 SLA；原文片段命中仅按预标注的完整句子判定。"
+  ],
+  "summaries": [
+    {
+      "split": "test",
+      "method": "bm25",
+      "questions": 30,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.325,
+      "mrr": 1.0,
+      "abstained": 1,
+      "mean_elapsed_ms": 0.117
+    },
+    {
+      "split": "test",
+      "method": "tfidf-cosine",
+      "questions": 30,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.325,
+      "mrr": 1.0,
+      "abstained": 1,
+      "mean_elapsed_ms": 0.085
+    },
+    {
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "questions": 30,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.325,
+      "mrr": 1.0,
+      "abstained": 1,
+      "mean_elapsed_ms": 0.085
+    },
+    {
+      "split": "test",
+      "method": "prefix-first4",
+      "questions": 30,
+      "expected_quote_found": 0.0333,
+      "mean_elapsed_ms": 0.079
+    },
+    {
+      "split": "test",
+      "method": "question-ranked4",
+      "questions": 30,
+      "expected_quote_found": 1,
+      "mean_elapsed_ms": 2.108
+    }
+  ],
+  "results": [
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q1",
+      "category": "multi-hop",
+      "question": "delta-app 引入 cobalt-core 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 1.1782
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q1",
+      "category": "multi-hop",
+      "question": "delta-app 引入 cobalt-core 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.109
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q1",
+      "category": "multi-hop",
+      "question": "delta-app 引入 cobalt-core 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1676
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q2",
+      "category": "direct",
+      "question": "delta-app 到 search-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-edge-a-x",
+        "project-delta-doc-a",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0911
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q2",
+      "category": "direct",
+      "question": "delta-app 到 search-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y",
+        "project-delta-doc-a"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1196
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q2",
+      "category": "direct",
+      "question": "delta-app 到 search-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-edge-a-x",
+        "project-delta-doc-a",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1208
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q3",
+      "category": "direct",
+      "question": "delta-app 到 index-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-root-a",
+        "project-delta-edge-b-y",
+        "project-delta-doc-b",
+        "project-delta-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0832
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q3",
+      "category": "direct",
+      "question": "delta-app 到 index-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-root-a",
+        "project-delta-edge-b-y",
+        "project-delta-edge-a-x",
+        "project-delta-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0843
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q3",
+      "category": "direct",
+      "question": "delta-app 到 index-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-root-a",
+        "project-delta-edge-b-y",
+        "project-delta-doc-b",
+        "project-delta-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1057
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q4",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-a-x",
+        "project-delta-doc-x",
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1064
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q4",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-a-x",
+        "project-delta-doc-x",
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1165
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q4",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-doc-x",
+        "project-delta-edge-root-b",
+        "project-delta-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1018
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q5",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-b-y",
+        "project-delta-doc-y",
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0736
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q5",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-b-y",
+        "project-delta-doc-y",
+        "project-delta-edge-root-a",
+        "project-delta-edge-root-b",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0793
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q5",
+      "category": "version-path",
+      "question": "delta-app 引入 cobalt-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y",
+        "project-delta-doc-y",
+        "project-delta-edge-root-a",
+        "project-delta-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.086
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q6",
+      "category": "document",
+      "question": "search-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-delta-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-a",
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-doc-x",
+        "project-delta-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0766
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q6",
+      "category": "document",
+      "question": "search-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-delta-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-a",
+        "project-delta-edge-a-x",
+        "project-delta-edge-root-a",
+        "project-delta-doc-x",
+        "project-delta-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0801
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q6",
+      "category": "document",
+      "question": "search-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-delta-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-a",
+        "project-delta-edge-root-a",
+        "project-delta-edge-a-x",
+        "project-delta-doc-x",
+        "project-delta-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0741
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q7",
+      "category": "document",
+      "question": "index-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-delta-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-b",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0718
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q7",
+      "category": "document",
+      "question": "index-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-delta-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-b",
+        "project-delta-edge-b-y",
+        "project-delta-edge-root-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0794
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q7",
+      "category": "document",
+      "question": "index-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-delta-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-b",
+        "project-delta-edge-root-b",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0729
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q8",
+      "category": "document",
+      "question": "cobalt-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-delta-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-x",
+        "project-delta-doc-y",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0785
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q8",
+      "category": "document",
+      "question": "cobalt-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-delta-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-x",
+        "project-delta-doc-y",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0791
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q8",
+      "category": "document",
+      "question": "cobalt-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-delta-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-delta-doc-x",
+        "project-delta-doc-y",
+        "project-delta-edge-a-x",
+        "project-delta-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0876
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0715
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0785
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0742
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-delta-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0597
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-delta-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0736
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-delta-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0631
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-1",
+      "question": "delta-app 的审批记录要求是什么？",
+      "expected_quote": "delta-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.2418
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-1",
+      "question": "delta-app 的审批记录要求是什么？",
+      "expected_quote": "delta-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。",
+        "delta-app 安全扫描记录需要注明扫描时间和规则版本。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.2439
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-2",
+      "question": "delta-app 的回归测试要求是什么？",
+      "expected_quote": "delta-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0751
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-2",
+      "question": "delta-app 的回归测试要求是什么？",
+      "expected_quote": "delta-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 性能基线需要记录响应时间与并发条件。",
+        "delta-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1282
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-3",
+      "question": "delta-app 的回滚方案要求是什么？",
+      "expected_quote": "delta-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0707
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-3",
+      "question": "delta-app 的回滚方案要求是什么？",
+      "expected_quote": "delta-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "delta-app 上线前需要演练回滚方案并核对旧版本配置。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0482
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-4",
+      "question": "delta-app 的灰度发布要求是什么？",
+      "expected_quote": "delta-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0711
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-4",
+      "question": "delta-app 的灰度发布要求是什么？",
+      "expected_quote": "delta-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "delta-app 灰度发布期间需要观察错误率并保留监控截图。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0788
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-5",
+      "question": "delta-app 的数据备份要求是什么？",
+      "expected_quote": "delta-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0707
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-5",
+      "question": "delta-app 的数据备份要求是什么？",
+      "expected_quote": "delta-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "delta-app 变更前必须完成数据备份并验证恢复流程。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0739
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-6",
+      "question": "delta-app 的接口契约要求是什么？",
+      "expected_quote": "delta-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0737
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-6",
+      "question": "delta-app 的接口契约要求是什么？",
+      "expected_quote": "delta-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "delta-app 接口契约需要核对字段类型与空值处理。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0526
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-7",
+      "question": "delta-app 的导出快照要求是什么？",
+      "expected_quote": "delta-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0695
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-7",
+      "question": "delta-app 的导出快照要求是什么？",
+      "expected_quote": "delta-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "delta-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0648
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-8",
+      "question": "delta-app 的安全扫描要求是什么？",
+      "expected_quote": "delta-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0729
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-8",
+      "question": "delta-app 的安全扫描要求是什么？",
+      "expected_quote": "delta-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "delta-app 安全扫描记录需要注明扫描时间和规则版本。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0667
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-9",
+      "question": "delta-app 的性能基线要求是什么？",
+      "expected_quote": "delta-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0705
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-9",
+      "question": "delta-app 的性能基线要求是什么？",
+      "expected_quote": "delta-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "delta-app 性能基线需要记录响应时间与并发条件。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0464
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-delta-span-10",
+      "question": "delta-app 的权限审查要求是什么？",
+      "expected_quote": "delta-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0702
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-delta-span-10",
+      "question": "delta-app 的权限审查要求是什么？",
+      "expected_quote": "delta-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "delta-app 权限审查需要核对角色与资源授权范围。",
+        "delta-app 升级前必须保存审批记录与变更单。",
+        "delta-app 发布前必须执行回归测试并记录结果。",
+        "delta-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0492
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q1",
+      "category": "multi-hop",
+      "question": "prairie-app 引入 maple-core 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0991
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q1",
+      "category": "multi-hop",
+      "question": "prairie-app 引入 maple-core 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0904
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q1",
+      "category": "multi-hop",
+      "question": "prairie-app 引入 maple-core 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1004
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q2",
+      "category": "direct",
+      "question": "prairie-app 到 event-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-a",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0777
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q2",
+      "category": "direct",
+      "question": "prairie-app 到 event-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-a"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0821
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q2",
+      "category": "direct",
+      "question": "prairie-app 到 event-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-a",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0832
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q3",
+      "category": "direct",
+      "question": "prairie-app 到 stream-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-b",
+        "project-prairie-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0733
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q3",
+      "category": "direct",
+      "question": "prairie-app 到 stream-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-b-y",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0797
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q3",
+      "category": "direct",
+      "question": "prairie-app 到 stream-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-b",
+        "project-prairie-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0795
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q4",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-x",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0717
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q4",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-x",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0774
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q4",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-x",
+        "project-prairie-edge-root-b",
+        "project-prairie-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0793
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q5",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-y",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.071
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q5",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-y",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-root-b",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0778
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q5",
+      "category": "version-path",
+      "question": "prairie-app 引入 maple-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y",
+        "project-prairie-doc-y",
+        "project-prairie-edge-root-a",
+        "project-prairie-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0801
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q6",
+      "category": "document",
+      "question": "event-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-prairie-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-a",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-x",
+        "project-prairie-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0731
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q6",
+      "category": "document",
+      "question": "event-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-prairie-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-root-a",
+        "project-prairie-doc-x",
+        "project-prairie-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0776
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q6",
+      "category": "document",
+      "question": "event-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-prairie-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-a",
+        "project-prairie-edge-root-a",
+        "project-prairie-edge-a-x",
+        "project-prairie-doc-x",
+        "project-prairie-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.084
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q7",
+      "category": "document",
+      "question": "stream-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-prairie-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-b",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1774
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q7",
+      "category": "document",
+      "question": "stream-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-prairie-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-b",
+        "project-prairie-edge-b-y",
+        "project-prairie-edge-root-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1526
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q7",
+      "category": "document",
+      "question": "stream-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-prairie-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-b",
+        "project-prairie-edge-root-b",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0907
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q8",
+      "category": "document",
+      "question": "maple-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-prairie-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-x",
+        "project-prairie-doc-y",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0852
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q8",
+      "category": "document",
+      "question": "maple-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-prairie-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-x",
+        "project-prairie-doc-y",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.084
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q8",
+      "category": "document",
+      "question": "maple-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-prairie-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-prairie-doc-x",
+        "project-prairie-doc-y",
+        "project-prairie-edge-a-x",
+        "project-prairie-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0803
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0708
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0762
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0728
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-prairie-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0718
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-prairie-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.074
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-prairie-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0628
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-1",
+      "question": "prairie-app 的审批记录要求是什么？",
+      "expected_quote": "prairie-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0807
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-1",
+      "question": "prairie-app 的审批记录要求是什么？",
+      "expected_quote": "prairie-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。",
+        "prairie-app 安全扫描记录需要注明扫描时间和规则版本。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1535
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-2",
+      "question": "prairie-app 的回归测试要求是什么？",
+      "expected_quote": "prairie-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0694
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-2",
+      "question": "prairie-app 的回归测试要求是什么？",
+      "expected_quote": "prairie-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。",
+        "prairie-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0841
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-3",
+      "question": "prairie-app 的回滚方案要求是什么？",
+      "expected_quote": "prairie-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0689
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-3",
+      "question": "prairie-app 的回滚方案要求是什么？",
+      "expected_quote": "prairie-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "prairie-app 上线前需要演练回滚方案并核对旧版本配置。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0859
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-4",
+      "question": "prairie-app 的灰度发布要求是什么？",
+      "expected_quote": "prairie-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0682
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-4",
+      "question": "prairie-app 的灰度发布要求是什么？",
+      "expected_quote": "prairie-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "prairie-app 灰度发布期间需要观察错误率并保留监控截图。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0805
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-5",
+      "question": "prairie-app 的数据备份要求是什么？",
+      "expected_quote": "prairie-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0693
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-5",
+      "question": "prairie-app 的数据备份要求是什么？",
+      "expected_quote": "prairie-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "prairie-app 变更前必须完成数据备份并验证恢复流程。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0921
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-6",
+      "question": "prairie-app 的接口契约要求是什么？",
+      "expected_quote": "prairie-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0698
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-6",
+      "question": "prairie-app 的接口契约要求是什么？",
+      "expected_quote": "prairie-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "prairie-app 接口契约需要核对字段类型与空值处理。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0907
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-7",
+      "question": "prairie-app 的导出快照要求是什么？",
+      "expected_quote": "prairie-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0684
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-7",
+      "question": "prairie-app 的导出快照要求是什么？",
+      "expected_quote": "prairie-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "prairie-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.3659
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-8",
+      "question": "prairie-app 的安全扫描要求是什么？",
+      "expected_quote": "prairie-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.1321
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-8",
+      "question": "prairie-app 的安全扫描要求是什么？",
+      "expected_quote": "prairie-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "prairie-app 安全扫描记录需要注明扫描时间和规则版本。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.3627
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-9",
+      "question": "prairie-app 的性能基线要求是什么？",
+      "expected_quote": "prairie-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0705
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-9",
+      "question": "prairie-app 的性能基线要求是什么？",
+      "expected_quote": "prairie-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "prairie-app 性能基线需要记录响应时间与并发条件。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0899
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-prairie-span-10",
+      "question": "prairie-app 的权限审查要求是什么？",
+      "expected_quote": "prairie-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。",
+        "prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0688
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-prairie-span-10",
+      "question": "prairie-app 的权限审查要求是什么？",
+      "expected_quote": "prairie-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "prairie-app 权限审查需要核对角色与资源授权范围。",
+        "prairie-app 升级前必须保存审批记录与变更单。",
+        "prairie-app 发布前必须执行回归测试并记录结果。",
+        "prairie-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0368
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q1",
+      "category": "multi-hop",
+      "question": "summit-app 引入 silver-core 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.1009
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q1",
+      "category": "multi-hop",
+      "question": "summit-app 引入 silver-core 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0873
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q1",
+      "category": "multi-hop",
+      "question": "summit-app 引入 silver-core 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.8,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0978
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q2",
+      "category": "direct",
+      "question": "summit-app 到 cache-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-edge-a-x",
+        "project-summit-doc-a",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0767
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q2",
+      "category": "direct",
+      "question": "summit-app 到 cache-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y",
+        "project-summit-doc-a"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0802
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q2",
+      "category": "direct",
+      "question": "summit-app 到 cache-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-edge-a-x",
+        "project-summit-doc-a",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0814
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q3",
+      "category": "direct",
+      "question": "summit-app 到 storage-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-root-a",
+        "project-summit-edge-b-y",
+        "project-summit-doc-b",
+        "project-summit-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0741
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q3",
+      "category": "direct",
+      "question": "summit-app 到 storage-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-root-a",
+        "project-summit-edge-b-y",
+        "project-summit-edge-a-x",
+        "project-summit-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.079
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q3",
+      "category": "direct",
+      "question": "summit-app 到 storage-adapter 的依赖路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-root-a",
+        "project-summit-edge-b-y",
+        "project-summit-doc-b",
+        "project-summit-edge-a-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0902
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q4",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-a-x",
+        "project-summit-doc-x",
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0724
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q4",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-a-x",
+        "project-summit-doc-x",
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0788
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q4",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.2.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-doc-x",
+        "project-summit-edge-root-b",
+        "project-summit-doc-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0808
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q5",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-b-y",
+        "project-summit-doc-y",
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0713
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q5",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-b-y",
+        "project-summit-doc-y",
+        "project-summit-edge-root-a",
+        "project-summit-edge-root-b",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0796
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q5",
+      "category": "version-path",
+      "question": "summit-app 引入 silver-core 1.3.0 的路径？",
+      "relevant_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "retrieved_ids": [
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y",
+        "project-summit-doc-y",
+        "project-summit-edge-root-a",
+        "project-summit-doc-x"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0792
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q6",
+      "category": "document",
+      "question": "cache-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-summit-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-a",
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-doc-x",
+        "project-summit-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0726
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q6",
+      "category": "document",
+      "question": "cache-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-summit-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-a",
+        "project-summit-edge-a-x",
+        "project-summit-edge-root-a",
+        "project-summit-doc-x",
+        "project-summit-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0782
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q6",
+      "category": "document",
+      "question": "cache-adapter 的审批记录要求？",
+      "relevant_ids": [
+        "project-summit-doc-a"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-a",
+        "project-summit-edge-root-a",
+        "project-summit-edge-a-x",
+        "project-summit-doc-x",
+        "project-summit-doc-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0728
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q7",
+      "category": "document",
+      "question": "storage-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-summit-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-b",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0699
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q7",
+      "category": "document",
+      "question": "storage-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-summit-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-b",
+        "project-summit-edge-b-y",
+        "project-summit-edge-root-b"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0777
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q7",
+      "category": "document",
+      "question": "storage-adapter 的回归测试要求？",
+      "relevant_ids": [
+        "project-summit-doc-b"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-b",
+        "project-summit-edge-root-b",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0734
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q8",
+      "category": "document",
+      "question": "silver-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-summit-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-x",
+        "project-summit-doc-y",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.078
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q8",
+      "category": "document",
+      "question": "silver-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-summit-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-x",
+        "project-summit-doc-y",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0773
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q8",
+      "category": "document",
+      "question": "silver-core 性能基线有哪些要求？",
+      "relevant_ids": [
+        "project-summit-doc-x"
+      ],
+      "retrieved_ids": [
+        "project-summit-doc-x",
+        "project-summit-doc-y",
+        "project-summit-edge-a-x",
+        "project-summit-edge-b-y"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "mrr": 1.0,
+      "abstained": null,
+      "elapsed_ms": 0.0776
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0719
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0748
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q9",
+      "category": "unknown",
+      "question": "未收录的 zephyrwidget 是否兼容？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0722
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25",
+      "id": "project-summit-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0609
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "tfidf-cosine",
+      "id": "project-summit-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.0754
+    },
+    {
+      "task": "retrieval",
+      "split": "test",
+      "method": "bm25+graph-paths",
+      "id": "project-summit-q10",
+      "category": "unknown",
+      "question": "zqxv-unlisted 安装许可？",
+      "relevant_ids": [],
+      "retrieved_ids": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "abstained": true,
+      "elapsed_ms": 0.063
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-1",
+      "question": "summit-app 的审批记录要求是什么？",
+      "expected_quote": "summit-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0782
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-1",
+      "question": "summit-app 的审批记录要求是什么？",
+      "expected_quote": "summit-app 升级前必须保存审批记录与变更单。",
+      "selected_quotes": [
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。",
+        "summit-app 安全扫描记录需要注明扫描时间和规则版本。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1473
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-2",
+      "question": "summit-app 的回归测试要求是什么？",
+      "expected_quote": "summit-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.072
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-2",
+      "question": "summit-app 的回归测试要求是什么？",
+      "expected_quote": "summit-app 发布前必须执行回归测试并记录结果。",
+      "selected_quotes": [
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 性能基线需要记录响应时间与并发条件。",
+        "summit-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1007
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-3",
+      "question": "summit-app 的回滚方案要求是什么？",
+      "expected_quote": "summit-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0696
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-3",
+      "question": "summit-app 的回滚方案要求是什么？",
+      "expected_quote": "summit-app 上线前需要演练回滚方案并核对旧版本配置。",
+      "selected_quotes": [
+        "summit-app 上线前需要演练回滚方案并核对旧版本配置。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1265
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-4",
+      "question": "summit-app 的灰度发布要求是什么？",
+      "expected_quote": "summit-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0707
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-4",
+      "question": "summit-app 的灰度发布要求是什么？",
+      "expected_quote": "summit-app 灰度发布期间需要观察错误率并保留监控截图。",
+      "selected_quotes": [
+        "summit-app 灰度发布期间需要观察错误率并保留监控截图。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0696
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-5",
+      "question": "summit-app 的数据备份要求是什么？",
+      "expected_quote": "summit-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0693
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-5",
+      "question": "summit-app 的数据备份要求是什么？",
+      "expected_quote": "summit-app 变更前必须完成数据备份并验证恢复流程。",
+      "selected_quotes": [
+        "summit-app 变更前必须完成数据备份并验证恢复流程。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0942
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-6",
+      "question": "summit-app 的接口契约要求是什么？",
+      "expected_quote": "summit-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0707
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-6",
+      "question": "summit-app 的接口契约要求是什么？",
+      "expected_quote": "summit-app 接口契约需要核对字段类型与空值处理。",
+      "selected_quotes": [
+        "summit-app 接口契约需要核对字段类型与空值处理。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.078
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-7",
+      "question": "summit-app 的导出快照要求是什么？",
+      "expected_quote": "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 0.07
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-7",
+      "question": "summit-app 的导出快照要求是什么？",
+      "expected_quote": "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+      "selected_quotes": [
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0732
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-8",
+      "question": "summit-app 的安全扫描要求是什么？",
+      "expected_quote": "summit-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0695
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-8",
+      "question": "summit-app 的安全扫描要求是什么？",
+      "expected_quote": "summit-app 安全扫描记录需要注明扫描时间和规则版本。",
+      "selected_quotes": [
+        "summit-app 安全扫描记录需要注明扫描时间和规则版本。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0709
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-9",
+      "question": "summit-app 的性能基线要求是什么？",
+      "expected_quote": "summit-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.0697
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-9",
+      "question": "summit-app 的性能基线要求是什么？",
+      "expected_quote": "summit-app 性能基线需要记录响应时间与并发条件。",
+      "selected_quotes": [
+        "summit-app 性能基线需要记录响应时间与并发条件。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 权限审查需要核对角色与资源授权范围。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.0633
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "prefix-first4",
+      "id": "project-summit-span-10",
+      "question": "summit-app 的权限审查要求是什么？",
+      "expected_quote": "summit-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 导出快照需要覆盖两条业务入口并比对结果。",
+        "summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。",
+        "summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。"
+      ],
+      "expected_quote_found": false,
+      "elapsed_ms": 0.069
+    },
+    {
+      "task": "excerpt",
+      "split": "test",
+      "method": "question-ranked4",
+      "id": "project-summit-span-10",
+      "question": "summit-app 的权限审查要求是什么？",
+      "expected_quote": "summit-app 权限审查需要核对角色与资源授权范围。",
+      "selected_quotes": [
+        "summit-app 权限审查需要核对角色与资源授权范围。",
+        "summit-app 升级前必须保存审批记录与变更单。",
+        "summit-app 发布前必须执行回归测试并记录结果。",
+        "summit-app 性能基线需要记录响应时间与并发条件。"
+      ],
+      "expected_quote_found": true,
+      "elapsed_ms": 2.1132
+    }
+  ]
+}

@@ -1,0 +1,858 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>链证 AI · 可复现评测</title><style>
+    body{font:15px/1.65 system-ui,sans-serif;max-width:1200px;margin:40px auto;padding:0 24px;color:#183d3b;background:#f5f8f7}h1{font-size:30px}table{border-collapse:collapse;background:white;width:100%;font-size:13px}td,th{text-align:left;padding:10px;border-bottom:1px solid #dce7e4}.table{overflow:auto}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:18px}details{margin:10px 0}code{overflow-wrap:anywhere}.badge{background:#d5eee7;padding:8px 14px;display:inline-block;border-radius:6px}</style>
+    <h1>链证 AI · 可复现离线评测</h1><p class="badge">零模型调用 · 原始结果与失败记录全部保留</p><ul><li>合成数据按项目分组；模板相似，不能代表真实业务分布或独立专家评测。</li><li>三种检索使用相同清单边与文本。图增强复用项目路径遍历，但此实验不等于完整问答服务效果。</li><li>TF-IDF 是词项向量基线，不是语义 embedding；真实语义向量评测尚未运行。</li><li>只评证据检索和片段命中，不测答案正确率、语义支持率或幻觉率。</li><li>precision@k 分母固定为 k；空标注问题单独统计 abstained，不计入 recall/MRR。</li><li>延迟为本机单次测量，不代表线上 SLA；原文片段命中仅按预标注的完整句子判定。</li></ul><p>固定样本 SHA-256：<code>859fb972428c6a6eaa1967cdaae75de4b520d40d6b3fc491137da49420708d90</code></p><div class="table"><table><thead><tr><th>split</th><th>method</th><th>questions</th><th>recall_at_k</th><th>precision_at_k</th><th>mrr</th><th>abstained</th><th>expected_quote_found</th><th>mean_elapsed_ms</th></tr></thead><tbody><tr><td>dev</td><td>bm25</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.107</td></tr><tr><td>dev</td><td>tfidf-cosine</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.08</td></tr><tr><td>dev</td><td>bm25+graph-paths</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.082</td></tr><tr><td>dev</td><td>prefix-first4</td><td>30</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.0667</td><td>0.076</td></tr><tr><td>dev</td><td>question-ranked4</td><td>30</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1</td><td>2.097</td></tr><tr><td>test</td><td>bm25</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.117</td></tr><tr><td>test</td><td>tfidf-cosine</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.085</td></tr><tr><td>test</td><td>bm25+graph-paths</td><td>30</td><td>1.0</td><td>0.325</td><td>1.0</td><td>1</td><td>—</td><td>0.085</td></tr><tr><td>test</td><td>prefix-first4</td><td>30</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0.0333</td><td>0.079</td></tr><tr><td>test</td><td>question-ranked4</td><td>30</td><td>—</td><td>—</td><td>—</td><td>—</td><td>1</td><td>2.108</td></tr></tbody></table></div><p>recall_at_k：标注证据召回率；precision_at_k：前 k 项标注命中数 / k；mrr：首条标注证据排名倒数；abstained：无标注证据问题返回空结果的比例；expected_quote_found：目标原句进入候选片段的比例。所有数值均为本合成集结果。</p><h2>未完全命中的运行记录（57 条）</h2><details><summary>dev · project-harbor-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-2&quot;,
+  &quot;question&quot;: &quot;harbor-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0709
+}</pre></details><details><summary>dev · project-harbor-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-3&quot;,
+  &quot;question&quot;: &quot;harbor-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0696
+}</pre></details><details><summary>dev · project-harbor-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-4&quot;,
+  &quot;question&quot;: &quot;harbor-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0712
+}</pre></details><details><summary>dev · project-harbor-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-5&quot;,
+  &quot;question&quot;: &quot;harbor-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0691
+}</pre></details><details><summary>dev · project-harbor-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-6&quot;,
+  &quot;question&quot;: &quot;harbor-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0688
+}</pre></details><details><summary>dev · project-harbor-span-7 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-7&quot;,
+  &quot;question&quot;: &quot;harbor-app 的导出快照要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0691
+}</pre></details><details><summary>dev · project-harbor-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-8&quot;,
+  &quot;question&quot;: &quot;harbor-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0688
+}</pre></details><details><summary>dev · project-harbor-span-9 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-9&quot;,
+  &quot;question&quot;: &quot;harbor-app 的性能基线要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 性能基线需要记录响应时间与并发条件。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0681
+}</pre></details><details><summary>dev · project-harbor-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-harbor-span-10&quot;,
+  &quot;question&quot;: &quot;harbor-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;harbor-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;harbor-app 升级前必须保存审批记录与变更单。&quot;,
+    &quot;harbor-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;harbor-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0677
+}</pre></details><details><summary>dev · project-forest-span-1 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-1&quot;,
+  &quot;question&quot;: &quot;forest-app 的审批记录要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 升级前必须保存审批记录与变更单。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0714
+}</pre></details><details><summary>dev · project-forest-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-2&quot;,
+  &quot;question&quot;: &quot;forest-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0704
+}</pre></details><details><summary>dev · project-forest-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-3&quot;,
+  &quot;question&quot;: &quot;forest-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0699
+}</pre></details><details><summary>dev · project-forest-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-4&quot;,
+  &quot;question&quot;: &quot;forest-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0687
+}</pre></details><details><summary>dev · project-forest-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-5&quot;,
+  &quot;question&quot;: &quot;forest-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0684
+}</pre></details><details><summary>dev · project-forest-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-6&quot;,
+  &quot;question&quot;: &quot;forest-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0697
+}</pre></details><details><summary>dev · project-forest-span-7 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-7&quot;,
+  &quot;question&quot;: &quot;forest-app 的导出快照要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0687
+}</pre></details><details><summary>dev · project-forest-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-8&quot;,
+  &quot;question&quot;: &quot;forest-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0694
+}</pre></details><details><summary>dev · project-forest-span-9 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-9&quot;,
+  &quot;question&quot;: &quot;forest-app 的性能基线要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 性能基线需要记录响应时间与并发条件。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0681
+}</pre></details><details><summary>dev · project-forest-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-forest-span-10&quot;,
+  &quot;question&quot;: &quot;forest-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;forest-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;forest-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;forest-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0688
+}</pre></details><details><summary>dev · project-orbit-span-1 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-1&quot;,
+  &quot;question&quot;: &quot;orbit-app 的审批记录要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 升级前必须保存审批记录与变更单。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0736
+}</pre></details><details><summary>dev · project-orbit-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-2&quot;,
+  &quot;question&quot;: &quot;orbit-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0707
+}</pre></details><details><summary>dev · project-orbit-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-3&quot;,
+  &quot;question&quot;: &quot;orbit-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0731
+}</pre></details><details><summary>dev · project-orbit-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-4&quot;,
+  &quot;question&quot;: &quot;orbit-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.071
+}</pre></details><details><summary>dev · project-orbit-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-5&quot;,
+  &quot;question&quot;: &quot;orbit-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0702
+}</pre></details><details><summary>dev · project-orbit-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-6&quot;,
+  &quot;question&quot;: &quot;orbit-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0706
+}</pre></details><details><summary>dev · project-orbit-span-7 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-7&quot;,
+  &quot;question&quot;: &quot;orbit-app 的导出快照要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.07
+}</pre></details><details><summary>dev · project-orbit-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-8&quot;,
+  &quot;question&quot;: &quot;orbit-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0696
+}</pre></details><details><summary>dev · project-orbit-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;dev&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-orbit-span-10&quot;,
+  &quot;question&quot;: &quot;orbit-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;orbit-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;orbit-app 性能基线需要记录响应时间与并发条件。&quot;,
+    &quot;orbit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;orbit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0756
+}</pre></details><details><summary>test · project-delta-span-1 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-1&quot;,
+  &quot;question&quot;: &quot;delta-app 的审批记录要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 升级前必须保存审批记录与变更单。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.2418
+}</pre></details><details><summary>test · project-delta-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-2&quot;,
+  &quot;question&quot;: &quot;delta-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0751
+}</pre></details><details><summary>test · project-delta-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-3&quot;,
+  &quot;question&quot;: &quot;delta-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0707
+}</pre></details><details><summary>test · project-delta-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-4&quot;,
+  &quot;question&quot;: &quot;delta-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0711
+}</pre></details><details><summary>test · project-delta-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-5&quot;,
+  &quot;question&quot;: &quot;delta-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0707
+}</pre></details><details><summary>test · project-delta-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-6&quot;,
+  &quot;question&quot;: &quot;delta-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0737
+}</pre></details><details><summary>test · project-delta-span-7 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-7&quot;,
+  &quot;question&quot;: &quot;delta-app 的导出快照要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0695
+}</pre></details><details><summary>test · project-delta-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-8&quot;,
+  &quot;question&quot;: &quot;delta-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0729
+}</pre></details><details><summary>test · project-delta-span-9 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-9&quot;,
+  &quot;question&quot;: &quot;delta-app 的性能基线要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 性能基线需要记录响应时间与并发条件。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0705
+}</pre></details><details><summary>test · project-delta-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-delta-span-10&quot;,
+  &quot;question&quot;: &quot;delta-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;delta-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;delta-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;delta-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0702
+}</pre></details><details><summary>test · project-prairie-span-1 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-1&quot;,
+  &quot;question&quot;: &quot;prairie-app 的审批记录要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 升级前必须保存审批记录与变更单。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0807
+}</pre></details><details><summary>test · project-prairie-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-2&quot;,
+  &quot;question&quot;: &quot;prairie-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0694
+}</pre></details><details><summary>test · project-prairie-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-3&quot;,
+  &quot;question&quot;: &quot;prairie-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0689
+}</pre></details><details><summary>test · project-prairie-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-4&quot;,
+  &quot;question&quot;: &quot;prairie-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0682
+}</pre></details><details><summary>test · project-prairie-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-5&quot;,
+  &quot;question&quot;: &quot;prairie-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0693
+}</pre></details><details><summary>test · project-prairie-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-6&quot;,
+  &quot;question&quot;: &quot;prairie-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0698
+}</pre></details><details><summary>test · project-prairie-span-7 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-7&quot;,
+  &quot;question&quot;: &quot;prairie-app 的导出快照要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0684
+}</pre></details><details><summary>test · project-prairie-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-8&quot;,
+  &quot;question&quot;: &quot;prairie-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.1321
+}</pre></details><details><summary>test · project-prairie-span-9 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-9&quot;,
+  &quot;question&quot;: &quot;prairie-app 的性能基线要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 性能基线需要记录响应时间与并发条件。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0705
+}</pre></details><details><summary>test · project-prairie-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-prairie-span-10&quot;,
+  &quot;question&quot;: &quot;prairie-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;prairie-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;prairie-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;prairie-app 项目背景记录 3：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0688
+}</pre></details><details><summary>test · project-summit-span-1 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-1&quot;,
+  &quot;question&quot;: &quot;summit-app 的审批记录要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 升级前必须保存审批记录与变更单。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0782
+}</pre></details><details><summary>test · project-summit-span-2 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-2&quot;,
+  &quot;question&quot;: &quot;summit-app 的回归测试要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 发布前必须执行回归测试并记录结果。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.072
+}</pre></details><details><summary>test · project-summit-span-3 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-3&quot;,
+  &quot;question&quot;: &quot;summit-app 的回滚方案要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 上线前需要演练回滚方案并核对旧版本配置。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0696
+}</pre></details><details><summary>test · project-summit-span-4 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-4&quot;,
+  &quot;question&quot;: &quot;summit-app 的灰度发布要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 灰度发布期间需要观察错误率并保留监控截图。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0707
+}</pre></details><details><summary>test · project-summit-span-5 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-5&quot;,
+  &quot;question&quot;: &quot;summit-app 的数据备份要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 变更前必须完成数据备份并验证恢复流程。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0693
+}</pre></details><details><summary>test · project-summit-span-6 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-6&quot;,
+  &quot;question&quot;: &quot;summit-app 的接口契约要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 接口契约需要核对字段类型与空值处理。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0707
+}</pre></details><details><summary>test · project-summit-span-8 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-8&quot;,
+  &quot;question&quot;: &quot;summit-app 的安全扫描要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 安全扫描记录需要注明扫描时间和规则版本。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0695
+}</pre></details><details><summary>test · project-summit-span-9 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-9&quot;,
+  &quot;question&quot;: &quot;summit-app 的性能基线要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 性能基线需要记录响应时间与并发条件。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.0697
+}</pre></details><details><summary>test · project-summit-span-10 · prefix-first4</summary><pre>{
+  &quot;task&quot;: &quot;excerpt&quot;,
+  &quot;split&quot;: &quot;test&quot;,
+  &quot;method&quot;: &quot;prefix-first4&quot;,
+  &quot;id&quot;: &quot;project-summit-span-10&quot;,
+  &quot;question&quot;: &quot;summit-app 的权限审查要求是什么？&quot;,
+  &quot;expected_quote&quot;: &quot;summit-app 权限审查需要核对角色与资源授权范围。&quot;,
+  &quot;selected_quotes&quot;: [
+    &quot;summit-app 项目背景记录 0：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 导出快照需要覆盖两条业务入口并比对结果。&quot;,
+    &quot;summit-app 项目背景记录 1：本段说明例行维护安排，与具体发布验收无关。&quot;,
+    &quot;summit-app 项目背景记录 2：本段说明例行维护安排，与具体发布验收无关。&quot;
+  ],
+  &quot;expected_quote_found&quot;: false,
+  &quot;elapsed_ms&quot;: 0.069
+}</pre></details></html>

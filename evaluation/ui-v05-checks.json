@@ -1,0 +1,24 @@
+{
+  "release": "0.5.0",
+  "date": "2026-11-11",
+  "method": "Computer Use browser interactions and read-only DOM checks",
+  "environment": "127.0.0.1:8771; isolated SQLite database; external HTTP blocked",
+  "model_calls": 0,
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    "Local answer exposes two separate verified path buttons",
+    "First path highlights shop/export/lodash-export and exactly two declared edges",
+    "Second path highlights shop/report/lodash-report and exactly two declared edges",
+    "Restore shows all four representative edges and clears selected path banner",
+    "Historical fixture displays replay label without model call",
+    "Unicode offsets highlight second occurrence of repeated quote after emoji; one mark only",
+    "Graph quote button links to its matching path and two edges",
+    "Snapshot change clears answer and prior path highlighting",
+    "Text baseline answer has zero graph path buttons",
+    "Benchmark page renders all ten method/split summaries and 57 misses",
+    "Browser console error log empty for exercised flows",
+    "New conversation clears active path and old answer"
+  ],
+  "note": "UI fixture explicitly marked as mock; not a supplier model acceptance test. Historical v0.4 checks remain separate."
+}
