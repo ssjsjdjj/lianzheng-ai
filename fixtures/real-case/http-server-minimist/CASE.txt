@@ -1,0 +1,20 @@
+真实修复案例：http-server v14.1.0 / minimist
+
+这是实际下载、安装、修改、运行测试和查询 OSV 后保留的本地实验记录。
+原始来源、commit、MIT 许可证、原始与实际生成的锁文件、测试日志、迁移差异、完整公告及哈希均可核查。
+目标公告：GHSA-xvch-5gv4-984h。已声明位置的目标命中观察为 2 → 1 → 0。
+第二条路径属于开发测试工具的 bundled 依赖，不等同于运行时生产暴露。
+
+复现环境与操作：
+1. 从 case.json source.archive_url 获取固定源码并核对 archive_sha256，解压到独立目录。
+2. 使用 Node 24.22.0。原始锁对应旧 npm 格式，执行 npx --yes --package=npm@8.19.4 npm ci --ignore-scripts --no-audit --no-fund。
+3. 仅为测试子进程设置 TZ=UTC0，执行 npm test -- --no-coverage --no-esm --jobs=1。
+4. 执行 npx --yes --package=npm@8.19.4 npm install minimist@1.2.8 --save-exact --ignore-scripts --no-audit --no-fund，保留 partial 锁，再执行步骤3测试。
+5. 执行 npx --yes --package=npm@8.19.4 npm install --save-dev --save-exact tap@16.3.10 --ignore-scripts --no-audit --no-fund。npm 实际生成 after 锁。
+6. 原测试在新版 tap 有两条 API 语义失败。先运行 npm test -- --no-coverage --jobs=1 可复现，再应用 test-api-migration.patch（只替换两条包含断言）或将 after.main.test.js 放到 test/main.test.js，再运行同一命令。
+7. 三次成功记录均为395通过、1项上游 Windows 平台跳过。失败与迁移记录也保留。原始运行命令、时间与环境见 commands.json。
+
+当日 registry 可变的传递依赖解析结果已保存在实际生成的锁中。重放既有 after 环境时，应使用 after.package.json 与 after.package-lock.json 并执行固定 npm ci，而不重新解算版本来冒充逐字复现。
+离线校验命令：python scripts/verify_real_case.py。该命令只核对本包哈希、真实记录的一致性和冻结查询命中，不联网、不安装依赖、不重新运行上游测试。
+
+范围限制：依赖图保留缺边提示；无目标匹配不是生产安全证明。tap16已经停止维护；本案例用于历史公告和迁移过程演示，不是生产升级建议。完整限制见 case.json limitations。

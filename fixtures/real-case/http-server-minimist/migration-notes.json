@@ -1,0 +1,16 @@
+{
+  "package": "tap",
+  "from_version": "14.11.0",
+  "target_version": "16.3.10",
+  "source_url": "https://node-tap.org/changelog/#15-0-2021-03-30",
+  "observed_at": "2026-11-11T03:06:42.003357+00:00",
+  "reason": "从 tap 15 起，has 与 match 分离并弃用旧 aliases；实际安装的 tap 16.3.10 在 lib/synonyms.js 将 includes 映射为 has，lib/tap.js 将该别名接到 libtap 的 has。旧测试把它用于字符串包含，因此升级后两条断言不再具有原有行为。",
+  "migration": "仅把两条 t.includes(res.body, expected) 改为 t.ok(res.body.includes(expected), message)。仍要求相同的 ./file 与 ./canYouSeeMe 子串存在；不删除检查、不添加跳过。",
+  "before_file": "before.main.test.js",
+  "after_file": "after.main.test.js",
+  "patch_file": "test-api-migration.patch",
+  "failure_log": "after-before-migration-test.log.txt",
+  "success_log": "after-test.log.txt",
+  "fixture_kind": "本地实际升级实验中的测试 API 迁移说明，不是上游已合并修复公告。",
+  "version_limit": "tap 16 已停止维护，此版本只用于解释指定历史公告的修复及迁移过程，不是当前生产升级推荐。"
+}

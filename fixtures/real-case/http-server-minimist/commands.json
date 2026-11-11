@@ -1,0 +1,147 @@
+{
+  "installation_and_updates": [
+    {
+      "command": "npm ci --ignore-scripts --no-audit --no-fund",
+      "exit_code": 1,
+      "started_at": "2026-11-11T02:45:10.319443+00:00",
+      "finished_at": "2026-11-11T02:45:11.729710+00:00"
+    },
+    {
+      "command": "npx --yes --package=npm@8.19.4 npm ci --ignore-scripts --no-audit --no-fund",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:45:34.957880+00:00",
+      "finished_at": "2026-11-11T02:45:59.806354+00:00"
+    },
+    {
+      "command": "npx.cmd --yes --package=npm@8.19.4 npm install minimist@1.2.8 --save-exact --ignore-scripts --no-audit --no-fund",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:53:28.235397+00:00",
+      "finished_at": "2026-11-11T02:53:30.950836+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "796f6476f814d8f67741171d2343c5a2389f7afb502d5669589b84da01f344c3"
+    },
+    {
+      "command": "npx.cmd --yes --package=npm@8.19.4 npm install --save-dev --save-exact tap@16.3.10 --ignore-scripts --no-audit --no-fund",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:54:21.726540+00:00",
+      "finished_at": "2026-11-11T02:54:39.357240+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "1c4052d21175735b678c9e732c85f48c706b7283fa7672d1362c8c13a191faaf"
+    }
+  ],
+  "test_runs": {
+    "before": {
+      "command": "npm.cmd test -- --no-coverage --no-esm --jobs=1",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:52:25.536052+00:00",
+      "finished_at": "2026-11-11T02:53:07.359347+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "c2c49899baad1056455227f90108caa8bf358da24719e9074f6e77b32754c398",
+      "passing": 395,
+      "pending": 1,
+      "failing": 0,
+      "log_file": "before-test.log.txt",
+      "log_sha256": "86ca43f627d358a0024111e92af66ed1201b29d1971deaf33fbbb76328b85692",
+      "raw_log_sha256": "86ca43f627d358a0024111e92af66ed1201b29d1971deaf33fbbb76328b85692",
+      "path_normalized": true,
+      "test_files": 31,
+      "modified_assertions": 0,
+      "summary": "31 个上游测试文件；395 项断言通过，1 个上游既有 Windows 平台跳过，0 项失败。原始上游测试断言未修改。",
+      "coverage_enabled": false
+    },
+    "partial": {
+      "command": "npm.cmd test -- --no-coverage --no-esm --jobs=1",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:53:39.370831+00:00",
+      "finished_at": "2026-11-11T02:54:21.044223+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "796f6476f814d8f67741171d2343c5a2389f7afb502d5669589b84da01f344c3",
+      "passing": 395,
+      "pending": 1,
+      "failing": 0,
+      "log_file": "partial-test.log.txt",
+      "log_sha256": "b1907bed9ca94c55e3f2c3b9ae5c057f7665bcf9367765cd1b3748bc3c1b0aca",
+      "raw_log_sha256": "b1907bed9ca94c55e3f2c3b9ae5c057f7665bcf9367765cd1b3748bc3c1b0aca",
+      "path_normalized": true,
+      "test_files": 31,
+      "modified_assertions": 0,
+      "summary": "31 个上游测试文件；395 项断言通过，1 个上游既有 Windows 平台跳过，0 项失败。原始上游测试断言未修改。",
+      "coverage_enabled": false
+    },
+    "after_before_migration": {
+      "command": "npm.cmd test -- --no-coverage --jobs=1",
+      "exit_code": 1,
+      "started_at": "2026-11-11T02:55:45.370217+00:00",
+      "finished_at": "2026-11-11T02:56:27.322141+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "1c4052d21175735b678c9e732c85f48c706b7283fa7672d1362c8c13a191faaf",
+      "passing": 393,
+      "pending": 1,
+      "failing": 2,
+      "log_file": "after-before-migration-test.log.txt",
+      "log_sha256": "7b85d923ffc2405fd2843e403f1410d9fcfb690939bcb8a70761e92d4f49c8ea",
+      "raw_log_sha256": "7b85d923ffc2405fd2843e403f1410d9fcfb690939bcb8a70761e92d4f49c8ea",
+      "path_normalized": true,
+      "test_files": 31,
+      "modified_assertions": 0,
+      "summary": "31 个上游测试文件；393 项断言通过，1 个上游既有 Windows 平台跳过，2 项失败。原始上游测试断言未修改。",
+      "coverage_enabled": false
+    },
+    "after": {
+      "command": "npm.cmd test -- --no-coverage --jobs=1",
+      "exit_code": 0,
+      "started_at": "2026-11-11T02:58:58.575769+00:00",
+      "finished_at": "2026-11-11T02:59:38.837464+00:00",
+      "environment": {
+        "node": "v24.22.0",
+        "npm": "11.19.1",
+        "SPAWN_WRAP_SHIM_ROOT": "../runtime",
+        "ignore_scripts": true,
+        "TZ": "UTC0"
+      },
+      "lockfile_sha256": "1c4052d21175735b678c9e732c85f48c706b7283fa7672d1362c8c13a191faaf",
+      "passing": 395,
+      "pending": 1,
+      "failing": 0,
+      "log_file": "after-test.log.txt",
+      "log_sha256": "ee2208c7491184f4ddd2762f0a13cb5c7e31064b26b1446a65b517d9010623a4",
+      "raw_log_sha256": "ee2208c7491184f4ddd2762f0a13cb5c7e31064b26b1446a65b517d9010623a4",
+      "path_normalized": true,
+      "test_files": 31,
+      "modified_assertions": 2,
+      "summary": "31 个上游测试文件；395 项断言通过，1 个上游既有 Windows 平台跳过，0 项失败。2 处字符串包含断言按新测试框架 API 等价迁移。",
+      "coverage_enabled": false
+    }
+  },
+  "normalization": "Local workspace prefixes in published logs are replaced with [case-workdir]; raw log SHA-256 values are retained. No output or failures were removed from the published final and pre-migration test logs."
+}

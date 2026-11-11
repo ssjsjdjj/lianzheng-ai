@@ -1,0 +1,624 @@
+
+> http-server@14.1.0 test
+> tap --reporter=spec test/*.test.js --no-coverage --no-esm --jobs=1
+
+
+(node:48808) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/304.test.js
+  304_not_modified_strong
+    √ first request should be a 200
+    √ second request should be a 304
+    √ should return a strong etag
+
+  304_not_modified_weak
+    √ first request should be a 200
+    √ second request should be a 304
+    √ should return a weak etag
+
+  304_not_modified_strong_compare
+    √ first request should be a 200
+    √ second request with a strong etag should be 304
+    √ third request with a weak etag should be 200
+
+  304_not_modified_weak_compare
+    √ first request should be a 200
+    √ second request with a strong etag should be 304
+    √ third request with a weak etag should be 304
+
+test/accept-encoding.test.js
+(node:58624) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  properly handles whitespace in accept-encoding
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  properly handles single accept-encoding entry
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+test/cache.test.js
+(node:62128) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  custom cache option number
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+
+  custom cache option string
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+
+  custom cache option function returning a number
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+
+  custom cache option function returning a string
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+    √ should not error
+    √ a.txt should be found
+    √ should be equal
+
+test/cli.test.js
+  setting port via cli - custom port
+    √ http-server started
+    √ a successful request from the server was made
+
+  setting mimeTypes via cli - .types file
+    √ http-server started
+    √ a successful request from the server was made
+    √ should not error
+    √ should be equal
+
+  setting mimeTypes via cli - directly
+    √ http-server started
+    √ a successful request from the server was made
+    √ should not error
+    √ should be equal
+
+  --proxy requires you to specify a protocol
+    √ should be equal
+
+test/compression.test.js
+(node:42620) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  serves brotli-encoded file when available
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  serves gzip-encoded file when brotli not available
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  serves gzip-encoded file when brotli not accepted
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  serves gzip-encoded file when brotli not enabled
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  serves unencoded file when compression not accepted
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  serves unencoded file when compression not enabled
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+test/content-type.test.js
+(node:45088) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  global default contentType
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  content type text
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  content type binary
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  charset arabic
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  charset Shift_JIS
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+(node:56508) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/core-error.test.js
+  core
+    √ status code for `404`
+    √ status code for `something non-existant`
+
+(node:54756) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/core.test.js
+  core
+    √ status code for `a.txt`
+    √ content-type for `a.txt`
+    √ body for `a.txt`
+    √ status code for `b.txt`
+    √ content-type for `b.txt`
+    √ body for `b.txt`
+    √ status code for `c.js`
+    √ content-type for `c.js`
+    √ body for `c.js`
+    √ status code for `404`
+    √ content-type for `404`
+    √ body for `404`
+    √ status code for `d.js`
+    √ content-type for `d.js`
+    √ body for `d.js`
+    √ status code for `e.js`
+    √ content-type for `e.js`
+    √ body for `e.js`
+    √ status code for `subdir/e.html`
+    √ content-type for `subdir/e.html`
+    √ body for `subdir/e.html`
+    √ status code for `subdir/index.html`
+    √ content-type for `subdir/index.html`
+    √ body for `subdir/index.html`
+    √ status code for `subdir?foo=bar`
+    √ location for `subdir?foo=bar`
+    √ status code for `subdir`
+    √ location for `subdir`
+    √ status code for `compress/foo_2.js`
+    √ status code for `%E4%B8%AD%E6%96%87`
+    √ location for `%E4%B8%AD%E6%96%87`
+    √ status code for `%E4%B8%AD%E6%96%87?%E5%A4%AB=%E5%B7%B4`
+    √ location for `%E4%B8%AD%E6%96%87?%E5%A4%AB=%E5%B7%B4`
+    √ status code for `subdir_with space`
+    √ location for `subdir_with space`
+    √ status code for `subdir_with space/index.html`
+    √ content-type for `subdir_with space/index.html`
+    √ body for `subdir_with space/index.html`
+    √ status code for `subdir/e?foo=bar`
+    √ content-type for `subdir/e?foo=bar`
+    √ body for `subdir/e?foo=bar`
+    √ status code for `subdir/e?foo=bar.ext`
+    √ content-type for `subdir/e?foo=bar.ext`
+    √ body for `subdir/e?foo=bar.ext`
+    √ status code for `subdir/`
+    √ content-type for `subdir/`
+    √ body for `subdir/`
+    √ status code for `emptyDir/`
+    √ body for `emptyDir/`
+    √ status code for `something-non-existant`
+    √ content-type for `something-non-existant`
+    √ body for `something-non-existant`
+    √ status code for `containsSymlink/`
+    √ body for `containsSymlink/`
+    √ status code for `gzip/real_ecstatic.gz`
+    √ content-type for `gzip/real_ecstatic.gz`
+    √ body for `gzip/real_ecstatic.gz`
+    √ status code for `gzip/fake_ecstatic.gz`
+    √ content-type for `gzip/fake_ecstatic.gz`
+    √ body for `gzip/fake_ecstatic.gz`
+    √ status code for `compress/foo.js`
+    √ body for `compress/foo.js`
+    √ status code for `gzip/real_ecstatic`
+    √ content-type for `gzip/real_ecstatic`
+    √ body for `gzip/real_ecstatic`
+    √ status code for `gzip/`
+    √ content-type for `gzip/`
+    √ body for `gzip/`
+    √ status code for `gzip/fake_ecstatic`
+    √ content-type for `gzip/fake_ecstatic`
+    √ body for `gzip/fake_ecstatic`
+    √ status code for `gzip/a`
+    √ content-type for `gzip/a`
+    √ body for `gzip/a`
+
+test/cors.test.js
+(node:50748) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  cors defaults to false
+    √ should not error
+    √ should be equal
+    √ type is undefined
+    √ type is undefined
+
+  cors set to false
+    √ should not error
+    √ should be equal
+    √ type is undefined
+    √ type is undefined
+
+  cors set to true
+    √ should not error
+    √ should be equal
+    √ should be equal
+    √ should be equal
+
+  CORS set to true
+    √ should not error
+    √ should be equal
+    √ should be equal
+    √ should be equal
+
+test/custom-content-type-file-secret.test.js
+(node:63096) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  custom contentType via .types file
+    √ should not error
+    √ custom_mime_type.opml should be found
+    √ should be equal
+
+test/custom-content-type-file.test.js
+  throws when custom contentType .types file does not exist
+    √ bound setup
+
+(node:42584) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  custom contentType via .types file
+    √ should not error
+    √ custom_mime_type.opml should be found
+    √ should be equal
+
+test/custom-content-type.test.js
+(node:63336) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  custom contentType
+    √ should not error
+    √ custom_mime_type.opml should be found
+    √ should be equal
+
+test/default-default-ext.test.js
+(node:66876) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  default defaultExt
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+test/enotdir.test.js
+(node:51528) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  should handle ENOTDIR as 404
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+(node:67564) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/escaping.test.js
+  escaping special characters
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+(node:57692) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/express-error.test.js
+  express
+    √ status code for `something non-existant`
+    √ status code for `404`
+    √ cache control for `404`
+
+(node:66908) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/express.test.js
+  express
+    √ status code for `a.txt`
+    √ cache control for `a.txt`
+    √ content-type for `a.txt`
+    √ body for `a.txt`
+    √ status code for `c.js`
+    √ cache control for `c.js`
+    √ content-type for `c.js`
+    √ body for `c.js`
+    √ status code for `b.txt`
+    √ cache control for `b.txt`
+    √ content-type for `b.txt`
+    √ body for `b.txt`
+    √ status code for `404`
+    √ cache control for `404`
+    √ content-type for `404`
+    √ body for `404`
+    √ status code for `d.js`
+    √ cache control for `d.js`
+    √ content-type for `d.js`
+    √ body for `d.js`
+    √ status code for `e.js`
+    √ cache control for `e.js`
+    √ content-type for `e.js`
+    √ body for `e.js`
+    √ status code for `subdir/e.html`
+    √ cache control for `subdir/e.html`
+    √ content-type for `subdir/e.html`
+    √ body for `subdir/e.html`
+    √ status code for `subdir`
+    √ status code for `%E4%B8%AD%E6%96%87`
+    √ status code for `subdir/e?foo=bar.ext`
+    √ cache control for `subdir/e?foo=bar.ext`
+    √ content-type for `subdir/e?foo=bar.ext`
+    √ body for `subdir/e?foo=bar.ext`
+    √ status code for `subdir/index.html`
+    √ cache control for `subdir/index.html`
+    √ content-type for `subdir/index.html`
+    √ body for `subdir/index.html`
+    √ status code for `subdir?foo=bar`
+    √ status code for `%E4%B8%AD%E6%96%87?%E5%A4%AB=%E5%B7%B4`
+    √ status code for `subdir_with space/index.html`
+    √ cache control for `subdir_with space/index.html`
+    √ content-type for `subdir_with space/index.html`
+    √ body for `subdir_with space/index.html`
+    √ status code for `subdir/e?foo=bar`
+    √ cache control for `subdir/e?foo=bar`
+    √ content-type for `subdir/e?foo=bar`
+    √ body for `subdir/e?foo=bar`
+    √ status code for `subdir/`
+    √ cache control for `subdir/`
+    √ content-type for `subdir/`
+    √ body for `subdir/`
+    √ status code for `compress/foo_2.js`
+    √ cache control for `compress/foo_2.js`
+    √ status code for `subdir_with space`
+    √ status code for `something-non-existant`
+    √ content-type for `something-non-existant`
+    √ body for `something-non-existant`
+    √ status code for `emptyDir/`
+    √ body for `emptyDir/`
+    √ status code for `containsSymlink/`
+    √ body for `containsSymlink/`
+    √ status code for `gzip/real_ecstatic.gz`
+    √ cache control for `gzip/real_ecstatic.gz`
+    √ content-type for `gzip/real_ecstatic.gz`
+    √ body for `gzip/real_ecstatic.gz`
+    √ status code for `gzip/fake_ecstatic.gz`
+    √ cache control for `gzip/fake_ecstatic.gz`
+    √ content-type for `gzip/fake_ecstatic.gz`
+    √ body for `gzip/fake_ecstatic.gz`
+    √ status code for `compress/foo.js`
+    √ cache control for `compress/foo.js`
+    √ body for `compress/foo.js`
+    √ status code for `gzip/real_ecstatic`
+    √ cache control for `gzip/real_ecstatic`
+    √ content-type for `gzip/real_ecstatic`
+    √ body for `gzip/real_ecstatic`
+    √ status code for `gzip/`
+    √ cache control for `gzip/`
+    √ content-type for `gzip/`
+    √ body for `gzip/`
+    √ status code for `gzip/fake_ecstatic`
+    √ cache control for `gzip/fake_ecstatic`
+    √ content-type for `gzip/fake_ecstatic`
+    √ body for `gzip/fake_ecstatic`
+    √ status code for `gzip/a`
+    √ content-type for `gzip/a`
+    √ body for `gzip/a`
+
+test/headers.test.js
+(node:67048) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  headers object
+    √ should not error
+    √ should be equal
+    √ should be equal
+    √ should be equal
+
+  header string
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  header array
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+  H array
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+test/illegal-access-date.test.js
+(node:54020) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  if-modified-since illegal access date
+    √ should not error
+    √ should be equal
+
+(node:64724) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/main.test.js
+  http-server main
+    Regression: don't crash on control characters in query strings
+      √ should be equal
+    √ should be equal
+    √ should be equal
+    √ 204
+    √ should be equal
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ Bad auth returns expected body
+    √ should be equal
+    √ should match pattern provided
+    √ expect truthy value
+    √ should be equal
+    √ should be equal
+    √ expect truthy value
+    √ should be equal
+    √ should match pattern provided
+    √ should match pattern provided
+    √ should be equal
+    √ should be equal
+    √ root file content matches
+    √ should be equal
+    √ should be equal
+    √ should be equal
+    √ auth-protected file with good auth has expected file content
+    √ should be equal
+    √ should be equal
+    √ numeric auth with good auth has expected file content
+    √ expect truthy value
+    √ should be equal
+(node:64724) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+    √ proxied root file content matches
+    √ expect truthy value
+    √ should be equal
+    √ proxy fallback root file content matches
+
+test/malformed-dir.test.js
+(node:61616) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  malformed showdir uri
+    √ should not error
+    √ should be equal
+
+test/malformed.test.js
+(node:44892) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  malformed uri
+    √ should not error
+    √ should be equal
+
+test/mime.test.js
+  mime package lookup
+    √ should be equal
+    √ should be equal
+    √ should be equal
+    √ should be equal
+    √ should be equal
+    √ should be equal
+    √ should be equal
+
+  custom definition of mime-type with the mime package
+    √ should be equal
+
+  custom definition of mime-type with a .types file
+    √ should be equal
+    √ bound
+
+test/pathname-encoding.test.js
+  - test/pathname-encoding.test.js
+test/process-env-port.test.js
+  sane port
+    √ http-server was started
+    √ a successful request from the server was made
+
+  floating point port
+    √ http-server was started
+    √ a successful request from the server was made
+
+  insane port: -1
+    √ err:Running on invalid port not allowed
+
+  insane port: 65537
+    √ err:Running on invalid port not allowed
+
+(node:48040) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/proxy-options.test.js
+  proxy options
+    √ expect truthy value
+    √ should be equal
+(node:48040) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+    √ proxied root file content matches
+    √ expect truthy value
+    √ should be equal
+    √ proxy fallback root file content matches
+
+test/range.test.js
+(node:67232) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  range
+    √ should not error
+    √ partial content status code
+    √ should be equal
+    √ should be equal
+
+  range past the end
+    √ should not error
+    √ partial content status code
+    √ should be equal
+    √ should be equal
+
+  NaN range
+    √ should not error
+    √ range error status code
+    √ should be equal
+
+  flipped range
+    √ should not error
+    √ range error status code
+    √ should be equal
+
+  partial range
+    √ should not error
+    √ partial content status code
+    √ should be equal
+    √ should be equal
+    √ should be equal
+
+  include last-modified, etag and cache-control headers
+    √ should not error
+    √ expect truthy value
+    √ expect truthy value
+    √ expect truthy value
+
+(node:48860) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/showdir-href-encoding.test.js
+  url encoding in href
+    √ We found the right href
+
+(node:4716) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/showdir-search-encoding.test.js
+  directory listing with query string specified
+    √ We found the encoded href
+    √ We didn't find the unencoded query string value
+
+(node:67316) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+test/showdir-with-spaces.test.js
+  directory listing when directory name contains spaces
+    √ We found the right href
+
+test/trailing-slash.test.js
+(node:49592) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  should not add trailing slash when showDir and autoIndex are off
+    √ should not error
+    √ should be equal
+    √ should be equal
+
+
+  395 passing (41s)
+  1 pending
