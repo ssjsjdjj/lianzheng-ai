@@ -1,7 +1,7 @@
 {
   "name": "lianzheng-ai-browser-tests",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
-  "scripts": {"test:browser": "node tests/browser-smoke.cjs", "test:knowledge": "node tests/browser-knowledge.cjs", "test:models": "node tests/browser-models.cjs", "test:gpt": "node tests/browser-gpt.cjs"},
+  "scripts": {"test:browser": "node tests/browser-smoke.cjs", "test:knowledge": "node tests/browser-knowledge.cjs", "test:models": "node tests/browser-models.cjs", "test:gpt": "node tests/browser-gpt.cjs", "test:query-state": "node tests/browser-v09-query.cjs"},
   "devDependencies": {"playwright": "1.62.1"}
 }
