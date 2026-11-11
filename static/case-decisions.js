@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const esc=escapeHTML,instances=new Map();let nextId=0,data=null,loading=false,error='',serial=0;
+  const esc=escapeHTML,instances=new Map();let nextId=0,data=null,loading=false,error='',serial=0,controller=null;
   let from='before',to='after';
   const launch=document.createElement('button');launch.type='button';launch.className='button secondary';launch.textContent='方案与时间线';
   document.querySelector('.heading-actions').append(launch);
@@ -55,12 +55,13 @@
     host.querySelectorAll('[data-decisions-refresh]').forEach(b=>b.addEventListener('click',()=>read().catch(()=>{})));
     host.querySelectorAll('[data-decisions-select]').forEach(select=>select.addEventListener('change',()=>{if(select.dataset.decisionsSelect==='from')from=select.value;else to=select.value;read().catch(()=>{});}));
   }
-  async function read(){const ticket=++serial,start=from,end=to;loading=true;error='';renderAll();try{
-    const result=await api(`/api/real-case/decisions?from_phase=${encodeURIComponent(start)}&to_phase=${encodeURIComponent(end)}`);
+  async function read(){const ticket=++serial,start=from,end=to;controller?.abort();const active=new AbortController();controller=active;const timeout=setTimeout(()=>active.abort(),15000);loading=true;error='';renderAll();try{
+    const result=await api(`/api/real-case/decisions?from_phase=${encodeURIComponent(start)}&to_phase=${encodeURIComponent(end)}`,{signal:active.signal});
     if(ticket!==serial||from!==start||to!==end)return null;
     if(result.available&&(result.kind!=='recorded-experiment'||result.selected_comparison.from_phase!==start||result.selected_comparison.to_phase!==end))throw Error('方案响应与所选清单不一致，请重新读取。');
     data=result;window.dispatchEvent(new CustomEvent('lianzheng-decisions-changed',{detail:data}));return result;
-  }catch(e){if(ticket===serial){error=e.message;data=null;}throw e;}finally{if(ticket===serial){loading=false;renderAll();}}}
+  }catch(e){if(ticket===serial){error=e.name==='AbortError'?'读取方案超时，请检查本机服务并重新读取。':e.message;data=null;}throw e;}finally{clearTimeout(timeout);if(ticket===serial){controller=null;loading=false;renderAll();}}}
+  function reset(){++serial;controller?.abort();controller=null;from='before';to='after';data=null;loading=false;error='';renderAll();return null;}
   function mount(container,options={}){const id=++nextId,host=document.createElement('div');container.append(host);
     const instance={host,compact:!!options.compact,tab:options.tab==='timeline'?'timeline':'plans'};instances.set(id,instance);render(instance);
     if(!data&&!loading)read().catch(()=>{});
@@ -70,5 +71,5 @@
   async function open(options={}){panel.hidden=false;if(!workbench)workbench=mount(panel,options);else workbench.setTab(options.tab);
     if(data&&!loading)await read().catch(()=>{});if(!panel.hidden)panel.scrollIntoView({behavior:'smooth',block:'start'});return data;}
   launch.addEventListener('click',()=>open());
-  window.lianzhengCaseDecisions={open,mount,refresh:read,state:()=>data};
+  window.lianzhengCaseDecisions={open,mount,refresh:read,reset,state:()=>data};
 })();

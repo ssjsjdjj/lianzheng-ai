@@ -11,7 +11,7 @@
 .presenter-dialog button:hover:not(:disabled){background:#e9f4ef;border-color:#85aea0}
 .presenter-top button{background:#25474a;color:#ecf7f1;border-color:#456966;font-size:12px}
 .presenter-top button:hover:not(:disabled){background:#335b5a;color:white}
-.presenter-steps{flex:none;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;background:white;border-bottom:1px solid #dbe7e2;padding:0 clamp(20px,4vw,60px)}
+.presenter-steps{flex:none;display:grid;grid-template-columns:repeat(var(--presenter-step-count,7),minmax(0,1fr));gap:0;background:white;border-bottom:1px solid #dbe7e2;padding:0 clamp(20px,4vw,60px)}
 .presenter-steps button{display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-bottom:3px solid transparent;border-radius:0;color:#738b84;padding:18px 8px;font-size:13px;background:none}
 .presenter-steps button span{font-size:11px;font-weight:700;color:#a3b5ad}
 .presenter-steps button.active{border-bottom-color:#148371;color:#146b5c;background:#f0f8f4;font-weight:700}.presenter-steps button.active span{color:#18816d}
@@ -131,3 +131,5 @@
  .presenter-comparison-host .tc-column-heading{padding-bottom:9px}
  .presenter-comparison-host .tc-metrics{padding:12px 0}
 }
+.presenter-top-actions [data-presenter-action="restart"]{font-size:11px;padding:9px 11px}.presenter-dialog:focus-visible{outline:none}
+@media(max-width:520px){.presenter-top{align-items:flex-start}.presenter-top-actions{max-width:230px}.presenter-top-actions [data-presenter-action="restart"]{font-size:9px;padding:7px}.presenter-quick .presenter-steps button{padding-top:12px;padding-bottom:12px}}

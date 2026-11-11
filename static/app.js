@@ -7,10 +7,15 @@ const state = {snapshots:[], id:'demo-before', analysis:null, mode:'graph', view
 let toastTimer;
 function toast(message) {$('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),4500);}
 async function api(path, options={}) {
-  const response = await fetch(path,{...options, headers:{'Content-Type':'application/json',...options.headers}});
-  let result;try {result=await response.json();} catch {throw new Error('服务响应无效，请检查后端日志。');}
-  if (!response.ok) throw new Error(typeof result.detail==='string' ? result.detail : '请求未通过校验，请检查输入内容。');
-  return result;
+  const bounded=!options.signal&&['GET','HEAD'].includes((options.method||'GET').toUpperCase());
+  const controller=bounded?new AbortController():null,timer=controller?setTimeout(()=>controller.abort(),15000):null;
+  try{
+    const response = await fetch(path,{...options, ...(controller?{signal:controller.signal}:{}),headers:{'Content-Type':'application/json',...options.headers}});
+    let result;try {result=await response.json();} catch(error) {if(error.name==='AbortError')throw error;throw new Error('服务响应无效，请检查后端日志。');}
+    if (!response.ok) throw new Error(typeof result.detail==='string' ? result.detail : '请求未通过校验，请检查输入内容。');
+    return result;
+  }catch(error){if(controller?.signal.aborted)throw new Error('本机服务读取超时，请确认服务运行后重试。');throw error;}
+  finally{if(timer)clearTimeout(timer);}
 }
 async function busy(button, text, action) {const old=button.textContent; button.disabled=true;button.textContent=text;try{return await action();}catch(error){toast(error.message);return null;}finally{button.disabled=false;button.textContent=old;}}
 const dateLabel = value => value ? new Date(value).toLocaleString('zh-CN',{hour12:false}) : '未查询';
