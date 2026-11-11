@@ -18,6 +18,9 @@ from .remediation import RemediationTasks
 from .claim_review import ClaimReviews
 from .simulation import RepairSimulation
 from .real_case import RealCase
+from .task_compare import TaskComparison
+from .case_decisions import CaseDecisions
+from .case_export import evidence_archive
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -91,13 +94,42 @@ class SimulationRequest(BaseModel):
     selected_refs:list[str]=Field(default_factory=list,max_length=2000)
 
 
+class TaskComparisonRequest(BaseModel):
+    task_id:str=Field(min_length=1,max_length=100)
+    use_model:bool=Field(default=False,strict=True)
+
+
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.7.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.8.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
     tasks=RemediationTasks(service);reviews=ClaimReviews(service)
     simulation=RepairSimulation(service);real_case=RealCase(service,ROOT/'fixtures/real-case')
+    task_comparison=TaskComparison(service,real_case,ROOT/'fixtures/task-comparison.json')
+    case_decisions=CaseDecisions(real_case)
+
+    @app.get('/api/task-comparison/tasks')
+    def comparison_tasks():return task_comparison.tasks()
+
+    @app.post('/api/task-comparison/run')
+    def run_task_comparison(body:TaskComparisonRequest):
+        return task_comparison.run(body.task_id,use_model=body.use_model)
+
+    @app.get('/api/real-case/decisions')
+    def decisions(from_phase:str='before',to_phase:str='after'):
+        return case_decisions.report(from_phase=from_phase,to_phase=to_phase)
+
+    @app.get('/api/real-case/decisions/report')
+    def decisions_report(from_phase:str='before',to_phase:str='after'):
+        result=case_decisions.report(from_phase=from_phase,to_phase=to_phase)
+        return Response(json.dumps(result,ensure_ascii=False,indent=2),media_type='application/json',
+                        headers={'Content-Disposition':'attachment; filename="case-decisions.json"'})
+
+    @app.get('/api/real-case/evidence.zip')
+    def case_evidence():
+        return Response(evidence_archive(real_case,case_decisions),media_type='application/zip',
+                        headers={'Content-Disposition':'attachment; filename="lianzheng-case-evidence.zip"'})
 
     @app.post('/api/snapshots/{identifier}/simulation')
     def simulate(identifier:str,body:SimulationRequest):
@@ -188,7 +220,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.7.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.8.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}
