@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "case_bundle_sha256": "a737ddf3a515dee53f77a1d5394ca1a7a47ebf07a7bea124470e6968a62e3975",
+  "project_count": 1,
+  "authorship": "Developer-curated questions and source-derived reference evidence over one real frozen project. Not collected user questions or independent expert labels.",
+  "human_reviewed": false,
+  "independent_test": false,
+  "split": "development-only",
+  "tasks": [
+    {"id":"before-occurrences","phase":"before","category":"精确位置","question":"修复前的 minimist@1.2.5 出现在哪些精确安装位置？同版本是否代表同一处安装？","expected_evidence_ids":["node-fc29ba90bcf6675c","node-1885d486413babd2"]},
+    {"id":"before-direct","phase":"before","category":"引入关系","question":"修复前 http-server 直接引入 minimist@1.2.5 的依赖关系是什么？","expected_evidence_ids":["node-fc29ba90bcf6675c"]},
+    {"id":"before-tap","phase":"before","category":"引入路径","question":"修复前 tap 间接引入 minimist@1.2.5 的安装位置和路径如何核对？","expected_evidence_ids":["node-1885d486413babd2","node-2b55f24169d8d8c3"]},
+    {"id":"before-development","phase":"before","category":"范围边界","question":"tap 内的 minimist dev 标记是什么？能否仅凭此标记判断生产环境暴露？","expected_evidence_ids":["node-1885d486413babd2","coverage"]},
+    {"id":"before-coverage","phase":"before","category":"覆盖缺项","question":"修复前 fsevents 可选依赖缺失意味着什么？依赖图完整吗？","expected_evidence_ids":["coverage"]},
+    {"id":"before-tests","phase":"before","category":"测试凭据","question":"修复前实际测试用了什么命令，多少通过和跳过，是否测量覆盖率？","expected_evidence_ids":["tests"]},
+    {"id":"partial-remaining","phase":"partial","category":"修复残留","question":"只更新直接依赖后 minimist 目标公告还残留哪些安装位置？","expected_evidence_ids":["node-1885d486413babd2","target-summary"]},
+    {"id":"partial-direct","phase":"partial","category":"精确版本","question":"部分修复阶段直接 minimist 的版本和安装位置是什么，目标公告是否仍命中它？","expected_evidence_ids":["node-fc29ba90bcf6675c"]},
+    {"id":"partial-tap","phase":"partial","category":"引入路径","question":"部分修复阶段 tap 到 minimist 的间接引入关系为什么仍需检查？","expected_evidence_ids":["node-1885d486413babd2","node-2b55f24169d8d8c3"]},
+    {"id":"partial-runtime","phase":"partial","category":"证据不足","question":"部分修复后的服务在生产环境中是否正在被攻击？有哪些实际运行证据？","expected_evidence_ids":["coverage"]},
+    {"id":"after-target","phase":"after","category":"消失与未知","question":"最终阶段 minimist 目标公告的匹配数是多少，能据此证明全项目安全上线吗？","expected_evidence_ids":["target-summary","coverage"]},
+    {"id":"after-tests","phase":"after","category":"测试凭据","question":"最终成功测试用了什么命令，结果如何，是否本次重新执行？","expected_evidence_ids":["tests"]},
+    {"id":"after-failure","phase":"after","category":"失败记录","question":"升级 tap 后、尚未迁移断言时实际测试是否失败，记录是多少？","expected_evidence_ids":["migration-failure"]},
+    {"id":"after-migration","phase":"after","category":"迁移差异","question":"为什么将两条 t.includes 改为 t.ok？有哪些实际测试 API 迁移差异？","expected_evidence_ids":["migration-patch","migration-failure"]},
+    {"id":"after-deployment","phase":"after","category":"证据不足","question":"最终阶段有实际生产部署或攻击调用轨迹吗，能否证明业务兼容？","expected_evidence_ids":["coverage"]},
+    {"id":"before-source","phase":"before","category":"来源核查","question":"http-server 案例来自哪个固定提交，是什么许可证，是否上游已合并修复？","expected_evidence_ids":["source"]}
+  ]
+}
