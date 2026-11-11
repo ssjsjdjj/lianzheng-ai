@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from urllib.parse import quote
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, Response
@@ -15,6 +16,8 @@ from .providers import ModelError
 from .reports import report_html
 from .remediation import RemediationTasks
 from .claim_review import ClaimReviews
+from .simulation import RepairSimulation
+from .real_case import RealCase
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -83,12 +86,34 @@ class CallPolicy(BaseModel):
     enabled:bool=Field(default=True,strict=True)
 
 
+class SimulationRequest(BaseModel):
+    focus:str=Field(min_length=1,max_length=200)
+    selected_refs:list[str]=Field(default_factory=list,max_length=2000)
+
+
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.6.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.7.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
     tasks=RemediationTasks(service);reviews=ClaimReviews(service)
+    simulation=RepairSimulation(service);real_case=RealCase(service,ROOT/'fixtures/real-case')
+
+    @app.post('/api/snapshots/{identifier}/simulation')
+    def simulate(identifier:str,body:SimulationRequest):
+        return simulation.preview(identifier,body.focus,body.selected_refs)
+
+    @app.get('/api/real-case')
+    def case_status():return real_case.status()
+
+    @app.post('/api/real-case/prepare')
+    def case_prepare():return real_case.prepare()
+
+    @app.get('/api/real-case/files/{name:path}')
+    def case_file(name:str):
+        filename,content=real_case.file_bytes(name)
+        return Response(content,media_type='application/octet-stream',
+                        headers={'Content-Disposition':"attachment; filename*=UTF-8''"+quote(filename,safe='')})
 
     @app.get('/api/model/usage')
     def model_usage():return service.call_control.public()
@@ -163,7 +188,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.6.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.7.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}
@@ -273,6 +298,10 @@ def create_app(database=None,seed=True):
     @app.get('/api/snapshots/{identifier}/report')
     def report(identifier:str,format:str='json'):
         result=service.analyze(identifier)
+        if identifier.startswith('case-'):
+            case=real_case.status()
+            if identifier in {case.get('before_snapshot_id'),case.get('partial_snapshot_id'),case.get('after_snapshot_id')}:
+                result['real_case']=case
         result['history']=service.store.history(identifier)
         result['remediation_tasks']=tasks.list(identifier)
         result['claim_reviews']=[reviews.get(identifier,h['id']) for h in result['history'] if (h['answer'].get('model_explanation') or {}).get('claims')]

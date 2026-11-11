@@ -98,6 +98,27 @@ def _task_report(parts,value,esc):
         parts.append('</section>')
 
 
+def _real_case_report(parts,case,esc):
+    case=_mapping(case)
+    if not case.get('available'):return
+    source=_mapping(case.get('source'));verification=_mapping(case.get('verification'))
+    parts.extend(['<h2>真实项目修复实验 · 冻结记录</h2>',
+                  '<p>'+esc(case.get('title'))+'<br>上游来源：'+esc(source.get('url'))+'<br>固定提交：'+esc(source.get('commit'))+'<br>许可证：'+esc(source.get('license'))+'<br>案例清单 SHA256：'+esc(case.get('bundle_sha256'))+'</p>',
+                  '<p>'+esc(case.get('note'))+'</p>',
+                  '<p>目标公告：'+esc(case.get('focus'))+'。冻结记录中的目标匹配位置：修复前 '+esc(verification.get('target_before_count','未知'))+'；仅直接依赖更新后 '+esc(verification.get('target_partial_count','未记录'))+'；最终依赖更新后 '+esc(verification.get('target_after_count','未知'))+'。</p>'])
+    if verification.get('comparison_complete') is not True:
+        parts.append('<p>案例清单存在结构缺失或未查询项，不能把已知位置的命中下降解释成完整风险已消除。</p>')
+    if _mapping(case.get('current')).get('basis_matches_recorded') is False:
+        parts.append('<p>当前工作空间的扫描依据已变化；上述冻结实验记录不能替代当前复核。</p>')
+    tests=_mapping(case.get('tests'))
+    for phase,label in [('before','修复前'),('partial','仅直接依赖更新后'),('after','最终依赖更新后')]:
+        record=_mapping(tests.get(phase))
+        if not record:continue
+        parts.append('<h3>'+label+'的实际执行记录</h3><p>命令：'+esc(record.get('command'))+'<br>退出码：'+esc(record.get('exit_code','未提供'))+'<br>范围：'+esc(record.get('summary'))+'<br>日志：'+esc(record.get('log_file'))+'</p>')
+    parts.append('<p>推演结果不写入本报告的实际扫描数据。测试命令成功仅覆盖其已执行范围，不代表生产兼容或全部业务测试通过。</p>')
+    for note in case.get('limitations',[]) if isinstance(case.get('limitations'),list) else []:parts.append('<p>'+esc(note)+'</p>')
+
+
 def report_html(analysis,history,comparison=None,model=None):
     esc=lambda value:escape(str(value if value is not None else ''),quote=True)
     snapshot=analysis['snapshot'];stats=analysis['stats']
@@ -105,7 +126,7 @@ def report_html(analysis,history,comparison=None,model=None):
            '<style>body{font:14px/1.9 "Microsoft YaHei",sans-serif;color:#243b46;max-width:1000px;margin:40px auto;padding:0 25px}h1,h2,h3{color:#173b37}h1{font-size:27px}h2{font-size:19px;margin-top:30px}h3{font-size:15px}table{width:100%;border-collapse:collapse;font-size:12px;margin:15px 0}th,td{border:1px solid #dce5e1;padding:10px;text-align:left;overflow-wrap:anywhere}th{background:#edf5f0}small{color:#7f948a}.question{border-top:1px solid #e0e8e3;padding-top:15px;margin-top:20px}p{white-space:pre-wrap;overflow-wrap:anywhere}blockquote{background:#f4f8f5;border-left:3px solid #a3c4b3;padding:10px;font-size:12px}@media print{body{margin:0;max-width:none}tr,.question{break-inside:avoid}@page{size:A4;margin:18mm}}</style>',
            '<h1>链证 AI 演示与证据报告</h1>',
            f'<p>项目：{esc(snapshot["project"])}　快照：{esc(snapshot["label"])}<br>生成时间：{esc(now())}<br>清单 SHA256：{esc(snapshot["hash"])}</p>',
-           '<p>本报告记录所选清单、公告数据和实际问答。清单命中不等于运行时可利用，升级方案仍需构建与业务测试。演示业务拓扑和迁移检查样例为人为构造，公告记录保留真实来源。</p>',
+           '<p>本报告记录所选清单、公告数据和实际问答。清单命中不等于运行时可利用，升级方案仍需构建与业务测试。'+('演示业务拓扑和迁移检查样例为人为构造，公告记录保留真实来源。' if snapshot.get('demo') else '该快照来自导入清单，分析范围受文件中的依赖关系和已保存的查询证据限制。')+'</p>',
            '<h2>分析范围</h2><table><tr><th>组件位置</th><th>匹配公告</th><th>受影响位置</th><th>未完成查询</th></tr>',
            f'<tr><td>{stats["components"]}</td><td>{stats["vulnerabilities"]}</td><td>{stats["affected_occurrences"]}</td><td>{stats["unknown"]}</td></tr></table>',
            f'<p>依赖结构完整：{esc(analysis["complete"])}。来源：{esc(", ".join(analysis["sources"]))}。</p>',
@@ -150,6 +171,7 @@ def report_html(analysis,history,comparison=None,model=None):
         for cite in answer['citations']:
             parts.append('<tr>'+''.join('<td>'+esc(value)+'</td>' for value in (cite['id'],cite['version'],cite['locator'],cite['url'] or '本地导入'))+'</tr>')
         parts.append('</table></section>')
+    _real_case_report(parts,analysis.get('real_case'),esc)
     _review_report(parts,analysis.get('claim_reviews'),esc)
     _task_report(parts,analysis.get('remediation_tasks'),esc)
     parts.append('<p><small>报告仅保存证据、调用元数据及本机人工处理记录，不包含模型配置或 API 密钥字段。引用编号和摘录存在性检查不能替代语义与业务审核。</small></p></html>')
