@@ -1,0 +1,65 @@
+.simulation-panel{margin-top:22px;overflow:hidden}
+.simulation-component{padding:24px;color:var(--ink,#203b3f);min-width:0}
+.simulation-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.simulation-heading h2{font-size:20px;margin:5px 0 0}
+.simulation-eyebrow{font-size:10px;font-weight:700;letter-spacing:.12em;color:#916327}
+.simulation-readonly{font-size:11px;color:#7c5c32;background:#fbf3e5;padding:7px 10px;border-radius:20px}
+.simulation-notice{display:flex;flex-direction:column;gap:7px;border:1px solid #ead6b6;border-left:4px solid #b68842;background:#fffaf0;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:12px;line-height:1.7}
+.simulation-notice strong{font-size:14px;color:#61491e}
+.simulation-notice span{color:#806d51}
+.simulation-source{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;font-size:12px;margin-bottom:14px}
+.simulation-source span{font-family:Consolas,monospace;color:#637d80;overflow-wrap:anywhere}
+.simulation-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.simulation-metric{display:flex;flex-direction:column;gap:9px;background:#f4f7f7;border:1px solid #e3eaea;border-radius:9px;padding:14px 18px}
+.simulation-metric span{font-size:12px;color:#667f81}
+.simulation-metric strong{font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.simulation-metric.assumed{background:#eef5f2;border-color:#d6e6df}
+.simulation-metric.assumed strong{color:#4d7f69}
+.simulation-metric.remaining{background:#fff6f0;border-color:#f1dfd1}
+.simulation-metric.remaining strong{color:#b9693b}
+.simulation-conclusion{font-size:14px;font-weight:650;line-height:1.75;margin:15px 0}
+.simulation-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
+.simulation-component button{font:inherit;cursor:pointer}
+.simulation-actions button{border:1px solid #d8e2e1;border-radius:6px;background:#fff;padding:8px 12px;font-size:12px;color:#365d5f}
+.simulation-component button:focus-visible,.simulation-component input:focus-visible,.simulation-component summary:focus-visible{outline:3px solid #b5873b;outline-offset:3px}
+.simulation-component button:disabled{cursor:wait;opacity:.5}
+.simulation-coverage{font-size:12px;line-height:1.7;color:#607875;margin:8px 0 14px}
+.simulation-coverage.is-incomplete{color:#986731;background:#fff6e8;padding:9px 12px;border-radius:6px}
+.simulation-paths{display:grid;gap:11px}
+.simulation-path{border:1px solid #eadbd0;border-left:4px solid #c57a4a;border-radius:8px;padding:13px 15px;background:#fffdfb}
+.simulation-path.is-assumed{border-color:#d6e5dc;border-left-color:#6a987d;background:#f7fbf8}
+.simulation-path-head{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#97704d;margin-bottom:10px}
+.simulation-path-head strong{font-weight:600}
+.simulation-path.is-assumed .simulation-path-head{color:#4c7b61}
+.simulation-path-nodes{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0}
+.simulation-path-node{padding:10px 12px;border:1px solid #e3e9e7;background:#fff;border-radius:6px;font-size:12px;color:#5b7272;overflow-wrap:anywhere;max-width:100%}
+.simulation-arrow{color:#9bada8}
+.simulation-path-target{display:flex;flex-direction:column;gap:5px;text-align:left;padding:11px 15px;border:1px solid #d7a27c;border-radius:7px;background:#fff4e8;color:#87502c;max-width:100%;overflow-wrap:anywhere}
+.simulation-path-target span{font-size:13px;font-weight:650}
+.simulation-path-target small{font-size:10px;color:#a97750}
+.simulation-path-target[aria-pressed=true]{border-color:#95b6a0;background:#eaf4ed;color:#356347}
+.simulation-path-target[aria-pressed=true] small{color:#62846d}
+.simulation-path-target:hover:not(:disabled){box-shadow:0 0 0 3px #e5e9df;transform:translateY(-1px)}
+.simulation-path-caption{font-size:11px;color:#7e8e8d;line-height:1.7;margin:11px 0 17px}
+.simulation-component details{border-top:1px solid #e5ebe8;padding-top:12px;margin-top:12px;font-size:12px}
+.simulation-component summary{cursor:pointer;color:#536f6b;line-height:1.7}
+.simulation-occurrence{display:flex;align-items:flex-start;gap:11px;padding:13px 8px;border-bottom:1px solid #edf1ee;font-size:12px;min-width:0}
+.simulation-occurrence input{margin:4px 0;accent-color:#548269;flex-shrink:0}
+.simulation-occurrence>span{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.simulation-occurrence code,.simulation-occurrence small{font-size:10px;color:#7f918b;overflow-wrap:anywhere}
+.simulation-occurrence em{font-size:10px;font-style:normal;color:#af774b;white-space:nowrap;margin-top:3px}
+.simulation-occurrence.is-assumed em{color:#507e62}
+.simulation-occurrence strong{overflow-wrap:anywhere}
+.simulation-limits{color:#778984;line-height:1.8}
+.simulation-limits li{margin-bottom:6px}
+.simulation-limits code{overflow-wrap:anywhere;font-size:10px}
+.simulation-empty,.simulation-status{color:#7d8d89;line-height:1.8;font-size:13px;padding:12px 0}
+.simulation-error{border:1px solid #e6c2ae;background:#fff7f2;border-radius:7px;padding:10px 12px;font-size:12px;line-height:1.7;color:#98623e}
+.simulation-compact{padding:0}
+.simulation-compact .simulation-notice{font-size:13px}
+.simulation-compact .simulation-notice strong{font-size:16px}
+.simulation-compact .simulation-path-target span{font-size:16px}
+.simulation-compact .simulation-path-node{font-size:14px}
+.simulation-compact .simulation-conclusion{font-size:18px}
+@media(max-width:600px){.simulation-component{padding:16px}.simulation-compact{padding:0}.simulation-heading{align-items:flex-start;flex-direction:column}.simulation-metrics{gap:7px}.simulation-metric{padding:12px 10px}.simulation-metric strong{font-size:25px}.simulation-metric span{font-size:10px}.simulation-path-nodes{gap:6px}.simulation-path-node{padding:8px;font-size:11px}.simulation-path-target{padding:9px}.simulation-actions button{flex:1 1 auto}.simulation-occurrence{gap:8px}.simulation-occurrence em{max-width:42px;white-space:normal}.simulation-compact .simulation-path-node{font-size:12px}.simulation-compact .simulation-path-target span{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.simulation-path-target:hover:not(:disabled){transform:none}}

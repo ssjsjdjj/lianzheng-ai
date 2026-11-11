@@ -14,7 +14,7 @@ async function api(path, options={}) {
 }
 async function busy(button, text, action) {const old=button.textContent; button.disabled=true;button.textContent=text;try{return await action();}catch(error){toast(error.message);return null;}finally{button.disabled=false;button.textContent=old;}}
 const dateLabel = value => value ? new Date(value).toLocaleString('zh-CN',{hour12:false}) : '未查询';
-const sourceLabel = value => ({'frozen-osv':'冻结 OSV','live-osv':'实时 OSV','cached-osv':'OSV 缓存','user-document':'用户导入文档','graph-evidence':'清单图事实','none':'未查询','demo':'演示组件'}[value] || value);
+const sourceLabel = value => ({'frozen-osv':'冻结 OSV','frozen-case-osv':'真实案例冻结 OSV','live-osv':'实时 OSV','cached-osv':'OSV 缓存','user-document':'用户导入文档','graph-evidence':'清单图事实','none':'未查询','demo':'演示组件'}[value] || value);
 const statusLabel = value => ({checked:'已查询',unscanned:'未扫描',unsupported:'身份信息不足',failed:'查询失败','demo-component':'演示构造',project:'项目根节点'}[value] || value);
 
 async function loadSnapshots() {
