@@ -42,6 +42,8 @@ jobs:
         run: python scripts/benchmark.py --split dev --output evaluation/ci-benchmark.json
       - name: Verify frozen public project imports
         run: python scripts/verify_public_projects.py --require-supported
+      - name: Verify frozen real-case evidence
+        run: python scripts/verify_real_case.py --require-passed --output evaluation/ci-real-case-results.json
       - name: Upload functional check report
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,4 +54,14 @@ jobs:
             evaluation/ci-benchmark.json
             evaluation/ci-benchmark.html
           if-no-files-found: ignore
+          retention-days: 7
+      - name: Upload real-case evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-case-evidence
+          path: |
+            evaluation/ci-real-case-results.json
+            fixtures/real-case/http-server-minimist/
+          if-no-files-found: error
           retention-days: 7
