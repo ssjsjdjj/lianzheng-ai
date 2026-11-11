@@ -36,6 +36,11 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Run Python tests
         run: python -m pytest -q
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check free-question UI state protocol (no browser or network)
+        run: node tests/browser-v09-query.cjs
       - name: Run local functional checks
         run: python scripts/evaluate.py evaluation/ci-smoke-results.json
       - name: Run offline development comparison
