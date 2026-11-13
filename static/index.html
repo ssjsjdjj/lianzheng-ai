@@ -6,12 +6,12 @@
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="/static/knowledge.css">
-  <link rel="stylesheet" href="/static/demo.css?v=0.11.0">
+  <link rel="stylesheet" href="/static/demo.css?v=0.12.0">
   <link rel="stylesheet" href="/static/evidence-links.css">
   <script src="/static/evidence-links.js" defer></script>
-  <script src="/static/app.js?v=0.11.0" defer></script>
+  <script src="/static/app.js?v=0.12.0" defer></script>
   <script src="/static/model-settings.js" defer></script>
-  <script src="/static/demo-tour.js?v=0.11.0" defer></script>
+  <script src="/static/demo-tour.js?v=0.12.0" defer></script>
   <link rel="stylesheet" href="/static/claim-review.css">
   <link rel="stylesheet" href="/static/remediation.css">
   <link rel="stylesheet" href="/static/call-control.css">
@@ -20,16 +20,18 @@
   <script src="/static/call-control.js" defer></script>
   <link rel="stylesheet" href="/static/simulation.css">
   <link rel="stylesheet" href="/static/real-case.css">
-  <link rel="stylesheet" href="/static/presenter.css?v=0.11.0">
+  <link rel="stylesheet" href="/static/presenter.css?v=0.12.0">
   <script src="/static/simulation.js" defer></script>
   <script src="/static/real-case.js" defer></script>
-  <link rel="stylesheet" href="/static/task-compare.css?v=0.11.0">
+  <link rel="stylesheet" href="/static/task-compare.css?v=0.12.0">
   <link rel="stylesheet" href="/static/case-decisions.css">
-  <script src="/static/task-compare.js?v=0.11.0" defer></script>
-  <link rel="stylesheet" href="/static/project-brief.css?v=0.11.0">
-  <script src="/static/project-brief.js?v=0.11.0" defer></script>
-  <script src="/static/case-decisions.js?v=0.11.0" defer></script>
-  <script src="/static/presenter.js?v=0.11.0" defer></script>
+  <script src="/static/task-compare.js?v=0.12.0" defer></script>
+  <link rel="stylesheet" href="/static/project-brief.css?v=0.12.0">
+  <script src="/static/project-brief.js?v=0.12.0" defer></script>
+  <script src="/static/case-decisions.js?v=0.12.0" defer></script>
+  <script src="/static/presenter.js?v=0.12.0" defer></script>
+  <link rel="stylesheet" href="/static/project-presenter.css?v=0.12.0">
+  <script src="/static/project-presenter.js?v=0.12.0" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -44,7 +46,7 @@
     </nav>
     <div class="nav-label projects-label">当前项目</div>
     <div class="project-nav"><span class="project-avatar">商</span><div><strong id="sidebar-project">加载中</strong><small id="snapshot-count">正在读取快照</small></div></div>
-    <div class="sidebar-bottom"><span class="online-dot"></span><div>本地工作空间<small>数据持久化 · SQLite</small></div><span class="version">v0.11</span></div>
+    <div class="sidebar-bottom"><span class="online-dot"></span><div>本地工作空间<small>数据持久化 · SQLite</small></div><span class="version">v0.12</span></div>
   </aside>
   <div class="shell">
     <header class="topbar"><div class="breadcrumb">工作空间 <span>/</span> <strong id="breadcrumb-view">风险总览</strong></div><div class="top-status"><span class="online-dot"></span> 服务已连接 <span class="avatar">LZ</span></div></header>
@@ -52,7 +54,7 @@
       <section class="page-heading"><div><div class="eyebrow">SOFTWARE SUPPLY CHAIN</div><h1 id="page-title">依赖风险工作台</h1><p id="page-description">连接项目依赖与公告证据，查清风险来源并验证修复结果。</p></div><div class="heading-actions"><button class="button secondary" id="export-report">↓ 导出报告</button><button class="button primary" id="open-import">＋ 导入项目</button></div></section>
       <div class="snapshot-toolbar"><div class="snapshot-selector"><label for="snapshot-select">项目快照</label><select id="snapshot-select" aria-label="选择项目快照"></select><span class="pill neutral" id="quality-pill">检查中</span></div><button class="text-button" id="live-scan">↻ 在线更新 OSV</button></div>
       <div class="data-notice" id="data-notice"><span class="notice-icon">i</span><span id="notice-text">读取数据来源…</span></div>
-      <div class="benchmark-entry"><span>评审材料：查看固定样本、指标与未命中记录</span><a href="/benchmark" target="_blank" rel="noopener noreferrer">打开离线对比评测 ↗</a></div>
+      <div class="benchmark-entry"><span>评审材料：查看固定样本、指标与未命中记录</span><a href="/benchmark" target="_blank" rel="noopener noreferrer">打开离线对比评测 ↗</a> <a href="/project-evaluation" target="_blank" rel="noopener noreferrer">多项目问答评测 ↗</a></div>
 
       <section id="overview-view" class="view">
         <div class="metrics" id="metrics"></div>
