@@ -41,6 +41,8 @@ jobs:
           node-version: "22"
       - name: Check free-question UI state protocol (no browser or network)
         run: node tests/browser-v09-query.cjs
+      - name: Check current-project evidence isolation UI protocol
+        run: node tests/browser-v010-query.cjs
       - name: Run local functional checks
         run: python scripts/evaluate.py evaluation/ci-smoke-results.json
       - name: Run offline development comparison
