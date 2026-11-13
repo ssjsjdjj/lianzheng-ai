@@ -153,7 +153,7 @@ class CaseDecisions:
                 'note':{'before':'未修改的上游源码与锁文件。','partial':'真实更新直接依赖，测试工具中的旧 minimist 仍保留。',
                         'after':'真实更新测试工具并迁移两条断言 API；这是历史实验方案，tap 16 已停止维护。'}[phase]})
         comparisons=[self._compare(by_phase['before'],by_phase[p],case['target']['advisory_id']) for p in ('partial','after')]
-        return {'available':True,'kind':'recorded-experiment','release':'0.11.0','id':case['id'],'title':case['title'],
+        return {'available':True,'kind':'recorded-experiment','release':'0.12.0','id':case['id'],'title':case['title'],
                 'source':copy.deepcopy(case['source']),'target':copy.deepcopy(case['target']),'bundle_sha256':digest,
                 'plans':summaries,'baseline_comparisons':[{k:v for k,v in c.items() if k!='changes'} for c in comparisons],
                 'selected_comparison':self._compare(by_phase[from_phase],by_phase[to_phase],case['target']['advisory_id']),

@@ -83,34 +83,65 @@ def shortest_paths(graph, targets):
     return result
 
 
-def rank(question, documents, graph, method):
+def rank_with_trace(question, documents, graph, method):
+    """Return the actual ranking decisions, without changing retrieval policy.
+
+    Diagnostics use internal IDs and stay server-side until a snapshot-bound,
+    size-limited presentation is built. They are not model explanations.
+    """
     ranked = lexical_rank(question, documents)
+    trace = {'lexical_ids': ranked, 'matched_refs': [], 'priority_ids': [],
+             'priority_paths': [], 'graph_status': 'text-only'}
     if method == 'bm25':
-        return ranked
+        return ranked, trace
     if method != 'bm25+graph':
         raise InputError('不支持的对照方法。')
     # Query names, not answer labels, choose graph traversal endpoints. Both
     # columns can read the same incoming-edge text in the same node documents.
     targets = entities(question, graph)
-    if not targets or not re.search('路径|引入|位置|依赖|残留|间接|直接', question):
-        return ranked
+    trace['matched_refs'] = targets
+    if not targets:
+        trace['graph_status'] = 'no-matched-targets'
+        return ranked, trace
+    if not re.search('路径|引入|位置|依赖|残留|间接|直接', question):
+        trace['graph_status'] = 'no-path-intent'
+        return ranked, trace
     promoted = [node_id(ref) for ref in targets]
-    for path in shortest_paths(graph, targets):
+    paths = shortest_paths(graph, targets)
+    for path in paths:
         promoted.extend(node_id(ref) for ref in reversed(path[:-1]) if ref != graph['root'])
     available = {d['id'] for d in documents}
-    return list(dict.fromkeys(i for i in promoted + ranked if i in available))
+    trace.update(graph_status='applied', priority_paths=paths,
+                 priority_ids=list(dict.fromkeys(i for i in promoted if i in available)))
+    return list(dict.fromkeys(i for i in promoted + ranked if i in available)), trace
 
 
-def select_evidence(ids, documents):
+def rank(question, documents, graph, method):
+    return rank_with_trace(question, documents, graph, method)[0]
+
+
+def select_evidence_with_trace(ids, documents):
     lookup = {d['id']: d for d in documents}; selected = []; used = 0
-    for identifier in ids:
+    decisions = {}
+    stop_rank = None
+    for position, identifier in enumerate(ids, 1):
         doc = lookup[identifier]
         size = len(json.dumps(doc, ensure_ascii=False).encode())
         if len(selected) >= K:
+            stop_rank = position
             break
         if used + size > EVIDENCE_BYTES:
+            decisions[identifier] = 'skipped-budget'
             continue
+        decisions[identifier] = 'selected'
         selected.append(doc); used += size
+    return selected, used, {'decisions': decisions, 'stop_rank': stop_rank,
+                           'skipped_budget_count': sum(v == 'skipped-budget' for v in decisions.values()),
+                           'not_considered_count': len(ids) - len(decisions)}
+
+
+def select_evidence(ids, documents):
+    selected, used, _ = select_evidence_with_trace(ids, documents)
     return selected, used
 
 
@@ -419,7 +450,7 @@ class TaskComparison:
         model_names = [((c.get('model') or {}).get('metadata') or {}).get('returned_model') for c in columns]
         comparable = (not use_model) or (all(c['generation'] == 'model-assisted' for c in columns) and
                                         all(model_names) and model_names[0] == model_names[1])
-        return {'release': '0.11.0', 'generated_at': now(),
+        return {'release': '0.12.0', 'generated_at': now(),
                 'task': {**{k: task[k] for k in ('id', 'question', 'phase', 'category')},
                          'kind': 'curated-task' if scored else 'free-question'},
                 'source': {'case_id': case['id'], 'commit': case['source']['commit'], 'url': case['source']['url'],

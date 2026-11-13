@@ -16,9 +16,10 @@ from .osv import evidence_documents
 from .providers import validate_provider_endpoint
 from .project_answer import answer_card, evidence_identity, project_brief
 from .retrieval import model_explanation
+from .retrieval_trace import build_retrieval_trace, unavailable_trace
 from .store import now
 from .task_compare import (METHODS, TaskComparison, digest, node_id,
-                           rank, select_evidence, selected_paths)
+                           rank_with_trace, select_evidence_with_trace, selected_paths)
 
 
 class ProjectContextChanged(InputError):
@@ -320,8 +321,8 @@ class ProjectQuery:
         graph = state['graph']; nodes = {n['id']: n for n in graph['nodes']}
         for method in METHODS:
             started = time.perf_counter()
-            ranked = rank(question, documents, graph, method)
-            selected, used = select_evidence([identifiers[i] for i in ranked], public_documents)
+            ranked, ranking = rank_with_trace(question, documents, graph, method)
+            selected, used, selection = select_evidence_with_trace([identifiers[i] for i in ranked], public_documents)
             paths = selected_paths(question, selected, graph)
             # Rank with stable internal IDs; namespaced public IDs are never shared
             # by two snapshots, including identical package refs and versions.
@@ -359,13 +360,20 @@ class ProjectQuery:
                 if result:
                     column['answer'] = result['text']
             column['evidence_links'] = self._links(state, selected, paths, locators, column['model'])
+            try:
+                column['retrieval_trace'] = build_retrieval_trace(
+                    state, method, documents, selected, identifiers, ranked, ranking, selection, used, locators)
+            except Exception:
+                # Replay is supplementary. Fail closed to a bound unavailable
+                # record, without exposing partial diagnostics or exception text.
+                column['retrieval_trace'] = unavailable_trace(state['binding'], method)
             column['answer_card'] = answer_card(state, question, column)
             columns.append(column)
         # A long model call may overlap a rescan or document edit. Never publish
         # that old answer as if it described the current project generation.
         self._check(identifier, expected_context_sha256)
         model_names = [((c.get('model') or {}).get('metadata') or {}).get('returned_model') for c in columns]
-        return {'release': '0.11.0', 'generated_at': now(), 'source': state['source'], 'coverage': state['coverage'],
+        return {'release': '0.12.0', 'generated_at': now(), 'source': state['source'], 'coverage': state['coverage'],
                 'task': {'id': 'question-' + digest([state['binding'], question])[:24], 'question': question,
                          'phase': 'snapshot', 'kind': 'project-question', 'category': '当前项目自由提问'},
                 'fairness': {**self.protocol(), 'corpus_sha256': digest(documents), 'candidate_documents': len(documents),
