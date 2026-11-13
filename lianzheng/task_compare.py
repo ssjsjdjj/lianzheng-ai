@@ -419,7 +419,7 @@ class TaskComparison:
         model_names = [((c.get('model') or {}).get('metadata') or {}).get('returned_model') for c in columns]
         comparable = (not use_model) or (all(c['generation'] == 'model-assisted' for c in columns) and
                                         all(model_names) and model_names[0] == model_names[1])
-        return {'release': '0.10.0', 'generated_at': now(),
+        return {'release': '0.11.0', 'generated_at': now(),
                 'task': {**{k: task[k] for k in ('id', 'question', 'phase', 'category')},
                          'kind': 'curated-task' if scored else 'free-question'},
                 'source': {'case_id': case['id'], 'commit': case['source']['commit'], 'url': case['source']['url'],

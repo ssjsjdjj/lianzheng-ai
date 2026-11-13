@@ -14,6 +14,7 @@ from .knowledge import prepare_document
 from .lockfiles import convert_package_lock
 from .osv import evidence_documents
 from .providers import validate_provider_endpoint
+from .project_answer import answer_card, evidence_identity, project_brief
 from .retrieval import model_explanation
 from .store import now
 from .task_compare import (METHODS, TaskComparison, digest, node_id,
@@ -166,7 +167,7 @@ class ProjectQuery:
 
     def context(self, identifier):
         state = self._capture(identifier)
-        return {'available': True, 'source': state['source'], 'coverage': state['coverage'],
+        return {'available': True, 'source': state['source'], 'coverage': state['coverage'], 'brief': project_brief(state),
                 'protocol': self.protocol(), 'model_configured': None, 'model_status': 'not-inspected-offline'}
 
     def source(self, identifier, source_id, expected_context_sha256):
@@ -206,7 +207,8 @@ class ProjectQuery:
                               'filename': filename, 'locator': locator, 'url': self._url(state, source_id),
                               'source_sha256': _sha(data), 'phase': 'snapshot', 'version': '',
                               'source_excerpt': excerpt[:1600], 'source_excerpt_truncated': len(excerpt) > 1600,
-                              'source_excerpt_kind': 'saved-source-content', **extra, **state['binding']})
+                              'source_excerpt_kind': 'saved-source-content', **extra, **state['binding'],
+                              **evidence_identity(state['source']['snapshot_id'], identifier, title, text, locator, excerpt, extra)})
 
         for node in graph['nodes']:
             if node['root']:
@@ -357,12 +359,13 @@ class ProjectQuery:
                 if result:
                     column['answer'] = result['text']
             column['evidence_links'] = self._links(state, selected, paths, locators, column['model'])
+            column['answer_card'] = answer_card(state, question, column)
             columns.append(column)
         # A long model call may overlap a rescan or document edit. Never publish
         # that old answer as if it described the current project generation.
         self._check(identifier, expected_context_sha256)
         model_names = [((c.get('model') or {}).get('metadata') or {}).get('returned_model') for c in columns]
-        return {'release': '0.10.0', 'generated_at': now(), 'source': state['source'], 'coverage': state['coverage'],
+        return {'release': '0.11.0', 'generated_at': now(), 'source': state['source'], 'coverage': state['coverage'],
                 'task': {'id': 'question-' + digest([state['binding'], question])[:24], 'question': question,
                          'phase': 'snapshot', 'kind': 'project-question', 'category': '当前项目自由提问'},
                 'fairness': {**self.protocol(), 'corpus_sha256': digest(documents), 'candidate_documents': len(documents),

@@ -17,7 +17,7 @@ def evidence_archive(real_case, decisions):
         raise InputError('案例证据包过大，暂不支持一次导出。')
     contents['decisions.json'] = json.dumps(report, ensure_ascii=False, indent=2).encode('utf-8')
     index = {
-        'release': '0.10.0', 'kind': 'frozen-case-evidence', 'case_id': case['id'],
+        'release': '0.11.0', 'kind': 'frozen-case-evidence', 'case_id': case['id'],
         'case_manifest_sha256': digest,
         'files': [{'name': name, 'sha256': hashlib.sha256(raw).hexdigest()}
                   for name, raw in sorted(contents.items())],

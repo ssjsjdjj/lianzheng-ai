@@ -94,7 +94,7 @@ class DemoReadiness:
                      'policy': None, 'model_pair_locally_allowed': False}
             checks.append({'id': 'usage', 'label': '本地聊天调用限制', 'status': 'warn',
                            'detail': '调用账本暂时无法读取，先使用离线证据，不据此判断余额。'})
-        return {'release': '0.10.0', 'checked_at': now(), 'offline_ready': not blocked,
+        return {'release': '0.11.0', 'checked_at': now(), 'offline_ready': not blocked,
                 'case': case, 'checks': checks, 'model': model, 'usage': usage,
                 'model_calls': 0, 'network_calls': 0, 'workspace_modified': False,
                 'note': '预检仅核对本地资料和设置，不验证服务商余额、接口在线状态或真实模型问答效果。'}
