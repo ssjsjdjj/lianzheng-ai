@@ -46,7 +46,7 @@ def test_brief_and_cards_only_reference_current_snapshot(client):
     assert 1 <= len(brief['suggestions']) <= 3
     assert all(isinstance(s['question'], str) and s['question'].strip() for s in brief['suggestions'])
     result = ask(client, identifier, ctx)
-    assert result['release'] == '0.11.0' and result['model_calls_attempted'] == 0
+    assert result['release'] == '0.12.0' and result['model_calls_attempted'] == 0
     for column in result['columns']:
         card = column['answer_card']
         assert card['snapshot_id'] == identifier and card['context_sha256'] == ctx['source']['context_sha256']
