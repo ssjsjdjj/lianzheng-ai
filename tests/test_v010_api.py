@@ -35,7 +35,7 @@ def test_import_question_and_hash_checked_source_download(client):
         'expected_context_sha256': source['context_sha256']})
     assert question.status_code == 200
     result = question.json()
-    assert result['release'] == '0.10.0'
+    assert result['release'] == '0.11.0'
     assert result['source']['snapshot_id'] == identifier
     assert result['comparison']['result'] == 'unscored'
     download = client.get(source['url'])
