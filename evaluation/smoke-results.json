@@ -1,6 +1,6 @@
 {
   "kind": "functional-smoke-checks",
-  "generated_at": "2026-11-11T07:16:02.262115+00:00",
+  "generated_at": "2026-11-13T02:02:00.533942+00:00",
   "data_snapshot": "2026-10-28T02:33:39.487706+00:00",
   "model_mode": "evidence-template; no external model called",
   "disclaimer": "仅为固定演示集的功能验收，不是独立测试集准确率，不证明 GraphRAG 优于文本 RAG。",
@@ -10,97 +10,97 @@
     {
       "check": "双路径召回",
       "passed": true,
-      "elapsed_ms": 6.2,
+      "elapsed_ms": 5.81,
       "error": null
     },
     {
       "check": "部分修复仅剩一条目标路径",
       "passed": true,
-      "elapsed_ms": 4.89,
+      "elapsed_ms": 4.73,
       "error": null
     },
     {
       "check": "部分修复仍保留目标漏洞",
       "passed": true,
-      "elapsed_ms": 1.84,
+      "elapsed_ms": 1.74,
       "error": null
     },
     {
       "check": "完整修复后目标公告消除",
       "passed": true,
-      "elapsed_ms": 1.77,
+      "elapsed_ms": 1.58,
       "error": null
     },
     {
       "check": "4.17.21 仍有其他已知记录",
       "passed": true,
-      "elapsed_ms": 2.05,
+      "elapsed_ms": 1.51,
       "error": null
     },
     {
       "check": "问答附带原始公告证据",
       "passed": true,
-      "elapsed_ms": 6.35,
+      "elapsed_ms": 5.88,
       "error": null
     },
     {
       "check": "未知漏洞保留未知",
       "passed": true,
-      "elapsed_ms": 4.86,
+      "elapsed_ms": 4.45,
       "error": null
     },
     {
       "check": "不把命中推断为可利用",
       "passed": true,
-      "elapsed_ms": 5.37,
+      "elapsed_ms": 4.65,
       "error": null
     },
     {
       "check": "不保证升级兼容性",
       "passed": true,
-      "elapsed_ms": 5.31,
+      "elapsed_ms": 6.17,
       "error": null
     },
     {
       "check": "文本基线不提供图路径",
       "passed": true,
-      "elapsed_ms": 5.06,
+      "elapsed_ms": 4.55,
       "error": null
     },
     {
       "check": "清单质量完整性",
       "passed": true,
-      "elapsed_ms": 1.7,
+      "elapsed_ms": 1.69,
       "error": null
     },
     {
       "check": "已修复快照未命中查询数据",
       "passed": true,
-      "elapsed_ms": 1.36,
+      "elapsed_ms": 1.24,
       "error": null
     },
     {
       "check": "版本绑定文档导入",
       "passed": true,
-      "elapsed_ms": 4.68,
+      "elapsed_ms": 4.76,
       "error": null
     },
     {
       "check": "迁移问答引用项目文档",
       "passed": true,
-      "elapsed_ms": 5.33,
+      "elapsed_ms": 4.61,
       "error": null
     },
     {
       "check": "目标版本不同时隔离文档",
       "passed": true,
-      "elapsed_ms": 5.33,
+      "elapsed_ms": 4.74,
       "error": null
     },
     {
       "check": "重新扫描保留项目文档",
       "passed": true,
-      "elapsed_ms": 5.63,
+      "elapsed_ms": 4.21,
       "error": null
     }
   ]

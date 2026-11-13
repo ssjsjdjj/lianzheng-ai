@@ -1,6 +1,6 @@
 {
-  "release": "0.9.0",
-  "generated_at": "2026-11-11T07:16:04.941544+00:00",
+  "release": "0.10.0",
+  "generated_at": "2026-11-13T02:02:03.133477+00:00",
   "kind": "real-project-development-retrieval-comparison",
   "case_id": "http-server-minimist",
   "commit": "e16ed1d4a5d91a2bdf55de565819ec1733048bbc",
@@ -36,8 +36,8 @@
   },
   "runs": [
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:02.657272+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:00.881481+00:00",
       "task": {
         "id": "before-occurrences",
         "question": "修复前的 minimist@1.2.5 出现在哪些精确安装位置？同版本是否代表同一处安装？",
@@ -331,7 +331,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 30.128,
+            "retrieval_ms": 31.234,
             "evidence_bytes": 11350,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -769,7 +769,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.966,
+            "retrieval_ms": 18.268,
             "evidence_bytes": 17099,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -1046,8 +1046,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:02.812736+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.026480+00:00",
       "task": {
         "id": "before-direct",
         "question": "修复前 http-server 直接引入 minimist@1.2.5 的依赖关系是什么？",
@@ -1515,7 +1515,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.761,
+            "retrieval_ms": 15.62,
             "evidence_bytes": 22492,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -1987,7 +1987,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.27,
+            "retrieval_ms": 17.584,
             "evidence_bytes": 19132,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -2264,8 +2264,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:02.966082+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.174843+00:00",
       "task": {
         "id": "before-tap",
         "question": "修复前 tap 间接引入 minimist@1.2.5 的安装位置和路径如何核对？",
@@ -2547,7 +2547,7 @@
               "node-2b55f24169d8d8c3"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.312,
+            "retrieval_ms": 15.485,
             "evidence_bytes": 11983,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -2973,7 +2973,7 @@
               "node-2b55f24169d8d8c3"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.87,
+            "retrieval_ms": 16.897,
             "evidence_bytes": 16544,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -3250,8 +3250,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.113469+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.324842+00:00",
       "task": {
         "id": "before-development",
         "question": "tap 内的 minimist dev 标记是什么？能否仅凭此标记判断生产环境暴露？",
@@ -3538,7 +3538,7 @@
               "node-1885d486413babd2"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.989,
+            "retrieval_ms": 16.073,
             "evidence_bytes": 12188,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -3956,7 +3956,7 @@
               "node-1885d486413babd2"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.288,
+            "retrieval_ms": 16.899,
             "evidence_bytes": 12188,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -4148,8 +4148,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.275930+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.483843+00:00",
       "task": {
         "id": "before-coverage",
         "question": "修复前 fsevents 可选依赖缺失意味着什么？依赖图完整吗？",
@@ -4693,7 +4693,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 21.231,
+            "retrieval_ms": 20.942,
             "evidence_bytes": 27964,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -5282,7 +5282,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 21.846,
+            "retrieval_ms": 21.718,
             "evidence_bytes": 27964,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -5388,8 +5388,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.421214+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.629161+00:00",
       "task": {
         "id": "before-tests",
         "question": "修复前实际测试用了什么命令，多少通过和跳过，是否测量覆盖率？",
@@ -5498,7 +5498,7 @@
               "tests"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 14.804,
+            "retrieval_ms": 15.069,
             "evidence_bytes": 2281,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -5616,7 +5616,7 @@
               "tests"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.811,
+            "retrieval_ms": 16.166,
             "evidence_bytes": 2281,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -5686,8 +5686,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.577115+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.785292+00:00",
       "task": {
         "id": "partial-remaining",
         "question": "只更新直接依赖后 minimist 目标公告还残留哪些安装位置？",
@@ -5985,7 +5985,7 @@
               "target-summary"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.471,
+            "retrieval_ms": 17.389,
             "evidence_bytes": 11699,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -6427,7 +6427,7 @@
               "target-summary"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.467,
+            "retrieval_ms": 17.517,
             "evidence_bytes": 17448,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -6704,8 +6704,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.727372+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:01.935117+00:00",
       "task": {
         "id": "partial-direct",
         "question": "部分修复阶段直接 minimist 的版本和安装位置是什么，目标公告是否仍命中它？",
@@ -6986,7 +6986,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.704,
+            "retrieval_ms": 16.957,
             "evidence_bytes": 10893,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -7411,7 +7411,7 @@
               "node-fc29ba90bcf6675c"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.693,
+            "retrieval_ms": 17.857,
             "evidence_bytes": 16497,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -7688,8 +7688,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:03.880991+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.084061+00:00",
       "task": {
         "id": "partial-tap",
         "question": "部分修复阶段 tap 到 minimist 的间接引入关系为什么仍需检查？",
@@ -7972,7 +7972,7 @@
               "node-2b55f24169d8d8c3"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.275,
+            "retrieval_ms": 16.758,
             "evidence_bytes": 11936,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 2,
@@ -8436,7 +8436,7 @@
               "node-2b55f24169d8d8c3"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.805,
+            "retrieval_ms": 18.34,
             "evidence_bytes": 16497,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 3,
@@ -8749,8 +8749,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.028157+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.230206+00:00",
       "task": {
         "id": "partial-runtime",
         "question": "部分修复后的服务在生产环境中是否正在被攻击？有哪些实际运行证据？",
@@ -9004,7 +9004,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.739,
+            "retrieval_ms": 16.062,
             "evidence_bytes": 9775,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -9312,7 +9312,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.739,
+            "retrieval_ms": 17.24,
             "evidence_bytes": 9775,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -9427,8 +9427,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.183327+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.384357+00:00",
       "task": {
         "id": "after-target",
         "question": "最终阶段 minimist 目标公告的匹配数是多少，能据此证明全项目安全上线吗？",
@@ -9687,7 +9687,7 @@
               "target-summary"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 18.64,
+            "retrieval_ms": 18.87,
             "evidence_bytes": 10186,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -10040,7 +10040,7 @@
               "target-summary"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 17.7,
+            "retrieval_ms": 18.312,
             "evidence_bytes": 10186,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -10195,8 +10195,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.331899+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.529653+00:00",
       "task": {
         "id": "after-tests",
         "question": "最终成功测试用了什么命令，结果如何，是否本次重新执行？",
@@ -10293,7 +10293,7 @@
               "tests"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.108,
+            "retrieval_ms": 15.077,
             "evidence_bytes": 2000,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -10390,7 +10390,7 @@
               "tests"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.013,
+            "retrieval_ms": 16.052,
             "evidence_bytes": 2000,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -10451,8 +10451,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.483389+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.676834+00:00",
       "task": {
         "id": "after-failure",
         "question": "升级 tap 后、尚未迁移断言时实际测试是否失败，记录是多少？",
@@ -10628,7 +10628,7 @@
               "migration-failure"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.522,
+            "retrieval_ms": 14.702,
             "evidence_bytes": 8215,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -10878,7 +10878,7 @@
               "migration-failure"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.166,
+            "retrieval_ms": 16.053,
             "evidence_bytes": 8215,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 1,
@@ -11013,8 +11013,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.631014+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.826842+00:00",
       "task": {
         "id": "after-migration",
         "question": "为什么将两条 t.includes 改为 t.ok？有哪些实际测试 API 迁移差异？",
@@ -11143,7 +11143,7 @@
               "migration-patch"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.261,
+            "retrieval_ms": 15.078,
             "evidence_bytes": 5083,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -11290,7 +11290,7 @@
               "migration-patch"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.019,
+            "retrieval_ms": 16.126,
             "evidence_bytes": 5083,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -11369,8 +11369,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.784189+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:02.976858+00:00",
       "task": {
         "id": "after-deployment",
         "question": "最终阶段有实际生产部署或攻击调用轨迹吗，能否证明业务兼容？",
@@ -11617,7 +11617,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.041,
+            "retrieval_ms": 16.124,
             "evidence_bytes": 9787,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -11918,7 +11918,7 @@
               "coverage"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 16.985,
+            "retrieval_ms": 16.785,
             "evidence_bytes": 9787,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -12033,8 +12033,8 @@
       ]
     },
     {
-      "release": "0.9.0",
-      "generated_at": "2026-11-11T07:16:04.937544+00:00",
+      "release": "0.10.0",
+      "generated_at": "2026-11-13T02:02:03.129031+00:00",
       "task": {
         "id": "before-source",
         "question": "http-server 案例来自哪个固定提交，是什么许可证，是否上游已合并修复？",
@@ -12143,7 +12143,7 @@
               "source"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.467,
+            "retrieval_ms": 15.437,
             "evidence_bytes": 2093,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,
@@ -12261,7 +12261,7 @@
               "source"
             ],
             "missing_evidence_ids": [],
-            "retrieval_ms": 15.802,
+            "retrieval_ms": 15.81,
             "evidence_bytes": 2093,
             "semantic_support": "pending-human-review",
             "connected_representative_paths": 0,

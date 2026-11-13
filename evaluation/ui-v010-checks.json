@@ -1,0 +1,122 @@
+{
+  "release": "0.10.0",
+  "generated_at": "2026-11-13T02:12:14.630325+00:00",
+  "method": "Manual CUA browser acceptance plus read-only localhost HTTP and byte verification of actual browser downloads; not an automated browser E2E suite.",
+  "total": 20,
+  "passed": 20,
+  "model_calls_this_release": 0,
+  "scope": "Isolated SQLite with outbound provider HTTP disabled and injected delay/503; then read-only/offline main-workspace acceptance. No new real-model semantic evaluation, mobile viewport acceptance, or upstream test execution is claimed.",
+  "automated_ui_state_protocol": {
+    "passed": 59,
+    "total": 59,
+    "additional_actual_backend_contract": 1,
+    "commands": [
+      "node tests/browser-v09-query.cjs",
+      "node tests/browser-v010-query.cjs"
+    ],
+    "real_browser": false,
+    "network_calls": 0
+  },
+  "checks": [
+    {
+      "name": "Initial workspace loading",
+      "result": "pass",
+      "observed": "An empty analysis initializes correctly and the project lists render after selection."
+    },
+    {
+      "name": "Import opens current project questions",
+      "result": "pass",
+      "observed": "Browser file chooser import of project A opens snapshot-scoped free questions automatically."
+    },
+    {
+      "name": "Same-package project identity",
+      "result": "pass",
+      "observed": "A and B contain minimist 1.2.5 at the same ref; project names and context fingerprints differ."
+    },
+    {
+      "name": "Current-project path linkage",
+      "result": "pass",
+      "observed": "The A fact selects isolation-a to minimist and its original lockfile pointer; B selects isolation-b."
+    },
+    {
+      "name": "Actual source download",
+      "result": "pass",
+      "observed": "Browser-downloaded A package-lock.json matches the displayed SHA-256 96d5e9db5112ae91d012986a452fa4ad22470fed259adcaea4adf58f7226f148."
+    },
+    {
+      "name": "Early switch cleanup",
+      "result": "pass",
+      "observed": "While A is awaiting an injected delayed response, selecting B immediately removes question, result, and download controls."
+    },
+    {
+      "name": "Late response isolation",
+      "result": "pass",
+      "observed": "After the 12-second A response delay elapsed, B remains empty and accepts only its own new question."
+    },
+    {
+      "name": "Unknown scan boundary",
+      "result": "pass",
+      "observed": "The two unscanned minimist imports show unknown state; they do not borrow the frozen case vulnerability conclusions."
+    },
+    {
+      "name": "Document invalidation",
+      "result": "pass",
+      "observed": "Adding a B-only document changes its context fingerprint and clears the prior result without automatically re-asking."
+    },
+    {
+      "name": "Document original text linkage",
+      "result": "pass",
+      "observed": "A new B question retrieves the B-only text with line/column span, saved text source URL, and hash."
+    },
+    {
+      "name": "Old source rejection",
+      "result": "pass",
+      "observed": "Read-only local HTTP confirms the pre-document B manifest URL now returns 409."
+    },
+    {
+      "name": "Exported answer consistency",
+      "result": "pass",
+      "observed": "Actual browser JSON export contains only B snapshot/context bindings; every selected source URL downloads bytes matching its SHA-256."
+    },
+    {
+      "name": "Service fault recovery",
+      "result": "pass",
+      "observed": "Injected project ask 503 preserves the question and exposes explicit offline retry; clearing the fault and retrying returns current B evidence."
+    },
+    {
+      "name": "Public project import",
+      "result": "pass",
+      "observed": "Browser import of the frozen mermaid-cli lockfile opens current-project questions, preserving 709 unqueried components and graph gaps."
+    },
+    {
+      "name": "Public project question",
+      "result": "pass",
+      "observed": "A puppeteer question links the actual mermaid-cli root to its installed package and saved original JSON without claiming scan completion."
+    },
+    {
+      "name": "Fixed-case presentation isolation",
+      "result": "pass",
+      "observed": "Starting case free-question presentation selects frozen http-server material, clears project draft, and hides source switching in the presenter."
+    },
+    {
+      "name": "Fixed-case recovery isolation",
+      "result": "pass",
+      "observed": "After switching the shared panel to current-project mode and injecting preflight 503, Continue loaded material restores fixed-case scope in the presenter."
+    },
+    {
+      "name": "Main workspace GPT opt-in",
+      "result": "pass",
+      "observed": "Main v0.10 retains configured and previously verified GPT metadata; the new project-question model checkbox starts unchecked and offline question succeeds."
+    },
+    {
+      "name": "Main preflight and demo entry",
+      "result": "pass",
+      "observed": "Main demo hub exposes import and current-project questions alongside existing fixed-case formats; all seven local preflight checks pass."
+    },
+    {
+      "name": "Main data and cost preservation",
+      "result": "pass",
+      "observed": "Read-only HTTP and SQLite checks confirm unchanged table counts, 14 existing history rows, 6 snapshots, 3 historical chat calls, and zero new model calls today."
+    }
+  ]
+}

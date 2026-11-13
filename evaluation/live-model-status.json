@@ -1,6 +1,6 @@
 {
-  "release": "0.9.0",
-  "generated_at": "2026-11-11T07:15:00.387920+00:00",
+  "release": "0.10.0",
+  "generated_at": "2026-11-13T02:06:52.705072+00:00",
   "provider": "openai",
   "connection_configured": true,
   "connection_verified": true,
@@ -16,5 +16,5 @@
     "total_answers": 3,
     "report": "live-model-results.json"
   },
-  "note": "v0.9 验证统一演示、自由提问、证据联动和故障恢复；本轮未调用真实模型。模型故障路径仅以显式模拟协议测试验证，真实语义效果尚未评估。v0.6 三轮真实验收单独保留为历史。"
+  "note": "v0.10 验证导入项目、当前快照自由提问与证据隔离；本轮未调用真实模型，模型分支仅以模拟协议测试验证。v0.6 三轮真实问答验收保留为历史记录。"
 }
