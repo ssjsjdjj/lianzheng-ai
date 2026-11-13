@@ -47,6 +47,12 @@ jobs:
         run: node tests/browser-v011-answer.cjs
       - name: Check imported project brief protocol
         run: node tests/browser-v011-brief.cjs
+      - name: Check answer changes and retrieval replay
+        run: node tests/browser-v012-answer.cjs
+      - name: Check current project fullscreen presentation
+        run: node tests/browser-v012-presenter.cjs
+      - name: Run frozen multi-project question evaluation
+        run: python scripts/evaluate_project_questions.py --output evaluation/ci-project-question-results.json
       - name: Run local functional checks
         run: python scripts/evaluate.py evaluation/ci-smoke-results.json
       - name: Run offline development comparison
@@ -86,5 +92,17 @@ jobs:
           path: |
             evaluation/ci-task-comparison-results.json
             fixtures/task-comparison.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload multi-project question evaluation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: multi-project-question-evaluation
+          path: |
+            evaluation/ci-project-question-results.json
+            evaluation/ci-project-question-results.html
+            fixtures/project-questions.json
           if-no-files-found: error
           retention-days: 7
