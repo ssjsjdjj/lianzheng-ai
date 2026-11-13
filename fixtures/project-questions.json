@@ -1,0 +1,485 @@
+{
+  "schema": 1,
+  "release": "0.12.0",
+  "kind": "developer-authored-project-separated-questions",
+  "frozen_before_retrieval": true,
+  "tuning_policy": "Do not tune rankers on validation outcomes. Keep all misses.",
+  "limitations": [
+    "开发者根据冻结输入编写，尚未经独立人工语义复核。",
+    "两个 validation 项目在旧版中做过导入兼容测试，不能称为此前从未见过的项目。",
+    "只把显式来源定位作为参考证据；无参考的边界问题不计检索覆盖率。",
+    "补充资料为人工构造的未执行检查要求，不是上游项目真实测试记录。"
+  ],
+  "projects": [
+    {
+      "id": "project-1",
+      "split": "dev",
+      "source": {
+        "repository": "http-party/http-server",
+        "commit": "e16ed1d4a5d91a2bdf55de565819ec1733048bbc",
+        "url": "https://github.com/http-party/http-server/tree/e16ed1d4a5d91a2bdf55de565819ec1733048bbc",
+        "path": "fixtures/real-case/http-server-minimist/before.package-lock.json",
+        "sha256": "c2c49899baad1056455227f90108caa8bf358da24719e9074f6e77b32754c398",
+        "license": "MIT",
+        "license_path": "fixtures/real-case/http-server-minimist/LICENSE",
+        "license_sha256": "5e1872d320e47580441894fc53c12505ce9054849ca928d90086ebf110424676"
+      },
+      "tasks": [
+        {
+          "id": "p1-01",
+          "type": "direct-path",
+          "question": "minimist 是怎么直接引入当前项目的？列出依赖路径和清单位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/minimist",
+              "locator": "/packages/node_modules~1minimist"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-02",
+          "type": "indirect-path",
+          "question": "ansi-regex 通过哪些依赖路径被间接引入？保留安装位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/cliui/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1cliui~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/eslint/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1eslint~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/inquirer/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1inquirer~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/nyc/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1nyc~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/string-width/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1string-width~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/tap/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1tap~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/tap/node_modules/log-update/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1tap~1node_modules~1log-update~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/tap/node_modules/string-length/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1tap~1node_modules~1string-length~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/tap/node_modules/unicode-length/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1tap~1node_modules~1unicode-length~1node_modules~1ansi-regex"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-03",
+          "type": "occurrences",
+          "question": "minimist 有哪些安装位置和版本？不要合并不同位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/minimist",
+              "locator": "/packages/node_modules~1minimist"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/tap/node_modules/minimist",
+              "locator": "/packages/node_modules~1tap~1node_modules~1minimist"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-04",
+          "type": "coverage",
+          "question": "当前项目依赖清单的覆盖情况、缺失关系和未知查询有哪些？",
+          "references": [
+            {
+              "kind": "coverage"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-05",
+          "type": "missing-entity",
+          "question": "lz-evaluation-does-not-exist-2099 的依赖路径在哪里？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-06",
+          "type": "runtime-boundary",
+          "question": "仅凭当前清单能证明生产环境已通过业务测试并可以安全上线吗？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-07",
+          "type": "scan-boundary",
+          "question": "minimist 的漏洞查询状态是什么？未知能当成没有风险吗？",
+          "references": [
+            {
+              "kind": "scan",
+              "ref": "npm:node_modules/minimist",
+              "locator": "/npm:node_modules~1minimist"
+            },
+            {
+              "kind": "scan",
+              "ref": "npm:node_modules/tap/node_modules/minimist",
+              "locator": "/npm:node_modules~1tap~1node_modules~1minimist"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p1-08",
+          "type": "supplement",
+          "question": "minimist 升级有哪些项目检查要求？",
+          "references": [
+            {
+              "kind": "project",
+              "source": "user-document"
+            }
+          ],
+          "supplement": {
+            "title": "评测用项目检查要求（人工构造）",
+            "package": "minimist",
+            "version": "1.2.5",
+            "kind": "project",
+            "text": "minimist 升级检查要求：核对命令行参数解析、输出格式和回归记录。这是为评测人工编写的待办，尚未执行测试，不是上游项目的真实要求或测试结果。"
+          },
+          "semantic_review": "pending-independent-human-review"
+        }
+      ]
+    },
+    {
+      "id": "project-2",
+      "split": "validation",
+      "source": {
+        "repository": "ietf-tools/datatracker",
+        "commit": "dd2518248e4b32a9c814e9346d9451e9f76d1e75",
+        "url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/package-lock.json",
+        "path": "fixtures/public-projects/ietf-tools-datatracker/package-lock.json",
+        "sha256": "6bf62d33567df8cc5ebba29b2c817fce5e0082f5346b44e13088363adbf2bef1",
+        "license": "BSD-3-Clause",
+        "license_url": "https://github.com/ietf-tools/datatracker/blob/dd2518248e4b32a9c814e9346d9451e9f76d1e75/LICENSE",
+        "lockfile_version": 3,
+        "package_entries": 572,
+        "kind": "public-real-project-input; not a customer trial or runtime security test",
+        "license_path": "fixtures/public-projects/ietf-tools-datatracker/LICENSE",
+        "license_sha256": "d72b9449d3f04b10f25490c28836b1e3f9f3fa6e3c044385df39f5e92d1d22d5"
+      },
+      "tasks": [
+        {
+          "id": "p2-01",
+          "type": "direct-path",
+          "question": "bootstrap 是怎么直接引入当前项目的？列出依赖路径和清单位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/bootstrap",
+              "locator": "/packages/node_modules~1bootstrap"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-02",
+          "type": "indirect-path",
+          "question": "ansi-regex 通过哪些依赖路径被间接引入？保留安装位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/@isaacs/cliui/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1@isaacs~1cliui~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/string-width/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1string-width~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/wrap-ansi/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1wrap-ansi~1node_modules~1ansi-regex"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-03",
+          "type": "occurrences",
+          "question": "ansi-regex 有哪些安装位置和版本？不要合并不同位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/@isaacs/cliui/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1@isaacs~1cliui~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/string-width/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1string-width~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/wrap-ansi/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1wrap-ansi~1node_modules~1ansi-regex"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-04",
+          "type": "coverage",
+          "question": "当前项目依赖清单的覆盖情况、缺失关系和未知查询有哪些？",
+          "references": [
+            {
+              "kind": "coverage"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-05",
+          "type": "missing-entity",
+          "question": "lz-evaluation-does-not-exist-2099 的依赖路径在哪里？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-06",
+          "type": "runtime-boundary",
+          "question": "仅凭当前清单能证明生产环境已通过业务测试并可以安全上线吗？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-07",
+          "type": "scan-boundary",
+          "question": "bootstrap 的漏洞查询状态是什么？未知能当成没有风险吗？",
+          "references": [
+            {
+              "kind": "scan",
+              "ref": "npm:node_modules/bootstrap",
+              "locator": "/npm:node_modules~1bootstrap"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p2-08",
+          "type": "supplement",
+          "question": "bootstrap 升级有哪些项目检查要求？",
+          "references": [
+            {
+              "kind": "project",
+              "source": "user-document"
+            }
+          ],
+          "supplement": {
+            "title": "评测用项目检查要求（人工构造）",
+            "package": "bootstrap",
+            "version": "5.3.8",
+            "kind": "project",
+            "text": "bootstrap 升级检查要求：核对命令行参数解析、输出格式和回归记录。这是为评测人工编写的待办，尚未执行测试，不是上游项目的真实要求或测试结果。"
+          },
+          "semantic_review": "pending-independent-human-review"
+        }
+      ]
+    },
+    {
+      "id": "project-3",
+      "split": "validation",
+      "source": {
+        "repository": "mermaid-js/mermaid-cli",
+        "commit": "1423a0d7967d275a9d360ba0617f569550827c8b",
+        "url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/package-lock.json",
+        "path": "fixtures/public-projects/mermaid-js-mermaid-cli/package-lock.json",
+        "sha256": "a01ecda4749535f1669dd0f1e95e9d71748b805c12bf780660818452b84ff889",
+        "license": "MIT",
+        "license_url": "https://github.com/mermaid-js/mermaid-cli/blob/1423a0d7967d275a9d360ba0617f569550827c8b/LICENSE",
+        "lockfile_version": 3,
+        "package_entries": 710,
+        "kind": "public-real-project-input; not a customer trial or runtime security test",
+        "license_path": "fixtures/public-projects/mermaid-js-mermaid-cli/LICENSE",
+        "license_sha256": "97f7515292671682e698b9e35b8431b096ee4357c3ccdbf8694d979b73ba94e6"
+      },
+      "tasks": [
+        {
+          "id": "p3-01",
+          "type": "direct-path",
+          "question": "commander 是怎么直接引入当前项目的？列出依赖路径和清单位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/commander",
+              "locator": "/packages/node_modules~1commander"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-02",
+          "type": "indirect-path",
+          "question": "ansi-regex 通过哪些依赖路径被间接引入？保留安装位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/@isaacs/cliui/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1@isaacs~1cliui~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/@puppeteer/browsers/node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1@puppeteer~1browsers~1node_modules~1ansi-regex"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/ansi-regex",
+              "locator": "/packages/node_modules~1ansi-regex"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-03",
+          "type": "occurrences",
+          "question": "commander 有哪些安装位置和版本？不要合并不同位置。",
+          "references": [
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/commander",
+              "locator": "/packages/node_modules~1commander"
+            },
+            {
+              "kind": "occurrence",
+              "ref": "npm:node_modules/d3-dsv/node_modules/commander",
+              "locator": "/packages/node_modules~1d3-dsv~1node_modules~1commander"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-04",
+          "type": "coverage",
+          "question": "当前项目依赖清单的覆盖情况、缺失关系和未知查询有哪些？",
+          "references": [
+            {
+              "kind": "coverage"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-05",
+          "type": "missing-entity",
+          "question": "lz-evaluation-does-not-exist-2099 的依赖路径在哪里？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-06",
+          "type": "runtime-boundary",
+          "question": "仅凭当前清单能证明生产环境已通过业务测试并可以安全上线吗？",
+          "references": [],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-07",
+          "type": "scan-boundary",
+          "question": "commander 的漏洞查询状态是什么？未知能当成没有风险吗？",
+          "references": [
+            {
+              "kind": "scan",
+              "ref": "npm:node_modules/commander",
+              "locator": "/npm:node_modules~1commander"
+            },
+            {
+              "kind": "scan",
+              "ref": "npm:node_modules/d3-dsv/node_modules/commander",
+              "locator": "/npm:node_modules~1d3-dsv~1node_modules~1commander"
+            }
+          ],
+          "supplement": null,
+          "semantic_review": "pending-independent-human-review"
+        },
+        {
+          "id": "p3-08",
+          "type": "supplement",
+          "question": "commander 升级有哪些项目检查要求？",
+          "references": [
+            {
+              "kind": "project",
+              "source": "user-document"
+            }
+          ],
+          "supplement": {
+            "title": "评测用项目检查要求（人工构造）",
+            "package": "commander",
+            "version": "15.0.0",
+            "kind": "project",
+            "text": "commander 升级检查要求：核对命令行参数解析、输出格式和回归记录。这是为评测人工编写的待办，尚未执行测试，不是上游项目的真实要求或测试结果。"
+          },
+          "semantic_review": "pending-independent-human-review"
+        }
+      ]
+    }
+  ]
+}
