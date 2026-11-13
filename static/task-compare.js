@@ -13,11 +13,13 @@
   let readPromise=null,useModel=false,mode='fixed',draft='',selectedPhase='before',pending=null,lastAttempt=null,expectedCaseHash=null;
   let scope='case',snapshotId=null,snapshotContext=null,workspaceSnapshotId=null,workspaceChanging=false;
   let readSerial=0,readController=null,readTimer=null,modelStatus=null;
+  let baseline=null,acceptedAt=null,technicalOpen=false;
+  const clone=value=>JSON.parse(JSON.stringify(value));
   const caseURL=value=>typeof value==='string'&&/^\/api\/real-case\/files\/[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(value)?value:null;
   const task=()=>catalog?.tasks?.find(t=>t.id===chosen);
   const phaseNow=()=>scope==='snapshot'?'snapshot':mode==='free'?selectedPhase:(task()?.phase||selectedPhase);
   const questionNow=()=>mode==='free'?draft.trim():(task()?.question||'');
-  const viewState=()=>({catalog,scope,snapshot_id:snapshotId,context:snapshotContext,workspace_changing:workspaceChanging,task_id:chosen,mode,phase:phaseNow(),question:questionNow(),result,running,loading,error,notice,use_model:useModel,expected_case_hash:expectedCaseHash});
+  const viewState=()=>({catalog,scope,snapshot_id:snapshotId,context:snapshotContext,workspace_changing:workspaceChanging,task_id:chosen,mode,phase:phaseNow(),question:questionNow(),result,baseline:baseline?clone(baseline):null,running,loading,error,notice,use_model:useModel,expected_case_hash:expectedCaseHash});
   const activeCatalog=()=>scope==='snapshot'?snapshotContext:catalog;
   const modelConfigured=()=>typeof activeCatalog()?.model_configured==='boolean'?activeCatalog().model_configured:(modelStatus??(typeof state==='object'?state.model:null))?.configured;
   const snapshotReady=()=>Boolean(!workspaceChanging&&snapshotId&&snapshotContext?.source?.snapshot_id===snapshotId&&/^[a-f0-9]{64}$/.test(snapshotContext?.source?.context_sha256||''));
@@ -33,7 +35,8 @@
   }
   const emit=()=>window.dispatchEvent(new CustomEvent('lianzheng-task-comparison-changed',{detail:viewState()}));
   function publish(){for(const instance of instances)render(instance);emit();}
-  function clearResult(){result=null;selections.clear();error='';notice='';lastAttempt=null;}
+  function clearResult(){result=null;acceptedAt=null;selections.clear();error='';notice='';lastAttempt=null;}
+  function clearBaseline(){baseline=null;technicalOpen=false;}
   function leavePending(message=''){
     ++serial;
     if(pending){clearTimeout(pending.timer);pending.controller.abort();pending=null;}
@@ -102,6 +105,55 @@
       ${c.model||c.attempt_metadata?`<details class="tc-model"><summary>模型解释的引用与尝试记录</summary><p>${esc(c.model?.validation||'引用仍需人工复核。')} 引用校验针对规范化事实，不是上游原文逐字核验。</p>${(c.model?.claims||[]).map(x=>`<div><p>${esc(x.text)}</p>${(x.quotes||[]).map(q=>`<blockquote>${esc(q.quote)}<small>${esc(q.evidence_id)}</small></blockquote>`).join('')}</div>`).join('')}<p>返回模型：${esc(meta.returned_model||'未返回')} · 用量：${esc(meta.usage?.total_tokens??'未知')} tokens</p>${budget?`<p>本侧输入处理：${esc(JSON.stringify(budget))}</p>`:''}</details>`:''}
       <details class="tc-sources"><summary>核对本侧全部证据与文件（${c.evidence?.length||0} 份）</summary>${(c.evidence||[]).map(evidence).join('')}</details>${unscored?'':`<details class="tc-reference"><summary>开发者参考标注与未取回项</summary><p>标注仅用于检索后评分，尚未经独立人工评审。</p><p>参考：${esc((m.expected_evidence_ids||[]).join('、')||'无')}</p><p>未取回：${esc((m.missing_evidence_ids||[]).join('、')||'无')}</p></details>`}</article>`;
   }
+  function graphColumn(data){return data?.columns?.find(c=>c.id==='bm25+graph')||data?.columns?.[1];}
+  function validCard(card,c,source){
+    if(!card||!bound(card,source))return false;
+    const ids=new Set(c.evidence.map(e=>e.id));
+    const item=value=>value&&typeof value.text==='string'&&Array.isArray(value.evidence_ids)&&value.evidence_ids.every(id=>typeof id==='string'&&ids.has(id));
+    return item(card.conclusion)&&['reasons','unknowns','next_steps'].every(key=>Array.isArray(card[key])&&card[key].every(item));
+  }
+  function cardFor(c,data=result){
+    if(validCard(c?.answer_card,c,data?.source))return c.answer_card;
+    return {...data?.source,conclusion:{text:'当前返回没有结构化答案卡，请展开双栏核对检索依据。',evidence_ids:[]},reasons:[],unknowns:[{text:'尚无可展示的结构化结论。',evidence_ids:[]}],next_steps:[],note:'未生成结构化答案卡，不据此推断项目状态。'};
+  }
+  function cardItem(item,index){
+    return `<div class="tc-card-item"><p>${esc(item.text)}</p><div class="tc-card-citations">${item.evidence_ids.length?item.evidence_ids.map(id=>`<button type="button" data-tc-card-evidence="${esc(id)}" data-tc-column="${index}" title="${esc((result?.columns[index]?.evidence.find(e=>e.id===id)?.title||'依据')+' · '+id)}">查看依据 ${(result?.columns[index]?.evidence.findIndex(e=>e.id===id)??-1)+1}</button>`).join(''):'<small>未绑定检索证据 · 提示或待确认项</small>'}</div></div>`;
+  }
+  function answerCard(){
+    const c=graphColumn(result);if(!c)return '';
+    const card=cardFor(c),index=result.columns.indexOf(c),generation=card.generation||c.generation;
+    return `<section class="tc-answer-card" aria-label="当前项目答案卡"><div class="tc-card-heading"><div><span class="tc-eyebrow">ANSWER · EVIDENCE · NEXT STEP</span><h3>当前项目答案卡</h3></div><span>${generation==='model-assisted'?'模型解释 + 已取回依据':generation==='model-fallback'?'模型解释未采纳 · 证据摘要':'离线证据摘要'}</span></div><div class="tc-card-conclusion"><h4>当前结论</h4>${cardItem(card.conclusion,index)}</div><div class="tc-card-grid">${[['reasons','依据'],['unknowns','仍待确认'],['next_steps','下一步']].map(([key,label])=>`<section><h4>${label}</h4>${card[key].length?card[key].map(item=>cardItem(item,index)).join(''):'<p class="tc-meta">本次没有列出该项。</p>'}</section>`).join('')}</div><p class="tc-meta">${esc(card.note||'基于图增强侧实际取回材料；引用绑定校验不等于语义正确性评定。')}</p><button type="button" class="button secondary" data-tc-retain ${running?'disabled':''}>保留此回答作对照</button><small class="tc-memory-note">仅保存在本页；用于同项目、同一问题的资料变化复核。</small></section>`;
+  }
+  // Historical records deliberately omit source URLs. Their saved excerpts remain readable,
+  // but can never be used as a live download under a newer material fingerprint.
+  function freezeAnswer(data){
+    const c=graphColumn(data),source=data.source;
+    const rawCard=cardFor(c,data),item=value=>({text:value.text,evidence_ids:[...value.evidence_ids]});
+    const card={scope:source.scope,snapshot_id:source.snapshot_id,context_sha256:source.context_sha256,generation:rawCard.generation||c.generation,conclusion:item(rawCard.conclusion),reasons:rawCard.reasons.map(item),unknowns:rawCard.unknowns.map(item),next_steps:rawCard.next_steps.map(item),note:rawCard.note};
+    return clone({status:'historical-not-current',question:data.task.question,answered_at:acceptedAt,retained_at:new Date().toISOString(),
+      source:{scope:source.scope,snapshot_id:source.snapshot_id,context_sha256:source.context_sha256,project:source.project,label:source.label,filename:source.filename},
+      column_id:c.id,generation:card.generation,answer_card:card,evidence:c.evidence.map(e=>({id:e.id,stable_key:e.stable_key,content_sha256:e.content_sha256,title:e.title,text:e.text,filename:e.filename,locator:e.locator,source_sha256:e.source_sha256,source_excerpt:e.source_excerpt,source_excerpt_truncated:e.source_excerpt_truncated}))});
+  }
+  function changesFor(current){
+    const before=baseline?.evidence,after=graphColumn(current)?.evidence;
+    const usable=items=>Array.isArray(items)&&items.every(e=>typeof e.stable_key==='string'&&e.stable_key&&/^[a-f0-9]{64}$/.test(e.content_sha256||''))&&new Set(items.map(e=>e.stable_key)).size===items.length;
+    if(!usable(before)||!usable(after))return null;
+    const old=new Map(before.map(e=>[e.stable_key,e])),fresh=new Map(after.map(e=>[e.stable_key,e]));
+    return {added:after.filter(e=>!old.has(e.stable_key)),removed:before.filter(e=>!fresh.has(e.stable_key)),changed:after.filter(e=>old.has(e.stable_key)&&old.get(e.stable_key).content_sha256!==e.content_sha256),unchanged:after.filter(e=>old.get(e.stable_key)?.content_sha256===e.content_sha256)};
+  }
+  function generationLabel(value){return value==='model-assisted'?'模型解释 + 已取回依据':value==='model-fallback'?'模型解释未采纳 · 证据摘要':'离线证据摘要';}
+  function sameQuestionResult(){return result?.source?.scope==='snapshot'&&baseline?.source.snapshot_id===result.source.snapshot_id&&baseline.question===result.task.question;}
+  function historyView(){
+    if(!baseline||scope!=='snapshot')return '';
+    const current=sameQuestionResult()?result:null,changes=current?changesFor(current):null;
+    const refreshed=snapshotReady()&&snapshotContext.source.context_sha256!==baseline.source.context_sha256;
+    const conclusion=current?cardFor(graphColumn(current)).conclusion.text:null;
+    return `<section class="tc-history" aria-label="补充资料前后回答对照"><div class="tc-card-heading"><div><span class="tc-eyebrow">SAME QUESTION · MATERIAL CHANGE</span><h3>补充资料前后回答对照</h3></div><button type="button" class="button secondary" data-tc-forget>清除历史对照</button></div><p class="tc-history-question">同一问题：${esc(baseline.question)}</p><div class="tc-history-columns"><article><span class="tc-history-label">保留回答 · 历史记录，非当前状态</span><p>${esc(baseline.answer_card.conclusion.text)}</p><small>${esc(generationLabel(baseline.generation))}<br>回答时间 ${esc(baseline.answered_at||'未知')}<br>保留时间 ${esc(baseline.retained_at)}</small><code>原材料指纹 ${esc(baseline.source.context_sha256)}</code></article><article><span class="tc-history-label">${current?'本次回答':'等待按新资料重新回答'}</span><p>${esc(conclusion||(running?'正在等待新回答；历史记录保持原样。':error?'新回答尚未成功，不能用历史回答代表新材料。':refreshed?'资料已更新。请明确点击下方按钮，再生成同题回答。':'先补充项目资料，再刷新材料并明确重新回答。'))}</p>${current?`<small>${esc(generationLabel(cardFor(graphColumn(current)).generation||graphColumn(current).generation))}<br>回答时间 ${esc(acceptedAt||'未知')}</small><code>本次材料指纹 ${esc(current.source.context_sha256)}</code>`:''}</article></div>${current?`<p class="tc-meta">${current.source.context_sha256===baseline.source.context_sha256?'两次材料指纹相同。':'两次材料指纹不同。'}并列展示的是结论摘要，不含全文逐句差异。以下只比较图增强侧两次实际取回的依据；本次未取回可能来自检索排序变化，不代表资料已删除，也不证明回答更正确或修复已完成。</p>${changes?`<div class="tc-change-grid">${[['added','新增'],['removed','本次未取回'],['changed','内容改变'],['unchanged','未变']].map(([key,label])=>`<details class="tc-change-${key}"><summary>${label}依据 <b>${changes[key].length}</b></summary>${changes[key].map(e=>`<p>${esc(e.title||e.stable_key)}<code>${esc(e.stable_key)}</code></p>`).join('')||'<p>无</p>'}</details>`).join('')}</div>`:'<p class="tc-meta">缺少稳定证据标识或内容指纹，无法可靠统计变化。</p>'}`:''}<details class="tc-history-excerpts"><summary>查看保留时的依据片段（历史副本，无下载链接）</summary>${baseline.evidence.map(e=>`<article><strong>${esc(e.title)}</strong><small>${esc(e.filename)} · ${esc(e.locator)}</small><pre>${esc(e.source_excerpt||e.text||'无保存片段')}</pre>${e.source_excerpt_truncated?'<small>保存的片段已截断。</small>':''}<code>来源 SHA-256 ${esc(e.source_sha256||'未知')}</code><code>片段内容指纹 ${esc(e.content_sha256||'未知')}</code></article>`).join('')}</details><div class="tc-actions"><button type="button" class="button secondary" data-tc-supplement ${running||loading||workspaceChanging?'disabled':''}>补充项目资料</button><button type="button" class="button primary" data-tc-reask ${!refreshed||!mayRun()?'disabled':''}>根据新资料重新回答</button><button type="button" class="button secondary" data-tc-download-change>导出回答变化 JSON</button></div><p class="tc-meta">刷新页面、换项目或改问题会清除历史对照。补资料不会自动调用模型；重新回答仍采用当前明确选择的模式。</p></section>`;
+  }
+  function resultColumns(){
+    const columns=`<div class="tc-columns">${result.columns.map(column).join('')}</div>`;
+    return scope==='snapshot'?`${answerCard()}<details class="tc-technical" data-tc-technical ${technicalOpen?'open':''}><summary>展开检索双栏与原文证据</summary>${columns}</details>`:columns;
+  }
   function controls(instance){
     const isProject=scope==='snapshot',busy=running||loading||(isProject&&!snapshotReady());
     const source=activeCatalog()?.source;
@@ -116,14 +168,14 @@
   function render(instance){
     const {host,compact}=instance;
     const active=host.contains?.(document.activeElement)?document.activeElement:null;
-    const focusAttr=['data-tc-scope','data-tc-question','data-tc-fact','data-tc-path','data-tc-evidence','data-tc-select-evidence','data-tc-mode','data-tc-task','data-tc-phase','data-tc-model','data-tc-run','data-tc-stop','data-tc-refresh','data-tc-offline'].find(name=>active?.hasAttribute?.(name));
+    const focusAttr=['data-tc-retain','data-tc-forget','data-tc-supplement','data-tc-reask','data-tc-card-evidence','data-tc-scope','data-tc-question','data-tc-fact','data-tc-path','data-tc-evidence','data-tc-select-evidence','data-tc-mode','data-tc-task','data-tc-phase','data-tc-model','data-tc-run','data-tc-stop','data-tc-refresh','data-tc-offline'].find(name=>active?.hasAttribute?.(name));
     const focusValue=focusAttr?active.getAttribute(focusAttr):null,focusColumn=active?.dataset?.tcColumn;
     const caret=focusAttr==='data-tc-question'?[active.selectionStart,active.selectionEnd]:null;
     host.classList.add('task-comparison-workbench');host.classList.toggle('tc-compact',compact);host.classList.toggle('tc-free-mode',mode==='free');
-    host.innerHTML=`${compact?'':`<div class="panel-heading"><div><span class="tc-eyebrow">SAME SOURCES · PAIRED RETRIEVAL</span><h2>真实任务双栏对照</h2><p>现场提出问题，沿已取回材料核对结论。</p></div><button type="button" class="button secondary" data-tc-close>收起对照</button></div>`}<p class="tc-boundary">${scope==='snapshot'?'当前导入项目材料随所选快照切换，问题与证据按材料指纹隔离。':'固定 http-server 实验材料，不随工作空间切换。'}${mode==='free'?'自由题没有预设参考答案，不计算准确率或胜负。':'16 道开发者整理题，尚未经独立评审。'}</p>${controls(instance)}
+    host.innerHTML=`${compact?'':`<div class="panel-heading"><div><span class="tc-eyebrow">SAME SOURCES · PAIRED RETRIEVAL</span><h2>${scope==='snapshot'?'当前项目问答':'真实任务双栏对照'}</h2><p>现场提出问题，沿已取回材料核对结论。</p></div><button type="button" class="button secondary" data-tc-close>收起对照</button></div>`}<p class="tc-boundary">${scope==='snapshot'?'当前导入项目材料随所选快照切换，问题与证据按材料指纹隔离。':'固定 http-server 实验材料，不随工作空间切换。'}${mode==='free'?'自由题没有预设参考答案，不计算准确率或胜负。':'16 道开发者整理题，尚未经独立评审。'}</p>${controls(instance)}
       ${error?`<div class="tc-alert" role="alert"><p>${esc(error)}</p>${lastAttempt?'<button type="button" class="button secondary" data-tc-offline>改用离线证据重试</button>':''}</div>`:''}${notice?`<p class="tc-notice" role="status">${esc(notice)}</p>`:''}
       <details class="tc-protocol-brief"><summary>相同材料与预算 · 结构差异不等于回答准确率</summary><p>${esc(activeCatalog()?.protocol?.statement||'进入页面不会自动运行模型。')} 两侧都读取关系文本、共用片段路径连接步骤。可连通位置包含未命中目标公告的版本。</p></details>${running?'<p class="tc-notice" role="status">正在等待本次结果。停止等待只中断本机接收，服务器可能继续处理，已发生的请求仍可能计费。</p>':''}
-      ${result?`<div class="tc-result-summary" role="status"><strong>${summaryText(result)}</strong><span>本次材料：${esc(result.source.scope==='snapshot'?`${result.source.project} · ${result.source.label}`:phases[result.task.phase])}</span><p>${esc(result.comparison.note)}</p>${result.model_calls_attempted?`<p>模型解释尝试 ${result.model_calls_attempted} 次。${result.fairness.model_pair_comparable?'两侧返回模型一致，语义优劣仍未评定。':'两侧未同时完成或模型无法确认一致，不能比较生成质量。'}</p>`:''}</div><div class="tc-columns">${result.columns.map(column).join('')}</div><details class="tc-protocol"><summary>来源、统一条件与验证范围</summary>${result.source.scope==='snapshot'?`<p>快照 ${esc(result.source.snapshot_id)} · ${esc(result.source.filename)}</p><p>${esc(result.source.serialization||'来源为当前快照中保存的材料。')}</p><code>材料指纹 ${esc(result.source.context_sha256)}</code>`:`<p>提交 ${esc(result.source.commit)}</p><p>阶段来源 ${esc(result.source.lockfile)}</p>`}<p>候选片段 ${result.fairness.candidate_documents} 份 · 每侧最多 ${result.fairness.k} 份 · 片段上限 ${result.fairness.evidence_max_bytes} 字节 · 模型消息上限 ${result.fairness.model_max_input_bytes} 字节</p><code>统一语料 SHA-256 ${esc(result.fairness.corpus_sha256)}</code><p>${esc(result.fairness.shared_postprocessing)}</p><ul>${result.limitations.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`:running?'':`<div class="tc-empty"><strong>${mode==='free'?'写下一个问题，再核对两侧依据':'先选一题，再运行对照'}</strong><p>默认不调用模型。现场问题和回答只保留在当前页面内存，刷新后不恢复。</p></div>`}`;
+      ${historyView()}${result?`<div class="tc-result-summary" role="status"><strong>${summaryText(result)}</strong><span>本次材料：${esc(result.source.scope==='snapshot'?`${result.source.project} · ${result.source.label}`:phases[result.task.phase])}</span><p>${esc(result.comparison.note)}</p>${result.model_calls_attempted?`<p>模型解释尝试 ${result.model_calls_attempted} 次。${result.fairness.model_pair_comparable?'两侧返回模型一致，语义优劣仍未评定。':'两侧未同时完成或模型无法确认一致，不能比较生成质量。'}</p>`:''}</div>${resultColumns()}<details class="tc-protocol"><summary>来源、统一条件与验证范围</summary>${result.source.scope==='snapshot'?`<p>快照 ${esc(result.source.snapshot_id)} · ${esc(result.source.filename)}</p><p>${esc(result.source.serialization||'来源为当前快照中保存的材料。')}</p><code>材料指纹 ${esc(result.source.context_sha256)}</code>`:`<p>提交 ${esc(result.source.commit)}</p><p>阶段来源 ${esc(result.source.lockfile)}</p>`}<p>候选片段 ${result.fairness.candidate_documents} 份 · 每侧最多 ${result.fairness.k} 份 · 片段上限 ${result.fairness.evidence_max_bytes} 字节 · 模型消息上限 ${result.fairness.model_max_input_bytes} 字节</p><code>统一语料 SHA-256 ${esc(result.fairness.corpus_sha256)}</code><p>${esc(result.fairness.shared_postprocessing)}</p><ul>${result.limitations.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`:running?'':`<div class="tc-empty"><strong>${mode==='free'?'写下一个问题，再核对两侧依据':'先选一题，再运行对照'}</strong><p>默认不调用模型。现场问题和回答只保留在当前页面内存，刷新后不恢复。</p></div>`}`;
     bind(instance);
     if(focusAttr){const replacement=[...host.querySelectorAll('['+focusAttr+']')].find(e=>e.getAttribute(focusAttr)===focusValue&&e.dataset.tcColumn===focusColumn);if(replacement&&!replacement.disabled){replacement.focus({preventScroll:true});if(caret)replacement.setSelectionRange(...caret);}}
   }
@@ -131,25 +183,44 @@
     const c=result?.columns?.[index];if(!c)return;
     selections.set(c.id,{...(selections.get(c.id)||{}),...changes});publish();
   }
+  function download(value,filename){const blob=new Blob([JSON.stringify(value,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   function bind(instance){
     const {host}=instance;
     host.querySelector('[data-tc-close]')?.addEventListener('click',()=>{panel.hidden=true;launch.focus();});
     host.querySelectorAll('[data-tc-scope]').forEach(b=>b.addEventListener('click',()=>configure({scope:b.dataset.tcScope,mode:b.dataset.tcScope==='snapshot'?'free':'fixed'})));
     host.querySelectorAll('[data-tc-mode]').forEach(b=>b.addEventListener('click',()=>configure({mode:b.dataset.tcMode})));
-    host.querySelector('[data-tc-task]')?.addEventListener('change',e=>{contextChanged();chosen=e.target.value;publish();});
+    host.querySelector('[data-tc-task]')?.addEventListener('change',e=>{clearBaseline();contextChanged();chosen=e.target.value;publish();});
     host.querySelector('[data-tc-phase]')?.addEventListener('change',e=>configure({phase:e.target.value}));
     host.querySelector('[data-tc-model]')?.addEventListener('change',e=>{contextChanged();useModel=e.target.checked&&modelConfigured()===true;publish();});
     host.querySelector('[data-tc-question]')?.addEventListener('input',e=>{
-      draft=e.target.value;const cursor=e.target.selectionStart;
-      if(result||error||notice){clearResult();publish();const replacement=host.querySelector('[data-tc-question]');replacement.focus();replacement.setSelectionRange(cursor,cursor);}
+      const previousQuestion=questionNow(),hadBaseline=Boolean(baseline);draft=e.target.value;const cursor=e.target.selectionStart;
+      if(questionNow()!==previousQuestion){clearBaseline();if(running)leavePending();}
+      if(result||error||notice||hadBaseline){clearResult();publish();const replacement=host.querySelector('[data-tc-question]');replacement.focus();replacement.setSelectionRange(cursor,cursor);}
       else {for(const inst of instances){const input=inst.host.querySelector('[data-tc-question]');if(input&&input!==e.target)input.value=draft;const count=inst.host.querySelector('[data-tc-length]');if(count)count.textContent=`${draft.length}/1000 · Ctrl / ⌘ + Enter 运行`;const button=inst.host.querySelector('[data-tc-run]');if(button)button.disabled=!mayRun();}emit();}
     });
     host.querySelector('[data-tc-question]')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();run();}});
-    host.querySelectorAll('[data-tc-prompt]').forEach(b=>b.addEventListener('click',()=>{contextChanged();draft=b.dataset.tcPrompt;publish();host.querySelector('[data-tc-question]')?.focus();}));
+    host.querySelectorAll('[data-tc-prompt]').forEach(b=>b.addEventListener('click',()=>{if(questionNow()!==b.dataset.tcPrompt)clearBaseline();contextChanged();draft=b.dataset.tcPrompt;publish();host.querySelector('[data-tc-question]')?.focus();}));
     host.querySelector('[data-tc-run]')?.addEventListener('click',()=>run());
     host.querySelector('[data-tc-stop]')?.addEventListener('click',()=>{leavePending('已停止本地等待；服务器可能仍在处理，已发生的模型请求仍可能计费。');publish();});
     host.querySelector('[data-tc-offline]')?.addEventListener('click',()=>{useModel=false;return run({offline:true});});
     host.querySelector('[data-tc-refresh]')?.addEventListener('click',()=>read().catch(()=>{}));
+    host.querySelector('[data-tc-retain]')?.addEventListener('click',()=>{if(scope!=='snapshot'||!result||running||!bound(result.source,snapshotContext?.source)||result.task.question!==questionNow())return;baseline=freezeAnswer(result);publish();});
+    host.querySelector('[data-tc-forget]')?.addEventListener('click',()=>{clearBaseline();publish();});
+    host.querySelector('[data-tc-supplement]')?.addEventListener('click',()=>{if(!baseline||baseline.source.snapshot_id!==snapshotId||workspaceChanging)return;window.dispatchEvent(new CustomEvent('lianzheng-open-project-document',{detail:{snapshot_id:snapshotId,context_sha256:snapshotContext?.source?.context_sha256||null}}));});
+    host.querySelector('[data-tc-reask]')?.addEventListener('click',()=>{if(baseline&&snapshotReady()&&snapshotContext.source.context_sha256!==baseline.source.context_sha256&&baseline.question===questionNow())return run();});
+    host.querySelector('[data-tc-download-change]')?.addEventListener('click',()=>{
+      if(!baseline)return;
+      const current=sameQuestionResult()?freezeAnswer(result):null,changes=current?changesFor(result):null;
+      if(current)current.status='current-at-export';
+      download({format:'lianzheng-answer-change-v1',exported_at:new Date().toISOString(),note:'本页历史副本；并列展示结论摘要，仅比较同项目同题实际取回依据。removed 表示本次未取回，不表示原资料删除；不证明答案更正确或修复完成。来源链接已移除，引用片段保留。',historical:clone(baseline),current,changes:changes?Object.fromEntries(Object.entries(changes).map(([key,items])=>[key,items.map(e=>({stable_key:e.stable_key,content_sha256:e.content_sha256,title:e.title}))])):null},'answer-change-'+baseline.source.snapshot_id+'.json');
+    });
+    host.querySelector('[data-tc-technical]')?.addEventListener('toggle',e=>{technicalOpen=Boolean(e.target.open);});
+    host.querySelectorAll('[data-tc-card-evidence]').forEach(b=>b.addEventListener('click',()=>{
+      const index=Number(b.dataset.tcColumn),id=b.dataset.tcCardEvidence;
+      if(!result?.columns?.[index]?.evidence.some(e=>e.id===id&&bound(e,result.source)))return;
+      technicalOpen=true;chooseLink(index,{fact_id:null,evidence_id:id,path_id:null});
+      const target=host.querySelectorAll('[data-tc-evidence]')[index];target?.scrollIntoView?.({behavior:'smooth',block:'center'});target?.focus?.({preventScroll:true});
+    }));
     host.querySelector('[data-tc-download]')?.addEventListener('click',()=>{if(!result)return;const blob=new Blob([JSON.stringify(result,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='task-comparison-'+result.task.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
     host.querySelectorAll('[data-tc-fact]').forEach(b=>b.addEventListener('click',()=>chooseLink(Number(b.dataset.tcColumn),{fact_id:b.dataset.tcFact,evidence_id:null,path_id:null})));
     host.querySelectorAll('[data-tc-path]').forEach(b=>b.addEventListener('click',()=>chooseLink(Number(b.dataset.tcColumn),{path_id:b.dataset.tcPath})));
@@ -197,6 +268,7 @@
     return data.columns.every(c=>{
       const pack=c.evidence_links;
       if(!Array.isArray(c.evidence)||!pack||!scoped(pack.source)||!Array.isArray(pack.paths)||!Array.isArray(pack.facts))return false;
+      if(c.answer_card!==undefined&&!validCard(c.answer_card,c,source))return false;
       const ids=new Set(c.evidence.map(d=>d.id));
       const pathIds=new Set(pack.paths.map(p=>p.id));
       if(ids.size!==c.evidence.length||pathIds.size!==pack.paths.length||!c.evidence.every(d=>scoped(d)&&d.phase==='snapshot'&&(!d.relations||d.relations.every(r=>scoped(r)))))return false;
@@ -224,7 +296,7 @@
       if(requestScope==='snapshot'){
         if(!bound(snapshotContext?.source,requestSource)||!validateProjectResult(data,requestSource))throw Error('返回证据与当前项目快照或材料指纹不一致，已拒绝展示，请刷新材料后重试。');
       }else if(data.source?.scope==='snapshot'||(expectedCaseHash&&data.source?.case_bundle_sha256!==expectedCaseHash)||(catalog?.source?.case_bundle_sha256&&data.source?.case_bundle_sha256!==catalog.source.case_bundle_sha256))throw Error('返回材料与当前目录不一致，请刷新案例状态后重试。');
-      result=data;
+      result=data;acceptedAt=new Date().toISOString();
       if(model&&data.columns.some(c=>c.generation!=='model-assisted')){error='本次模型解释未全部完成；下方保留实际取回证据。可以显式改用离线证据重试。';}
     }catch(e){if(ticket===serial&&requestScope==='snapshot'&&e.status===409){snapshotContext=null;lastAttempt=null;useModel=false;}if(ticket===serial)error=active.timedOut?'本地等待已超时，问题仍保留。服务器可能继续处理，已发生的模型请求仍可能计费。':e.name==='AbortError'?'本地等待已中断，服务器可能继续处理。':e.name==='TypeError'?'无法连接本机服务，问题仍保留。请恢复服务后重试。':e.message;}
     finally{clearTimeout(active.timer);if(ticket===serial){pending=null;running=false;publish();}}
@@ -238,9 +310,12 @@
     const nextPhase=nextScope==='snapshot'?'snapshot':options.phase??(phaseNow()==='snapshot'?'before':phaseNow());
     if(!['fixed','free'].includes(nextMode)||!Object.hasOwn(phases,nextPhase)||(nextScope==='case'&&nextPhase==='snapshot'))throw Error('提问方式或材料阶段无效。');
     const changed=nextScope!==scope||nextId!==snapshotId;
+    if(options.question!==undefined&&(typeof options.question!=='string'||options.question.length>1000))throw Error('问题必须是 1–1000 字的文本。');
+    if(options.reset||changed||nextMode!==mode||nextPhase!==phaseNow()||(typeof options.question==='string'&&options.question.trim()!==questionNow()))clearBaseline();
     contextChanged();
     if(changed){cancelRead();snapshotContext=null;}
     if(options.reset||changed){draft='';useModel=false;chosen='';expectedCaseHash=null;}
+    if(typeof options.question==='string')draft=options.question;
     if('expected_case_hash' in options)expectedCaseHash=typeof options.expected_case_hash==='string'?options.expected_case_hash:null;
     scope=nextScope;snapshotId=nextId;mode=nextMode;selectedPhase=nextPhase;
     if(typeof options.task_id==='string')chosen=options.task_id;
@@ -255,7 +330,7 @@
   window.addEventListener?.('lianzheng-snapshot-changing',event=>{
     workspaceSnapshotId=event.detail?.snapshot_id||null;workspaceChanging=true;
     if(scope!=='snapshot')return;
-    cancelRead();contextChanged();snapshotId=workspaceSnapshotId;snapshotContext=null;draft='';useModel=false;
+    clearBaseline();cancelRead();contextChanged();snapshotId=workspaceSnapshotId;snapshotContext=null;draft='';useModel=false;
     notice='项目正在切换，旧问题、回答和引用已清除。';publish();
   });
   window.addEventListener?.('lianzheng-snapshot-changed',event=>{
@@ -279,7 +354,7 @@
     publish();
   });
   mount(panel);
-  async function open(options){if(options&&typeof options==='object'&&['scope','snapshot_id','mode','phase'].some(k=>k in options))configure(options);panel.hidden=false;if(!activeCatalog())await read().catch(()=>{});panel.scrollIntoView({behavior:'smooth',block:'start'});return viewState();}
+  async function open(options){if(options&&typeof options==='object'&&['scope','snapshot_id','mode','phase','question'].some(k=>k in options))configure(options);const openingScope=scope,openingSnapshot=snapshotId;panel.hidden=false;if(!activeCatalog())await read().catch(()=>{});if(scope!==openingScope||snapshotId!==openingSnapshot||(openingScope==='snapshot'&&workspaceChanging))return viewState();panel.scrollIntoView({behavior:'smooth',block:'start'});return viewState();}
   launch.addEventListener('click',()=>open());
   window.lianzhengTaskCompare={open,mount,state:viewState,refresh:read,configure,reset};
 })();

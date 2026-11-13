@@ -32,6 +32,7 @@ async function loadSnapshots() {
 async function selectSnapshot(id,focus=null) {
   const serial=++state.request;
   state.switchingSnapshot=true;stopWaiting();state.lastAnswer=null;state.lastAnswerReplay=false;
+  state.documentSession=null;$('#document-dialog')?.close?.();
   $('#answer').textContent='正在切换项目资料，旧回答已收起。';
   $('#evidence-list').innerHTML='';$('#evidence-count').textContent='0';
   state.documents=[];state.history=[];state.parentId=null;state.turns=[];renderConversation();
@@ -279,15 +280,22 @@ async function runCompare(event) {
 }
 async function importFile(event) {
   event.preventDefault();const file=$('#bom-file').files[0];if(!file)return;
+  const initialRequest=state.request;
   await busy($('#import-submit'),'解析清单…',async()=>{
     if(file.size>5*1024*1024)throw new Error('文件超过 5 MB 上限。');
     let raw;try{raw=JSON.parse(await file.text());}catch{throw new Error('文件不是有效的 JSON。');}
     const result=await api('/api/snapshots',{method:'POST',body:JSON.stringify({bom:raw,project:$('#import-project').value.trim(),label:$('#import-label').value.trim()})});
-    const importedId=result.snapshot.id;await loadSnapshots();await selectSnapshot(importedId);
-    if(state.id!==importedId||state.switchingSnapshot)throw new Error('清单已保存，当前项目选择已变化，请重新选中导入快照。');
+    const importedId=result.snapshot.id;await loadSnapshots();
+    if(state.request!==initialRequest||state.switchingSnapshot)throw new Error('清单已保存，当前项目选择已变化，请重新选中导入快照。');
+    const selectedRequest=state.request+1;await selectSnapshot(importedId);
+    const stillSelected=()=>state.id===importedId&&state.request===selectedRequest&&!state.switchingSnapshot;
+    if(!stillSelected())throw new Error('清单已保存，当前项目选择已变化，请重新选中导入快照。');
     $('#import-dialog').close();changeView('overview');
     await window.lianzhengTaskCompare?.open?.({scope:'snapshot',snapshot_id:importedId,mode:'free'});
-    toast('清单已导入，可直接提问当前项目；未扫描项会保留为未知。');
+    if(!stillSelected())return;
+    await window.lianzhengProjectBrief?.open?.();
+    if(!stillSelected())return;
+    toast('项目简报已就绪，选择建议问题即可开始；未扫描项保留为未知。');
   });
 }
 async function refreshKnowledge(snapshot=state.id,serial=state.request) {
@@ -331,29 +339,39 @@ async function refreshHistory(snapshot=state.id,serial=state.request) {
     toast('已恢复当时的回答与证据快照，未重新调用模型。');
   }));
 }
-function openDocument() {
+function openDocument(options={}) {
   if(!state.analysis||state.switchingSnapshot)return;
-  $('#document-form').reset();
   const bindings=new Map();
   for(const node of state.analysis.nodes)if(node.package_name&&node.scan_status!=='demo-component')bindings.set(node.package_name+'\u0000'+node.package_version,{package:node.package_name,version:node.package_version});
-  state.documentBindings=[...bindings.values()];state.documentSnapshot=state.id;
-  if(!state.documentBindings.length){toast('当前快照没有可绑定的精确 npm 组件版本。');return;}
-  $('#document-binding').innerHTML=state.documentBindings.map((b,i)=>`<option value="${i}">${escapeHTML(b.package)} @ ${escapeHTML(b.version)}</option>`).join('');
+  if(!bindings.size){toast('当前快照没有可绑定的精确 npm 组件版本。');return;}
+  const session={snapshot:state.id,request:state.request,bindings:[...bindings.values()],returnToQuestion:options.returnToQuestion===true,submitting:false};
+  state.documentSession=session;$('#document-form').reset();
+  $('#document-submit').disabled=false;$('#document-submit').textContent='保存并建立索引';
+  $('#document-binding').innerHTML=session.bindings.map((b,i)=>`<option value="${i}">${escapeHTML(b.package)} @ ${escapeHTML(b.version)}</option>`).join('');
   $('#document-dialog').showModal();
 }
 async function importDocument(event) {
-  event.preventDefault();const snapshot=state.documentSnapshot;
-  await busy($('#document-submit'),'分块并建立索引…',async()=>{
-    const binding=state.documentBindings[Number($('#document-binding').value)];
+  event.preventDefault();const session=state.documentSession;
+  const current=()=>session&&state.documentSession===session&&session.snapshot===state.id&&session.request===state.request&&!state.switchingSnapshot;
+  if(!current()||!$('#document-dialog').open){toast('项目已切换或文档窗口已关闭，请从当前项目重新补充资料。');return;}
+  if(session.submitting)return;
+  const snapshot=session.snapshot,button=$('#document-submit');session.submitting=true;button.disabled=true;button.textContent='分块并建立索引…';
+  try{
+    const binding=session.bindings[Number($('#document-binding').value)];
     if(!binding)throw new Error('请选择有效的组件版本。');
     const result=await api(`/api/snapshots/${encodeURIComponent(snapshot)}/documents`,{method:'POST',body:JSON.stringify({
       ...binding,title:$('#document-title').value.trim(),target_version:$('#document-target').value.trim()||null,
       kind:$('#document-kind').value,url:$('#document-url').value.trim(),text:$('#document-text').value
     })});
     window.dispatchEvent(new CustomEvent('lianzheng-project-evidence-changed',{detail:{snapshot_id:snapshot}}));
-    $('#document-dialog').close();await refreshKnowledge(snapshot);
-    toast(`文档已保存，建立 ${result.chunk_count} 个可定位片段。现在可以询问迁移要求。`);
-  });
+    if(!current())return;
+    $('#document-dialog').close();await refreshKnowledge(snapshot,session.request);
+    if(!current())return;
+    if(session.returnToQuestion)await window.lianzhengTaskCompare?.open?.({scope:'snapshot',snapshot_id:snapshot,mode:'free'});
+    if(!current())return;
+    toast(`文档已保存，建立 ${result.chunk_count} 个可定位片段。请明确点击重新提问，再核对回答变化。`);
+  }catch(error){if(current())toast(error.message);}
+  finally{session.submitting=false;if(current()){button.disabled=false;button.textContent='保存并建立索引';}}
 }
 async function start() {
   try{
@@ -395,15 +413,22 @@ $('#cancel-import').addEventListener('click',()=>$('#import-dialog').close());
 $('#bom-file').addEventListener('change',()=>{$('#file-status').textContent=$('#bom-file').files[0]?.name||'每份快照独立保存，原文件不会被覆盖';});
 $('#import-form').addEventListener('submit',importFile);
 $('#open-document').addEventListener('click',openDocument);
-$('#close-document').addEventListener('click',()=>$('#document-dialog').close());
-$('#cancel-document').addEventListener('click',()=>$('#document-dialog').close());
+window.addEventListener('lianzheng-open-project-document',event=>{
+  if(state.switchingSnapshot||event.detail?.snapshot_id!==state.id){toast('项目已切换，请从当前项目重新选择补充资料。');return;}
+  openDocument({returnToQuestion:true});
+});
+$('#close-document').addEventListener('click',()=>{state.documentSession=null;$('#document-dialog').close();});
+$('#cancel-document').addEventListener('click',()=>{state.documentSession=null;$('#document-dialog').close();});
+$('#document-dialog').addEventListener('cancel',()=>{state.documentSession=null;});
 $('#document-form').addEventListener('submit',importDocument);
 $('#refresh-history').addEventListener('click',()=>busy($('#refresh-history'),'读取中…',()=>refreshHistory()));
 $('#document-file').addEventListener('change',async()=>{
   const file=$('#document-file').files[0];if(!file)return;
+  const session=state.documentSession;
   try{
     if(file.size>1024*1024)throw new Error('文档文件最多 1 MB，正文最多 200000 字符。');
     const text=new TextDecoder('utf-8',{fatal:true}).decode(await file.arrayBuffer());
+    if(!session||session!==state.documentSession||session.snapshot!==state.id||session.request!==state.request||state.switchingSnapshot||!$('#document-dialog').open)return;
     if(text.length>200000)throw new Error('文档超过 200000 字符上限，请拆分。');
     $('#document-text').value=text;
     if(!$('#document-title').value)$('#document-title').value=file.name.replace(/\.(md|txt)$/i,'').slice(0,160);
