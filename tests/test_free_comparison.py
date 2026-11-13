@@ -30,7 +30,7 @@ def test_free_questions_share_curated_retrieval_but_have_no_gold(comparison):
     curated = comparison.run('before-occurrences')
     question = curated['task']['question']
     free = comparison.ask('  ' + question + '\n')
-    assert free['release'] == '0.9.0'
+    assert free['release'] == '0.10.0'
     assert free['task']['question'] == question
     assert free['task']['kind'] == 'free-question'
     assert free['task']['id'] == 'free-' + hashlib.sha256(('before\n' + question).encode()).hexdigest()[:20]
