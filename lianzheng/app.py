@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import quote
 from typing import Literal
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import JSONResponse, FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
@@ -23,6 +23,7 @@ from .task_compare import TaskComparison
 from .case_decisions import CaseDecisions
 from .case_export import evidence_archive
 from .demo_readiness import DemoReadiness
+from .project_query import ProjectQuery, ProjectContextChanged
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -107,16 +108,41 @@ class FreeComparisonRequest(BaseModel):
     use_model:bool=Field(default=False,strict=True)
 
 
+class ProjectQuestionRequest(BaseModel):
+    question:str=Field(min_length=1,max_length=1000,strict=True)
+    expected_context_sha256:str=Field(pattern=r'^[a-f0-9]{64}$',strict=True)
+    use_model:bool=Field(default=False,strict=True)
+
+
 def create_app(database=None,seed=True):
     service=Service(database or os.getenv('LZ_DATABASE',str(ROOT/'data/lianzheng.sqlite3')),ROOT/'fixtures')
     if seed:service.seed()
-    app=FastAPI(title='链证 AI',version='0.9.0',description='本地 GraphRAG 软件依赖风险工作台。')
+    app=FastAPI(title='链证 AI',version='0.10.0',description='本地 GraphRAG 软件依赖风险工作台。')
     app.state.service=service
     tasks=RemediationTasks(service);reviews=ClaimReviews(service)
     simulation=RepairSimulation(service);real_case=RealCase(service,ROOT/'fixtures/real-case')
     task_comparison=TaskComparison(service,real_case,ROOT/'fixtures/task-comparison.json')
     case_decisions=CaseDecisions(real_case)
     demo_readiness=DemoReadiness(service,real_case,task_comparison,case_decisions)
+    project_query=ProjectQuery(service)
+
+    @app.get('/api/snapshots/{identifier}/task-comparison/context')
+    def project_question_context(identifier:str):return project_query.context(identifier)
+
+    @app.post('/api/snapshots/{identifier}/task-comparison/ask')
+    def project_question(identifier:str,body:ProjectQuestionRequest):
+        return project_query.ask(identifier,body.question,body.expected_context_sha256,use_model=body.use_model)
+
+    @app.get('/api/snapshots/{identifier}/task-comparison/sources/{source_id}')
+    def project_question_source(identifier:str,source_id:str,
+                                context_sha256:str=Query(pattern=r'^[a-f0-9]{64}$')):
+        filename,content,mime=project_query.source(identifier,source_id,context_sha256)
+        return Response(content,media_type=mime,
+                        headers={'Content-Disposition':"attachment; filename*=UTF-8''"+quote(filename,safe='')})
+
+    @app.exception_handler(ProjectContextChanged)
+    async def project_context_changed(request,error):
+        return JSONResponse({'detail':'当前项目资料已变化，请重新读取资料后提问。'},status_code=409)
 
     @app.get('/api/demo/preflight')
     def demo_preflight():return demo_readiness.report()
@@ -236,7 +262,7 @@ def create_app(database=None,seed=True):
 
     @app.get('/api/health')
     def health():
-        return {'status':'ok','version':'0.9.0','llm_configured':service.models.public()['configured'],
+        return {'status':'ok','version':'0.10.0','llm_configured':service.models.public()['configured'],
                 'llm_verified':service.models.public()['verified'],'model':service.models.public(),
                 'embedding_configured':bool(os.getenv('LZ_EMBEDDING_BASE_URL') and os.getenv('LZ_EMBEDDING_MODEL')),
                 'osv_snapshot':service.osv.fixture['fetched_at'],'local_only':True}
