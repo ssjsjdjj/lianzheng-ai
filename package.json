@@ -1,6 +1,6 @@
 {
   "name": "lianzheng-ai-browser-tests",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "scripts": {
     "test:browser": "node tests/browser-smoke.cjs",
@@ -10,7 +10,9 @@
     "test:query-state": "node tests/browser-v09-query.cjs",
     "test:project-isolation": "node tests/browser-v010-query.cjs",
     "test:answer-cards": "node tests/browser-v011-answer.cjs",
-    "test:project-brief": "node tests/browser-v011-brief.cjs"
+    "test:project-brief": "node tests/browser-v011-brief.cjs",
+    "test:answer-diff": "node tests/browser-v012-answer.cjs",
+    "test:project-presenter": "node tests/browser-v012-presenter.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"
