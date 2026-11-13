@@ -108,7 +108,7 @@
   }
   function reportStage(a){
     const q=window.lianzhengTaskCompare?.state?.(),r=q?.result;
-    const matching=r&&r.source?.case_bundle_sha256===caseInfo?.bundle_sha256;
+    const matching=q?.scope==='case'&&r&&r.source?.case_bundle_sha256===caseInfo?.bundle_sha256;
     const kind=matching?(r.fairness?.model_pair_comparable?'两侧模型返回已取得':'离线证据或未完成模型解释'):'本场尚未完成任务对照';
     setHeading('交付 / 留下能复核的材料','把依据、处理记录和待确认事项一起交付',
       '这里汇总本场同一案例的问答状态与公开实验资料，不自动补答或请求模型。');
@@ -140,7 +140,8 @@
         if(window.lianzhengSimulation?.mount)simulation=window.lianzhengSimulation.mount(host,{compact:true});
         else host.innerHTML=empty('推演组件尚未加载','请退出讲解，刷新页面后恢复进度。');}
       if(step===2){const host=find('.presenter-comparison-host');
-        if(window.lianzhengTaskCompare?.mount)comparisonMount=window.lianzhengTaskCompare.mount(host,{compact:true});
+        if(window.lianzhengTaskCompare?.state?.().scope!=='case')window.lianzhengTaskCompare?.configure?.({scope:'case',mode:'fixed',phase:'before',task_id:'before-occurrences',reset:true,expected_case_hash:caseInfo.bundle_sha256});
+        if(window.lianzhengTaskCompare?.mount)comparisonMount=window.lianzhengTaskCompare.mount(host,{compact:true,lockScope:true});
         else host.innerHTML=empty('任务组件尚未加载','请退出讲解，刷新页面后恢复进度。');}
       if(step===4||step===5){const host=find(step===4?'.presenter-decisions-host':'.presenter-timeline-host');
         if(window.lianzhengCaseDecisions?.mount)decisionsMount=window.lianzhengCaseDecisions.mount(host,{compact:true,tab:step===4?'plans':'timeline'});
@@ -170,7 +171,7 @@
       if(state.id!==current.before_snapshot_id||state.analysis?.focus!==current.focus)throw Error('工作空间在准备期间发生切换，请重新开始本场。');
       caseInfo=current;lockedSource=state.analysis;lockedAnalysis=JSON.parse(JSON.stringify(lockedSource));contextBroken=false;
       mode=nextMode;step=saved?.step||(flows[mode].includes(options.step)?options.step:options.entry==='free'?2:0);selectedPath=0;
-      window.lianzhengTaskCompare?.configure?.({mode:options.entry==='free'?'free':'fixed',phase:'before',task_id:'before-occurrences',reset:true,expected_case_hash:current.bundle_sha256});
+      window.lianzhengTaskCompare?.configure?.({scope:'case',mode:options.entry==='free'?'free':'fixed',phase:'before',task_id:'before-occurrences',reset:true,expected_case_hash:current.bundle_sha256});
       window.lianzhengCaseDecisions?.reset?.();
       if(!dialog.open){priorFocus=document.activeElement;priorOverflow=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();}
       find('.presenter-status').textContent=saved?'已恢复导航位置；问题、答案与模型开关未保存。':'方向键切换，Esc 返回准备面板。切换步骤不会自动调用模型。';
@@ -181,6 +182,7 @@
   function reopen(){
     if(dialog.open)return;
     if(!caseInfo||!lockedAnalysis||contextBroken||state.analysis!==lockedSource)throw Error('本页没有可继续的同一案例资料，请恢复服务后重新核对。');
+    if(window.lianzhengTaskCompare?.state?.().scope!=='case')window.lianzhengTaskCompare?.configure?.({scope:'case',mode:'fixed',phase:'before',task_id:'before-occurrences',reset:true,expected_case_hash:caseInfo.bundle_sha256});
     priorFocus=document.activeElement;priorOverflow=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();
     find('.presenter-status').textContent='继续本页此前载入的已核对资料；当前服务状态未复查，新请求可能不可用。';render({focus:true});
   }
@@ -227,6 +229,9 @@
     window.dispatchEvent(new CustomEvent('lianzheng-presentation-changed',{detail:publicState()}));
   });
   document.addEventListener('fullscreenchange',()=>{find('[data-presenter-action="fullscreen"]').textContent=document.fullscreenElement===dialog?'退出浏览器全屏':'浏览器全屏';});
+  window.addEventListener('lianzheng-snapshot-changing',()=>{
+    if(dialog.open&&!busyStart){contextBroken=true;find('.presenter-status').textContent='正在切换项目，已暂停本场讲解，请重新核对。';render({focus:true});}
+  });
   window.addEventListener('lianzheng-snapshot-changed',()=>{
     if(dialog.open&&!busyStart&&state.analysis!==lockedSource){contextBroken=true;find('.presenter-status').textContent='工作空间已变化，已暂停讲解，等待重新核对。';render({focus:true});}
   });

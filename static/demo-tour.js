@@ -6,6 +6,7 @@
   const panel=document.createElement('section');panel.id='demo-hub';panel.className='demo-hub';panel.hidden=true;panel.setAttribute('aria-label','统一参赛演示准备');
   panel.innerHTML=`<div class="demo-hub-heading"><div><span class="demo-hub-eyebrow">ONE CASE · LIVE EVIDENCE</span><h2>从一个真实问题，走到可核查的处理方案</h2><p>整场围绕 http-server 的同一份实验材料。选择节奏，核对准备状态，再开始讲解。</p></div><button type="button" class="text-button" data-hub-close>收起准备</button></div>
     <div class="demo-hub-formats"><article><span>90 秒 · 4 步</span><h3>快速说明价值</h3><p>项目来源 → 任务对照 → 实际方案 → 证据交付</p><button type="button" class="button primary" data-hub-start="quick">开始精简讲解</button></article><article><span>3 分钟 · 7 步</span><h3>完整展示判断过程</h3><p>加入原文路径、交互推演与失败修复时间线</p><button type="button" class="button primary" data-hub-start="full">开始完整讲解</button></article><article><span>现场挑战</span><h3>让评委提出新问题</h3><p>限定当前案例与阶段，结论可以逐条展开核对</p><button type="button" class="button secondary" data-hub-free>进入现场自由提问</button></article></div>
+    <div class="demo-hub-project"><div><strong>换成你自己的项目</strong><p>导入依赖清单后直接提问；回答、原文和路径只引用选中的项目快照。</p></div><div><button type="button" class="button secondary" data-hub-import>导入项目清单</button><button type="button" class="button primary" data-hub-project>提问当前项目</button></div></div>
     <div class="demo-hub-preflight"><div class="demo-hub-check-heading"><div><h3>演示预检</h3><p>只检查本机状态和公开材料；不发送模型请求，也不验证服务商余额。</p></div><button type="button" class="button secondary" data-hub-check>运行本机预检</button></div><div data-hub-checks role="status"></div></div>
     <div class="demo-hub-recovery"><div><strong>从上次停下的位置继续</strong><p data-hub-resume-note>本标签页只保存案例校验值、讲解档位与步骤；不保存现场问题或答案。</p></div><div><button type="button" class="button secondary" data-hub-resume disabled>恢复上次讲解</button><button type="button" class="button secondary" data-hub-cached hidden>继续本页已载入资料</button></div></div>
     <p class="demo-hub-status" data-hub-status role="status">开始讲解会载入已校验的案例快照，不会重跑测试或覆盖已有记录。</p>
@@ -47,6 +48,11 @@
   find('[data-hub-check]').addEventListener('click',check);
   panel.querySelectorAll('[data-hub-start]').forEach(b=>b.addEventListener('click',()=>start({mode:b.dataset.hubStart})));
   find('[data-hub-free]').addEventListener('click',()=>start({mode:'full',entry:'free'}));
+  find('[data-hub-import]').addEventListener('click',()=>document.getElementById('open-import').click());
+  find('[data-hub-project]').addEventListener('click',async()=>{
+    try{if(!state.id||state.switchingSnapshot)throw Error('请先选择或导入一份项目快照。');await window.lianzhengTaskCompare.open({scope:'snapshot',snapshot_id:state.id,mode:'free'});}
+    catch(error){toast(error.message||'当前项目尚未就绪，请重新选择快照。');}
+  });
   find('[data-hub-resume]').addEventListener('click',()=>start({resume:true}));
   find('[data-hub-cached]').addEventListener('click',()=>{
     try{window.lianzhengPresenter?.reopen?.();}catch(error){find('[data-hub-status]').textContent=error.message;}

@@ -50,3 +50,14 @@
 @media(min-width:1000px){.tc-compact .tc-controls{grid-template-columns:minmax(0,1fr) auto;align-items:center}.tc-compact .tc-controls>label:first-child{grid-column:1/-1}.tc-compact .tc-actions>.button{padding:9px 12px;min-height:36px}}
 @media(max-width:760px){.tc-mode-tabs>span{width:100%;margin-left:0;font-size:10px}.tc-free-fields{grid-template-columns:minmax(0,1fr)}.tc-free-fields>label:nth-child(2){grid-template-columns:80px minmax(0,1fr);align-items:center}.tc-question-chips>button{flex:1 1 140px}.tc-linkage-heading{align-items:flex-start}.tc-fact{font-size:12px}.tc-controls{min-width:0}.tc-metrics strong{font-size:19px}.tc-linked-source,.tc-linked-path{padding:9px}.tc-free-fields textarea{font-size:13px}.tc-protocol-brief{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.task-comparison-workbench *{scroll-behavior:auto!important}}
+/* v0.10: make the imported project and the fixed contest case visibly distinct. */
+.tc-scope-tabs{display:flex;gap:5px;flex-wrap:wrap;width:fit-content;padding:4px;background:#e9f0ec;border:1px solid #d6e2da;border-radius:10px;margin:14px 0}
+.tc-scope-tabs>button{border:1px solid transparent;border-radius:7px;padding:9px 18px;background:transparent;color:#587165;font-family:inherit;font-size:13px;font-weight:650;line-height:1.4;cursor:pointer}
+.tc-scope-tabs>button[aria-pressed=true]{border-color:#b9d0c1;background:white;color:#1d6550;box-shadow:0 1px 3px #244f3010}
+.tc-scope-tabs>button:focus-visible{outline:3px solid #a9c7b7;outline-offset:2px}
+.tc-project-source{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding:14px 16px;border:1px solid #bdd6c8;border-left:4px solid #38866b;border-radius:9px;background:#f1f8f3;color:#345e4a;overflow-wrap:anywhere}
+.tc-project-source>strong{font-size:15px;line-height:1.5}.tc-project-source>span{font-size:11px;line-height:1.8;color:#6b8475;text-align:right}.tc-project-source>small,.tc-project-source>code{grid-column:1/-1;font-size:11px;line-height:1.8;color:#63806e}.tc-project-source>code{font-size:10px;color:#849787}
+.tc-project-fields{grid-template-columns:minmax(0,1fr)}
+.tc-model-toggle>small{font-size:10px;color:#839286;font-weight:400}
+.tc-compact .tc-scope-tabs{margin:6px 0}.tc-compact .tc-project-source{padding:9px 12px}
+@media(max-width:760px){.tc-scope-tabs{width:100%;box-sizing:border-box}.tc-scope-tabs>button{flex:1;padding:8px 10px}.tc-project-source{grid-template-columns:minmax(0,1fr)}.tc-project-source>span{text-align:left}.tc-model-toggle{flex-wrap:wrap}.tc-model-toggle>small{flex-basis:100%;padding-left:20px}}

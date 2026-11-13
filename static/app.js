@@ -31,9 +31,18 @@ async function loadSnapshots() {
 }
 async function selectSnapshot(id,focus=null) {
   const serial=++state.request;
-  const analysis=await api('/api/snapshots/'+encodeURIComponent(id)+(focus?'?focus='+encodeURIComponent(focus):''));
+  state.switchingSnapshot=true;stopWaiting();state.lastAnswer=null;state.lastAnswerReplay=false;
+  $('#answer').textContent='正在切换项目资料，旧回答已收起。';
+  $('#evidence-list').innerHTML='';$('#evidence-count').textContent='0';
+  state.documents=[];state.history=[];state.parentId=null;state.turns=[];renderConversation();
+  $('#document-count').textContent='0';$('#history-count').textContent='0';
+  $('#document-list').textContent='正在读取所选项目文档…';$('#history-list').textContent='正在读取所选项目问答记录…';
+  window.dispatchEvent(new CustomEvent('lianzheng-snapshot-changing',{detail:{snapshot_id:id,request:serial}}));
+  let analysis;
+  try{analysis=await api('/api/snapshots/'+encodeURIComponent(id)+(focus?'?focus='+encodeURIComponent(focus):''));}
+  catch(error){if(serial===state.request)window.dispatchEvent(new CustomEvent('lianzheng-snapshot-change-failed',{detail:{snapshot_id:id,request:serial}}));throw error;}
   if(serial!==state.request)return;
-  state.id=id;state.analysis=analysis;
+  state.id=id;state.analysis=analysis;state.switchingSnapshot=false;
   $('#snapshot-select').value=id;
   renderAnalysis();
   if(state.request===serial)window.dispatchEvent(new CustomEvent('lianzheng-snapshot-changed',{detail:{snapshot:state.id,analysis:state.analysis}}));
@@ -134,6 +143,7 @@ function renderIssues() {
 }
 async function askQuestion(event) {
   event?.preventDefault();const text=$('#question').value.trim();if(!text)return;
+  if(state.switchingSnapshot){toast('项目资料尚未载入，请重新选择快照后再提问。');return;}
   if(!state.analysis)return;
   if(state.pendingQuestion){toast('当前问题仍在等待结果；可先点击“停止等待”。');return;}
   const snapshot=state.id,focus=state.analysis.focus,serial=state.request,useModel=$('#use-model').checked;
@@ -273,7 +283,11 @@ async function importFile(event) {
     if(file.size>5*1024*1024)throw new Error('文件超过 5 MB 上限。');
     let raw;try{raw=JSON.parse(await file.text());}catch{throw new Error('文件不是有效的 JSON。');}
     const result=await api('/api/snapshots',{method:'POST',body:JSON.stringify({bom:raw,project:$('#import-project').value.trim(),label:$('#import-label').value.trim()})});
-    state.id=result.snapshot.id;await loadSnapshots();await selectSnapshot(state.id);$('#import-dialog').close();changeView('overview');toast('清单已导入。请查看未扫描项，必要时在线更新 OSV。');
+    const importedId=result.snapshot.id;await loadSnapshots();await selectSnapshot(importedId);
+    if(state.id!==importedId||state.switchingSnapshot)throw new Error('清单已保存，当前项目选择已变化，请重新选中导入快照。');
+    $('#import-dialog').close();changeView('overview');
+    await window.lianzhengTaskCompare?.open?.({scope:'snapshot',snapshot_id:importedId,mode:'free'});
+    toast('清单已导入，可直接提问当前项目；未扫描项会保留为未知。');
   });
 }
 async function refreshKnowledge(snapshot=state.id,serial=state.request) {
@@ -290,6 +304,7 @@ async function refreshKnowledge(snapshot=state.id,serial=state.request) {
   }));
   $$('#document-list [data-remove-document]').forEach(button=>button.addEventListener('click',()=>busy(button,'移除中…',async()=>{
     await api(`/api/snapshots/${encodeURIComponent(snapshot)}/documents/${encodeURIComponent(button.dataset.removeDocument)}`,{method:'DELETE'});
+    window.dispatchEvent(new CustomEvent('lianzheng-project-evidence-changed',{detail:{snapshot_id:snapshot}}));
     await refreshKnowledge(snapshot,serial);toast('已从后续检索中移除；历史回答中的原始引用仍保留。');
   })));
 }
@@ -299,10 +314,15 @@ async function refreshHistory(snapshot=state.id,serial=state.request) {
   state.history=history;$('#history-count').textContent=history.length;
   $('#history-list').innerHTML=history.length?history.map(item=>`<button class="history-item" data-history="${item.id}"><strong>${escapeHTML(item.question)}</strong><span>${escapeHTML(dateLabel(item.created))}<i>${item.answer.mode==='text'?'文本 RAG':'GraphRAG'} · ${item.answer.citations.length} 条引用</i></span></button>`).join(''):'<div class="empty-state">当前快照还没有问答记录。<br>完成提问后会保存回答与当时的引用。</div>';
   $$('#history-list [data-history]').forEach(button=>button.addEventListener('click',async()=>{
-    const item=state.history.find(h=>String(h.id)===button.dataset.history);
+    if(state.switchingSnapshot||snapshot!==state.id||serial!==state.request)return;
+    const item=history.find(h=>String(h.id)===button.dataset.history);if(!item)return;
     const focus=item.answer.facts?.focus;
-    if(focus&&state.analysis.focus!==focus&&state.analysis.vulnerabilities.some(v=>v.id===focus))await selectSnapshot(state.id,focus);
-    ++state.request;
+    let expected=state.request;
+    if(focus&&state.analysis.focus!==focus&&state.analysis.vulnerabilities.some(v=>v.id===focus)){
+      expected=state.request+1;await selectSnapshot(snapshot,focus);
+    }
+    if(state.switchingSnapshot||snapshot!==state.id||expected!==state.request)return;
+    stopWaiting();
     $('#question').value=item.question;state.mode=item.answer.mode;
     $$('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode));
     renderAnswer(item.answer,{replayed:true});renderEvidence(item.answer.citations);changeView('questions');
@@ -312,7 +332,7 @@ async function refreshHistory(snapshot=state.id,serial=state.request) {
   }));
 }
 function openDocument() {
-  if(!state.analysis)return;
+  if(!state.analysis||state.switchingSnapshot)return;
   $('#document-form').reset();
   const bindings=new Map();
   for(const node of state.analysis.nodes)if(node.package_name&&node.scan_status!=='demo-component')bindings.set(node.package_name+'\u0000'+node.package_version,{package:node.package_name,version:node.package_version});
@@ -330,6 +350,7 @@ async function importDocument(event) {
       ...binding,title:$('#document-title').value.trim(),target_version:$('#document-target').value.trim()||null,
       kind:$('#document-kind').value,url:$('#document-url').value.trim(),text:$('#document-text').value
     })});
+    window.dispatchEvent(new CustomEvent('lianzheng-project-evidence-changed',{detail:{snapshot_id:snapshot}}));
     $('#document-dialog').close();await refreshKnowledge(snapshot);
     toast(`文档已保存，建立 ${result.chunk_count} 个可定位片段。现在可以询问迁移要求。`);
   });
@@ -365,6 +386,7 @@ $('#download-bom').addEventListener('click',()=>{if(state.id)window.location.hre
 $('#live-scan').addEventListener('click',()=>busy($('#live-scan'),'在线查询中…',async()=>{
   const original=state.id;
   const result=await api(`/api/snapshots/${encodeURIComponent(original)}/scan`,{method:'POST',body:JSON.stringify({live:true})});
+  window.dispatchEvent(new CustomEvent('lianzheng-project-evidence-changed',{detail:{snapshot_id:original}}));
   await loadSnapshots();if(original===state.id)await selectSnapshot(original);toast(`在线查询完成：${result.checked} 个位置已查询，${result.failed} 个失败。`);
 }));
 $('#open-import').addEventListener('click',()=>{$('#import-project').value=state.analysis?.snapshot.project||'';$('#import-label').value='';$('#import-dialog').showModal();});
