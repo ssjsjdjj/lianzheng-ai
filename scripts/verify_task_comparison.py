@@ -26,7 +26,7 @@ def verify(output):
                     r['fairness']['same_candidate_corpus'] and r['fairness']['same_raw_materials'] and
                     r['comparison']['semantic_winner'] is None and
                     all(c['metrics']['semantic_accuracy'] is None for c in r['columns']) for r in runs)
-    result = {'release': '0.10.0', 'generated_at': now(), 'kind': 'real-project-development-retrieval-comparison',
+    result = {'release': '0.11.0', 'generated_at': now(), 'kind': 'real-project-development-retrieval-comparison',
               **catalog['source'], 'task_count': len(runs), 'project_count': 1, 'phase_count': 3,
               'human_reviewed': False, 'independent_test': False, 'semantic_accuracy': None,
               'model_calls': 0, 'embedding_calls': 0, 'network_calls': 0,
