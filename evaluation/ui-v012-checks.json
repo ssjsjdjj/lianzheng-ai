@@ -1,0 +1,146 @@
+{
+  "release": "0.12.0",
+  "generated_at": "2026-11-13T03:32:00.557559+00:00",
+  "kind": "manual-browser-download-and-local-http-acceptance",
+  "passed": 26,
+  "total": 26,
+  "model_calls_this_release": 0,
+  "environment": "127.0.0.1:8777 isolated SQLite with external HTTP blocked; 8768 metadata/database-count read-only check",
+  "checks": [
+    {
+      "name": "导入与简报",
+      "evidence": "隔离服务导入含两条 minimist 路径的锁文件，简报3个位置、3个未知；不执行依赖或在线扫描。",
+      "result": "pass"
+    },
+    {
+      "name": "当前项目提问",
+      "evidence": "当前项目离线问答只呈现选定项目，固定案例来源另行显示。",
+      "result": "pass"
+    },
+    {
+      "name": "保留基线",
+      "evidence": "同题回答保留为页面内存历史副本，含材料指纹与当时原文。",
+      "result": "pass"
+    },
+    {
+      "name": "资料更新失效",
+      "evidence": "导入第一份检查要求后当前回答失效，显示等待明确重答；历史仍可查看。",
+      "result": "pass"
+    },
+    {
+      "name": "新增来源联动",
+      "evidence": "重答新增文档依据，点选新增结论显示实际两行文档、行列和哈希。",
+      "result": "pass"
+    },
+    {
+      "name": "不把要求称为执行",
+      "evidence": "导入文档及答案明确尚未执行，未声称测试通过或修复成功。",
+      "result": "pass"
+    },
+    {
+      "name": "文字与原文区分",
+      "evidence": "第二份资料加入后覆盖摘要文字未变，仍单独提示引用内容变化。",
+      "result": "pass"
+    },
+    {
+      "name": "双侧原文",
+      "evidence": "原文并列显示 knowledge_documents 从1到2，两个内容指纹和来源指纹对应变化。",
+      "result": "pass"
+    },
+    {
+      "name": "历史无实时链接",
+      "evidence": "历史原文只读且没有实时下载；当前来源链接只指本次上下文。",
+      "result": "pass"
+    },
+    {
+      "name": "变化导出",
+      "evidence": "浏览器实际下载 answer-change-v2 JSON，含四章节条目及历史/当前材料，无活动来源URL。",
+      "result": "pass"
+    },
+    {
+      "name": "旧来源拒绝",
+      "evidence": "本机HTTP请求补资料前的 manifest URL 返回409。",
+      "result": "pass"
+    },
+    {
+      "name": "目标匹配回放",
+      "evidence": "路径问题回放显示两个精确 minimist@1.2.5 安装位置。",
+      "result": "pass"
+    },
+    {
+      "name": "实际图排序",
+      "evidence": "回放显示实际用于排序的2节点和3节点路径，无补造依赖边。",
+      "result": "pass"
+    },
+    {
+      "name": "关系原文值",
+      "evidence": "最终版路径边显示原始 /dependencies 指针值 \"1.0.0\" 与 \"1.2.5\"，区分组件片段。",
+      "result": "pass"
+    },
+    {
+      "name": "预算回放",
+      "evidence": "最终选择页显示7/8份、9997/28000 UTF-8字节及实际排名。",
+      "result": "pass"
+    },
+    {
+      "name": "两侧集合",
+      "evidence": "两侧7份共同取回，差集0；明确集合大小不表示答案质量或胜负。",
+      "result": "pass"
+    },
+    {
+      "name": "全屏四步",
+      "evidence": "实际浏览器依次进入当前项目简报、问题、答案与证据、回答变化。",
+      "result": "pass"
+    },
+    {
+      "name": "讲解内引用",
+      "evidence": "讲解第3步原文按钮展开当前文档内容、行号和来源哈希。",
+      "result": "pass"
+    },
+    {
+      "name": "讲解内变化",
+      "evidence": "第4步复用新增、未列出、未变条目及历史/当前原文。",
+      "result": "pass"
+    },
+    {
+      "name": "退出保留答案",
+      "evidence": "从当前项目讲解返回问答，已接受问题和答案保持，不发起重答。",
+      "result": "pass"
+    },
+    {
+      "name": "系统全屏降级",
+      "evidence": "浏览器拒绝系统全屏后仍为1280×720铺满页面对话框，明确提示降级。",
+      "result": "pass"
+    },
+    {
+      "name": "报告页面",
+      "evidence": "评测页列出3项目24问、开发/验证分组、两侧打平和语义待复核。",
+      "result": "pass"
+    },
+    {
+      "name": "报告下载",
+      "evidence": "浏览器下载JSON与发布文件逐字节相同，附参考未命中和人工复核空栏。",
+      "result": "pass"
+    },
+    {
+      "name": "当前原文下载",
+      "evidence": "实际下载 snapshot-coverage.json，SHA256与当前页面显示一致。",
+      "result": "pass"
+    },
+    {
+      "name": "主环境保留",
+      "evidence": "主服务8768返回0.12.0、既有GPT配置及连接记录保留；13张表行数与备份前相同。",
+      "result": "pass"
+    },
+    {
+      "name": "本轮调用",
+      "evidence": "公开用量接口对比为当天0次、无进行中请求；本版未发生真实模型调用。",
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "窗口1280×720，未进行移动端布局验收。",
+    "资料变化暂停、晚到响应、跨项目污染、XSS和超限场景由独立Node/Python协议测试覆盖，不冒充真实浏览器操作。",
+    "本轮未调用真实模型；语义正确性和引用支持仍待独立人工评审。"
+  ]
+}
