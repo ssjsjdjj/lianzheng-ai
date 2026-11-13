@@ -1,0 +1,145 @@
+{
+  "release": "0.11.0",
+  "generated_at": "2026-11-13T02:50:00.390867+00:00",
+  "method": "Manual CUA browser interaction, local read-only HTTP and actual downloaded bytes; not automated browser E2E",
+  "environment": "Windows desktop IAB; isolated SQLite port8776 with provider HTTP disabled; final main check port8768",
+  "total": 22,
+  "passed": 22,
+  "model_calls_this_release": 0,
+  "mobile_layout_verified": false,
+  "model_semantic_accuracy": null,
+  "checks": [
+    {
+      "id": "import-brief",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "A 锁文件导入后停在简报：1 个位置，0 已查、1 未知、0 文档。"
+    },
+    {
+      "id": "suggestion-fill-only",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "点击建议问题只填入文本，操作者点击运行后才产生答案。"
+    },
+    {
+      "id": "answer-card",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "离线答案卡显示结论、依据、未知和下一步，不把未扫描说成无风险。"
+    },
+    {
+      "id": "card-link",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "点击卡片依据展开本侧双栏、isolation-a 到 minimist 路径和原始 JSON 位置。"
+    },
+    {
+      "id": "retain-same-context",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "明确保留回答；相同指纹显示新增0、未取回0、改变0，全部片段未变。"
+    },
+    {
+      "id": "document-invalidates",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "从对照打开当前项目文档，保存后当前答案清空、历史仍保留，无自动提问。"
+    },
+    {
+      "id": "explicit-reask",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "显式重答后新增1、coverage变化1、未变2；结论标文档记载而非测试已通过。"
+    },
+    {
+      "id": "history-snapshot",
+      "method": "CUA + downloaded JSON",
+      "result": "pass",
+      "observation": "历史保留原上下文、时间、引用片段；导出中不含source_url。"
+    },
+    {
+      "id": "comparison-download",
+      "method": "browser download + local bytes",
+      "result": "pass",
+      "observation": "实际下载JSON，UTF-8完整；同题同快照、两份不同指纹及变化条目均核对。"
+    },
+    {
+      "id": "stale-download",
+      "method": "local HTTP",
+      "result": "pass",
+      "observation": "文档更新后旧manifest下载URL返回409。"
+    },
+    {
+      "id": "document-source",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "新文档依据显示原始行列、全文片段和hash，无关联路径明确显示。"
+    },
+    {
+      "id": "refresh-clears",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "刷新页面后历史对照与旧回答不恢复。"
+    },
+    {
+      "id": "question-clears",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "修改现场问题立即清除历史基线。"
+    },
+    {
+      "id": "failure-retry",
+      "method": "CUA + injected 503",
+      "result": "pass",
+      "observation": "503保留草稿；恢复服务后明确点击离线重试才生成新答案。"
+    },
+    {
+      "id": "bound-dialog-return",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "最终文档会话绑定修复后再次补资料，返回同项目同题并保留历史，显式重答通过。"
+    },
+    {
+      "id": "delayed-project-switch",
+      "method": "CUA + injected delay",
+      "result": "pass",
+      "observation": "A 回答延迟12秒期间切换项目再导入B；旧卡和基线立即清除，迟到结果不恢复。"
+    },
+    {
+      "id": "same-component-other-project",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "B同minimist版本显示isolation-b路径、0文档，不借用A的两份验收资料。"
+    },
+    {
+      "id": "public-large-brief",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "mermaid-cli公开冻结锁文件导入：709位置全部未知、25清单提示、图缺口保留。"
+    },
+    {
+      "id": "fixed-case-presenter",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "完整讲解打开固定http-server案例；第3步保持案例任务双栏，不混入导入项目答案卡。"
+    },
+    {
+      "id": "main-answer",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "8768主页面v0.11简报与当前项目离线卡可用；新问答模型开关未勾选。"
+    },
+    {
+      "id": "main-preflight",
+      "method": "CUA",
+      "result": "pass",
+      "observation": "主演示预检7项通过，明确只读本机状态，不验证远端余额。"
+    },
+    {
+      "id": "main-preserved",
+      "method": "local HTTP + read-only SQLite",
+      "result": "pass",
+      "observation": "主服务0.11.0、原GPT配置/验证保留；数据库各表计数与备份一致，当天调用0、无进行中请求。"
+    }
+  ]
+}

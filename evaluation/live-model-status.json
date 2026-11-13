@@ -1,6 +1,6 @@
 {
-  "release": "0.10.0",
-  "generated_at": "2026-11-13T02:06:52.705072+00:00",
+  "release": "0.11.0",
+  "generated_at": "2026-11-13T02:37:54.911701+00:00",
   "provider": "openai",
   "connection_configured": true,
   "connection_verified": true,
@@ -16,5 +16,5 @@
     "total_answers": 3,
     "report": "live-model-results.json"
   },
-  "note": "v0.10 验证导入项目、当前快照自由提问与证据隔离；本轮未调用真实模型，模型分支仅以模拟协议测试验证。v0.6 三轮真实问答验收保留为历史记录。"
+  "note": "v0.11 验证答案卡、补证对照与导入简报；本轮未调用真实模型，模型分支只使用模拟协议响应。v0.6 三轮真实问答单列为历史。"
 }
